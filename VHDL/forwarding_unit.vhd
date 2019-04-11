@@ -40,25 +40,21 @@ begin
 		
 		-- first operand in first instruction
 		if ((ex_mem_regWrite_1 = '1') -- EX HAZARD
-			and (ex_mem_registerRd_1 /="0000") 
 			and (ex_mem_registerRd_1 = id_ex_registerRs_1)) then
 				forward_a_1 <= "001"; 
 
 		elsif((ex_mem_regWrite_2 = '1')
-			 and (ex_mem_registerRd_2 /="0000") 
 			 and (ex_mem_registerRd_2 = id_ex_registerRs_1)) then
 				forward_a_1 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
-			and (mem_wb_registerRd_1 /="0000") 
-			and not(ex_mem_regWrite_1 = '1' and (ex_mem_registerRd_1 /= "0000")
+			and not(ex_mem_regWrite_1 = '1'
 				and (ex_mem_registerRd_1 = id_ex_registerRs_1))
 			and (mem_wb_registerRd_1 = id_ex_registerRs_1)) then
 				forward_a_1 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
-			and (mem_wb_registerRd_2 /="0000") 
-			and not(ex_mem_regWrite_2 = '1' and (ex_mem_registerRd_2 /= "0000")
+			and not(ex_mem_regWrite_2 = '1'
 				and (ex_mem_registerRd_2 = id_ex_registerRs_1))
 			and (mem_wb_registerRd_2 = id_ex_registerRs_1)) then
 				forward_a_1 <= "100";  
@@ -68,25 +64,21 @@ begin
 		
 		-- second operand in first instruction
 		if ((ex_mem_regWrite_1 = '1') -- EX HAZARD
-			and (ex_mem_registerRd_1 /="0000") 
 			and (ex_mem_registerRd_1 = id_ex_registerRt_1)) then
 				forward_b_1 <= "001"; 
 
 		elsif((ex_mem_regWrite_2 = '1')
-			 and (ex_mem_registerRd_2 /="0000") 
 			 and (ex_mem_registerRd_2 = id_ex_registerRt_1)) then
 				forward_b_1 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
-			and (mem_wb_registerRd_1 /="0000") 
-			and not(ex_mem_regWrite_1 = '1' and (ex_mem_registerRd_1 /= "0000")
+			and not(ex_mem_regWrite_1 = '1' 
 				and (ex_mem_registerRd_1 = id_ex_registerRt_1))
 			and (mem_wb_registerRd_1 = id_ex_registerRt_1)) then
 				forward_b_1 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
-			and (mem_wb_registerRd_2 /="0000") 
-			and not(ex_mem_regWrite_2 = '1' and (ex_mem_registerRd_2 /= "0000")
+			and not(ex_mem_regWrite_2 = '1'
 				and (ex_mem_registerRd_2 = id_ex_registerRt_1))
 			and (mem_wb_registerRd_2 = id_ex_registerRt_1)) then
 				forward_b_1 <= "100";  
@@ -96,25 +88,21 @@ begin
 
 		-- first operand in second instruction
 		if ((ex_mem_regWrite_1 = '1') -- EX HAZARD
-			and (ex_mem_registerRd_1 /="0000") 
 			and (ex_mem_registerRd_1 = id_ex_registerRs_2)) then
 				forward_a_2 <= "001"; 
 
 		elsif((ex_mem_regWrite_2 = '1')
-			 and (ex_mem_registerRd_2 /="0000") 
 			 and (ex_mem_registerRd_2 = id_ex_registerRs_2)) then
 				forward_a_2 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
-			and (mem_wb_registerRd_1 /="0000") 
-			and not(ex_mem_regWrite_1 = '1' and (ex_mem_registerRd_1 /= "0000")
+			and not(ex_mem_regWrite_1 = '1' 
 				and (ex_mem_registerRd_1 = id_ex_registerRs_1))
 			and (mem_wb_registerRd_1 = id_ex_registerRs_2)) then
 				forward_a_2 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
-			and (mem_wb_registerRd_2 /="0000") 
-			and not(ex_mem_regWrite_2 = '1' and (ex_mem_registerRd_2 /= "0000")
+			and not(ex_mem_regWrite_2 = '1'
 				and (ex_mem_registerRd_2 = id_ex_registerRs_2))
 			and (mem_wb_registerRd_2 = id_ex_registerRs_2)) then
 				forward_a_2 <= "100";  
@@ -124,25 +112,21 @@ begin
 		
 		-- second operand in second instruction
 		if ((ex_mem_regWrite_1 = '1') -- EX HAZARD
-			and (ex_mem_registerRd_1 /="0000") 
 			and (ex_mem_registerRd_1 = id_ex_registerRt_2)) then
 				forward_b_2 <= "001"; 
 
 		elsif((ex_mem_regWrite_2 = '1')
-			 and (ex_mem_registerRd_2 /="0000") 
 			 and (ex_mem_registerRd_2 = id_ex_registerRt_2)) then
 				forward_b_2 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
-			and (mem_wb_registerRd_1 /="0000") 
-			and not(ex_mem_regWrite_1 = '1' and (ex_mem_registerRd_1 /= "0000")
+			and not(ex_mem_regWrite_1 = '1' 
 				and (ex_mem_registerRd_1 = id_ex_registerRt_2))
 			and (mem_wb_registerRd_1 = id_ex_registerRt_2)) then
 				forward_b_2 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
-			and (mem_wb_registerRd_2 /="0000") 
-			and not(ex_mem_regWrite_2 = '1' and (ex_mem_registerRd_2 /= "0000")
+			and not(ex_mem_regWrite_2 = '1' 
 				and (ex_mem_registerRd_2 = id_ex_registerRt_2))
 			and (mem_wb_registerRd_2 = id_ex_registerRt_2)) then
 				forward_b_2 <= "100";  
