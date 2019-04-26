@@ -91,7 +91,8 @@ architecture a_Control_Unit of Control_Unit is
                 end if;
 
             --elsid (opcode = "01")   then )   --  two operand 
-            end if;    
+            end if;  
+         end process;     
 end architecture;
 
 
