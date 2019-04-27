@@ -35,9 +35,9 @@ signal R4_En :std_logic;
 signal R5_En :std_logic;
 signal R6_En :std_logic;
 signal R7_En :std_logic;
-signal SP_En :std_logic;
-signal PC_En :std_logic;
-signal flag_En :std_logic;
+--signal SP_En :std_logic;
+--signal PC_En :std_logic;
+--signal flag_En :std_logic;
 -------------------------------------------------- data in
 signal R0_data_in :std_logic_vector(15 downto 0);
 signal R1_data_in :std_logic_vector(15 downto 0);
@@ -47,9 +47,9 @@ signal R4_data_in :std_logic_vector(15 downto 0);
 signal R5_data_in :std_logic_vector(15 downto 0);
 signal R6_data_in :std_logic_vector(15 downto 0);
 signal R7_data_in :std_logic_vector(15 downto 0);
-signal SP_data_in :std_logic_vector(31 downto 0);
-signal PC_data_in :std_logic_vector(31 downto 0);
-signal flag_data_in :std_logic_vector(15 downto 0);
+--signal SP_data_in :std_logic_vector(31 downto 0);
+--signal PC_data_in :std_logic_vector(31 downto 0);
+--signal flag_data_in :std_logic_vector(15 downto 0);
 --------------------------------------------------
 -------------------------------------------------- data out
 signal R0_data_out :std_logic_vector(15 downto 0);
@@ -60,9 +60,9 @@ signal R4_data_out :std_logic_vector(15 downto 0);
 signal R5_data_out :std_logic_vector(15 downto 0);
 signal R6_data_out :std_logic_vector(15 downto 0);
 signal R7_data_out :std_logic_vector(15 downto 0);
-signal SP_data_out :std_logic_vector(31 downto 0);
-signal PC_data_out :std_logic_vector(31 downto 0);
-signal flag_data_out :std_logic_vector(15 downto 0);
+--signal SP_data_out :std_logic_vector(31 downto 0);
+--signal PC_data_out :std_logic_vector(31 downto 0);
+--signal flag_data_out :std_logic_vector(15 downto 0);
 --------------------------------------------------
 BEGIN
  
@@ -74,9 +74,9 @@ R4:entity work.my_nDFF  generic map (16) port map (clk,  rst , R4_data_in ,R4_da
 R5:entity work.my_nDFF  generic map (16) port map (clk,  rst , R5_data_in ,R5_data_out ,R5_EN);
 R6:entity work.my_nDFF  generic map (16) port map (clk,  rst , R6_data_in ,R6_data_out ,R6_EN);
 R7:entity work.my_nDFF  generic map (16) port map (clk,  rst , R7_data_in ,R7_data_out ,R7_EN);
-sp:entity work.my_nDFF  generic map (32) port map (clk,  rst , SP_data_in ,SP_data_out ,SP_EN);
-pc:entity work.my_nDFF  generic map (32) port map (clk,  rst , PC_data_in ,PC_data_out ,PC_EN);
-flag:entity work.my_nDFF  generic map (16) port map (clk,  rst , flag_data_in ,flag_data_out ,Flag_EN);
+--sp:entity work.my_nDFF  generic map (32) port map (clk,  rst , SP_data_in ,SP_data_out ,SP_EN);
+--pc:entity work.my_nDFF  generic map (32) port map (clk,  rst , PC_data_in ,PC_data_out ,PC_EN);
+--flag:entity work.my_nDFF  generic map (16) port map (clk,  rst , flag_data_in ,flag_data_out ,Flag_EN);
 -------------------------------------------------------
 ------------------------------------------------------- 
 process(clk ,rst, instr_1_Rdst_write_back,instr_2_Rdst_write_back)
