@@ -81,10 +81,10 @@ architecture a_ALU of ALU is
                     AluSelect <="101";
                 elsif (sel = "01100") then
                     unsignedshift <= unsigned(in1);
-                    r <= std_logic_vector(unsignedshift sll 2);
+                    r <= std_logic_vector(unsignedshift sll unsigned(in2));
                 elsif (sel = "01101") then
                     unsignedshift <= unsigned(in1);
-                    r <= std_logic_vector(unsignedshift srl 2);
+                    r <= std_logic_vector(unsignedshift srl unsigned(in2));
     
                 end if;    
                  
