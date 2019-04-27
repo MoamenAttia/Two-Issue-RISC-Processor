@@ -4,7 +4,7 @@ USE IEEE.std_logic_1164.all;
 ENTITY FETCH IS
 	PORT (address : IN  std_logic_vector (31 downto 0);
           instruction1 : OUT std_logic_vector (15 downto 0);
-          instruction2 : OUT std_logic_vector (15 downto 0);
+          instruction2 : OUT std_logic_vector (15 downto 0));
 END FETCH;
 
 ARCHITECTURE a_FETCH OF FETCH IS
