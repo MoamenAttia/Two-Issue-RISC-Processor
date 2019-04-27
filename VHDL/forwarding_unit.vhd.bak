@@ -131,7 +131,7 @@ begin
 			and (mem_wb_registerRd_2 = id_ex_registerRt_2)) then
 				forward_b_2 <= "100";  
 		else 
-			forward_b_2 <= "000";
+			forward_b_1 <= "000";
 		end if;
 		
 	end process;

@@ -13,7 +13,7 @@ end entity;
 architecture a_register_level of register_level is
 begin
 
-    process(clk, rst, en, din)
+    process(clk, rst, , en, din)
     begin
         if rst='1' then
             dout <= (others => '0');

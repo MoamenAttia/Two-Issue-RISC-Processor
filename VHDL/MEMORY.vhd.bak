@@ -57,10 +57,10 @@ signal mar_out  	: std_logic_vector(15 downto 0);
 --also connected to reg file with data
 ---data ram here 
 
-	enable_read <= '1' when instr_1_mem_read = '1' or instr_2_mem_read = '1'
+	enable_read <= '1' when instr_1_mem_write = '1' or instr_2_mem_write = '1'
 					   else '0';
 	
-	enable_write <= '1' when instr_1_mem_write = '1' or instr_2_mem_write = '1'
+	enable_write <= '1' when instr_1_mem_read = '1' or instr_2_mem_read = '1'
 						else '0';
 
 	address <= instr_1_alu_result when instr_1_mem_write = '1' or instr_1_mem_read = '1'

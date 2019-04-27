@@ -57,7 +57,7 @@ ENTITY EXECUTE IS
 	mem_wb_Rd_data_out_1	  :in std_logic_vector(15 downto 0);
 	
 	ex_mem_Rd_data_out_2	  :in std_logic_vector(15 downto 0);
-	mem_wb_Rd_data_out_2	  :in std_logic_vector(15 downto 0)
+	mem_wb_Rd_data_out_2	  :in std_logic_vector(15 downto 0);
 	
 	);
 END EXECUTE;

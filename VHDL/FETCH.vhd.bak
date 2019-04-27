@@ -45,6 +45,6 @@ architecture a_fetch of fetch is
 
         mdr_2    : entity work.n_dff generic map (16) port map ( clk , rst , enable_mdr_in , data_out_2 , instruction2 );
 
-        inst_ram : entity work.inst_ram port map ( clk_inv , enable_write , mar_out , dummy , data_out , mar_out_2 , data_out_2 );
+        inst_ram : entity work.ram port map ( clk_inv , enable_write , mar_out , dummy , data_out , mar_out_2 , data_out_2 );
 		
 end a_fetch;
