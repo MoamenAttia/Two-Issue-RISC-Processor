@@ -21,12 +21,12 @@ architecture a_inst_ram of inst_ram is
 begin
     process(clk)
         begin
-            if (clk'event and clk = '1') then
-                if enable_write = '1' then
-                    my_ram(to_integer(unsigned(address))) <= data_in;
+            if falling_edge(clk) then
+                if enable_write = '0' then
+                    
+    			data_out <= my_ram(to_integer(unsigned(address)));
+    			data_out_2 <= my_ram(to_integer(unsigned(address_2)));
                 end if;
             end if;
     end process;
-    data_out <= my_ram(to_integer(unsigned(address)));
-    data_out_2 <= my_ram(to_integer(unsigned(address_2)));
 end a_inst_ram;
