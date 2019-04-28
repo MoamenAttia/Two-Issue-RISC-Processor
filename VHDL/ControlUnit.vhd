@@ -15,7 +15,8 @@ entity Control_Unit is
         MR : out std_logic;
         Mw : out std_logic;
         regOut1 : out std_logic_vector (3 downto 0);
-        regOut2 : out std_logic_vector (3 downto 0)
+        regOut2 : out std_logic_vector (3 downto 0);
+        flush : in std_logic
     );
 end Control_Unit;
 
@@ -24,7 +25,7 @@ architecture a_Control_Unit of Control_Unit is
     begin 
     process ( opcode , func, Rsrc,Rdst)
         begin 
-            if (opcode = "00")   then     -- one operand 
+            if (opcode = "00" and flush = '0')   then     -- one operand 
                 if (func = "000")  then  -- no op 
                     AluFunc <= "00000";
                     dest <= "0000";
@@ -91,7 +92,14 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;   ---------------change if out in decode     
                 end if;
 
-            --elsid (opcode = "01")   then )   --  two operand 
+            --elsif (opcode = "01" and flush =0 )   then )   --  two operand 
+            -- else then     AluFunc <= "00000";
+                  --  dest <= "0000";
+                   -- WB <= '0';
+                    --MR <= '0';
+                    --MW <= '0';
+                    --regOut1 <= "0000";
+                    --regOut2 <= "0000";
             end if;  
          end process; 
 		src<=Rsrc;    

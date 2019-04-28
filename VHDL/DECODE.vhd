@@ -54,6 +54,7 @@ ENTITY DECODE IS
 END DECODE;
 
 ARCHITECTURE a_DECODE OF DECODE IS
+------------------------------------from control unit
 signal i1_Rsrc_in_regFile : std_logic_vector (3 downto 0);
 signal i1_Rdst_in_regFile : std_logic_vector (3 downto 0);
 
@@ -63,21 +64,21 @@ signal i2_Rdst_in_regFile : std_logic_vector (3 downto 0);
 signal	hazard_sel : std_logic_vector(3 downto 0) ;
 signal	hazard_data : std_logic_vector(15 downto 0) ;
 -----------------------------------------------------------
---  1.entity for hazard detection
---  2.entity for branch detection and calculation address 
---- 3.entity for reg file (done)
---  4.entity for control unit (done)
+
+signal i1_flush :std_logic; --from hazard
+signal i2_flush:std_logic;
+
 BEGIN
 ---------------------- control unit instr 1
 controli1_unit:entity work.Control_Unit  generic map (32) port map (i1_opcode, i1_function,i1_Rsrc_in,i1_Rdst_in,
-i1_alu_op,i1_Rsrc_out, i1_Rdst_out , i1_WB,i1_MR ,i1_MW , i1_Rsrc_in_regFile,i1_Rdst_in_regFile );
-
+i1_alu_op,i1_Rsrc_out, i1_Rdst_out , i1_WB,i1_MR ,i1_MW , i1_Rsrc_in_regFile,i1_Rdst_in_regFile,'0' );
 ---------------------- control unit instr 2		
 controli2_unit:entity work.Control_Unit  generic map (32) port map (i2_opcode, i2_function,i2_Rsrc_in,i2_Rdst_in,
-i2_alu_op, i2_Rsrc_out,i2_Rdst_out , i2_WB,i2_MR ,i2_MW , i2_Rsrc_in_regFile,i2_Rdst_in_regFile);		
+i2_alu_op, i2_Rsrc_out,i2_Rdst_out , i2_WB,i2_MR ,i2_MW , i2_Rsrc_in_regFile,i2_Rdst_in_regFile,'0');	--0 is the flush	
 -------------------------- Register file  -------- '0' to be replaced by write back signal fro last buffer 
 Register_file:entity work.Register_file  generic map (16) port map (clk , rst , i1_Rsrc_in_regFile , i1_Rdst_in_regFile , i1_Rsrc_data , i1_Rdst_data , i1_WB_data ,i1_WB_Rdst,
 i1_WB_signal,i2_Rsrc_in_regFile , i2_Rdst_in_regFile , i2_Rsrc_data , i2_Rdst_data, i2_WB_data ,i2_WB_Rdst,i2_WB_signal,
 hazard_sel, hazard_data , MEM_sel ,MEM_data);
+-----------------------------hazard detection and its connection 
 
 END architecture;
