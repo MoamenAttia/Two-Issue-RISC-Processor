@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity ram is
+entity data_ram is
     generic ( n : integer := 16; ram_size : integer := 64; address_size : integer := 16 );
     port (
         clk          : in  std_logic;
@@ -12,9 +12,9 @@ entity ram is
         data_in      : in  std_logic_vector(n-1 downto 0);
         data_out     : out std_logic_vector(n-1 downto 0)
     );
-end entity ram;
+end entity data_ram;
 
-architecture a_ram of ram is
+architecture a_data_ram of data_ram is
     type ram_type is array(0 to ram_size -1) of std_logic_vector(n-1 downto 0);
     signal my_ram : ram_type;
 begin
@@ -28,4 +28,4 @@ begin
             end if;
 
     end process;
-end a_ram;
+end a_data_ram;

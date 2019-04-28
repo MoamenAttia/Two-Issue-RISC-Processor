@@ -9,6 +9,7 @@ entity Control_Unit is
         Rsrc : in std_logic_vector(3 DOWNTO 0);
         Rdst : in std_logic_vector(3 DOWNTO 0);
         AluFunc : out std_logic_vector (4 downto 0);
+	    src :out std_logic_vector(3 downto 0);
         dest : out std_logic_vector (3 downto 0);
         WB : out std_logic;
         MR : out std_logic;
@@ -92,7 +93,8 @@ architecture a_Control_Unit of Control_Unit is
 
             --elsid (opcode = "01")   then )   --  two operand 
             end if;  
-         end process;     
+         end process; 
+		src<=Rsrc;    
 end architecture;
 
 
