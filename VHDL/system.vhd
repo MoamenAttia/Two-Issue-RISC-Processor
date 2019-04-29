@@ -1,10 +1,17 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 ENTITY system IS
-     PORT( clk,rst : IN std_logic; En : in std_logic);
+     PORT(
+		  clk,rst : IN std_logic;
+		  En : in std_logic;
+		  IN_bus : in std_logic_vector (15 downto 0);
+		  OUT_bus : out std_logic_vector (15 downto 0);
+		  interupt : in std_logic   -- to decode file 
+		  );
 END system;
 
 ARCHITECTURE my_system OF system IS
+---------------------------------------signals connecting each componant
 signal clk_inv :std_logic;
 signal  i1,i2 : std_logic_vector(15 downto 0);
 signal  pc_out : std_logic_vector(31 downto 0); -- input to fecth
@@ -139,29 +146,34 @@ signal 	i2_MR_WB_out : std_logic;
 signal 	i2_stall_long_WB_out : std_logic;
 signal 	i2_result_WB_out : std_logic_vector (15 downto 0);
 --------------------------------------------------------------------------------------
-BEGIN
---------fetch ---------  fetch & pc & ir
+BEGIN----------------------------------------------
+----------------------------------------------------fetch ---------  fetch & pc & ir
 fetch:entity work.FETCH  port map (clk, pc_out ,i1 ,i2);
 ir_input <= i1&i2;
 IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (clk,  rst , ir_input,
 i1_opcode ,i1_function , i1_Rsrc ,i1_Rdst,i2_opcode,i2_function,i2_Rsrc,i2_Rdst,En); --enable IR to be changed
 pc:entity work.PC  generic map (32) port map (clk,  rst ,x"00000000" ,pc_out ,"000");-- HAZARD !! sel to be changed , in_address to be changed 
--------decode --------decode 
+---------------------------------------------------decode --------decode 
+--------------------------------------------------------------
 deocode : entity work.DECODE PORT map  (
 	clk ,rst,
-        --this data is directly from ir buffer 
+    --this data is directly from ir buffer 
     i1_opcode ,
 	i1_function,
 	i1_Rsrc ,
 	i1_Rdst ,
-	i1_result_WB_out , i1_Rdst_WB_out, i1_WB_WB_out,
-
+	i1_result_WB_out ,  -- from last buffer
+	i1_Rdst_WB_out,
+	i1_WB_WB_out,
 	--------------------------------------------
 	i2_opcode,
 	i2_function,
 	i2_Rsrc ,
     i2_Rdst ,
-	i2_result_WB_out , i2_Rdst_WB_out ,i2_WB_WB_out,
+	i2_result_WB_out ,  -- from last buffer
+	i2_Rdst_WB_out ,
+	i2_WB_WB_out,
+	---------------
     i1_Rdst_DEC_out,
 	i1_Rsrc_DEC_out,
 	i1_branch_taken_DEC_out,
@@ -185,13 +197,18 @@ deocode : entity work.DECODE PORT map  (
 	i2_MR_DEC_out,
 	i2_MW_DEC_out ,
 	i2_alu_op_DEC_out,
+	--------
 	MEM_sel,
-	MEM_data
+	MEM_data,   ---- to memory stage for store 
+	----------
+	IN_bus,
+	OUT_bus       ----- to in and out circuit
 
     );
- 
-----------------------------------------------------------------buffer decode/execute
-dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (clk,  rst , 
+ ----------------------------------------buffer decode/execute
+ -------------------------------------------------------------------
+dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
+	clk,  rst , 
     i1_Rdst_DEC_out,
 	i1_Rsrc_DEC_out,
 	i1_branch_taken_DEC_out,
@@ -242,6 +259,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (clk,  rst ,
 	En
  );
  -------------------------------------------------------------------------------------- Execute
+ -------------------------------------------------------------------------------
  Execute :entity work.EXECUTE port map (
  	i1_Rdst_Exec_in,
 	i1_Rsrc_Exec_in,
@@ -267,7 +285,6 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (clk,  rst ,
 	i2_MW_Exec_in ,
 	i2_alu_op_Exec_in,
 	
-
 	i1_WB_Mem_in     ,
 	i1_Rdst_Mem_in, 
 	i1_WB_WB_out     ,
@@ -299,6 +316,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (clk,  rst ,
 	i2_alu_result_Exec_out 
 );
 -------------------------------------------------------------- Exexcute/Memory Buffer
+-----------------------------------------------------------------
 exec_mem_BUFFER:entity work.Execute_Memory_Buffer port map ( 
 	Clk,Rst,
 	i1_Rdst_Exec_out ,
@@ -314,7 +332,6 @@ exec_mem_BUFFER:entity work.Execute_Memory_Buffer port map (
 	i2_MR_Exec_out,
 	i2_MW_Exec_out ,
 	i2_alu_result_Exec_out,
-
 	-----------------------------------------------
 	i1_Rdst_Mem_in, 
 	i1_WB_Mem_in,
@@ -385,7 +402,6 @@ mem_writeback :entity work.Memory_write_back_Buffer port map (
  	i1_MR_WB_out ,
  	i1_stall_long_WB_out ,
  	i1_result_WB_out ,
- 
  	--------------------------------------
  	i2_Rdst_WB_out ,
  	i2_WB_WB_out ,

@@ -50,6 +50,12 @@ ENTITY DECODE IS
 	MEM_sel : in std_logic_vector(3 downto 0) ;
 	MEM_data : out std_logic_vector(15 downto 0) 
 
+	-----------------------------------------
+	IN_bus : in std_logic_vector (15 downto 0);
+	OUT_bus : out std_logic_vector (15 downto 0)     --------in w out 
+
+	---------------------add signal for hazards ie  stall long 
+
     );
 END DECODE;
 
