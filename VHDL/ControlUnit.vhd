@@ -23,7 +23,7 @@ end Control_Unit;
 architecture a_Control_Unit of Control_Unit is
 
     begin 
-    process ( opcode , func, Rsrc,Rdst)
+    process ( opcode , func, Rsrc,Rdst,flush)
         begin 
             if (opcode = "00" and flush = '0')   then     -- one operand 
                 if (func = "000")  then  -- no op 
@@ -74,16 +74,16 @@ architecture a_Control_Unit of Control_Unit is
                     MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;
-                elsif (func = "101") then  --out  
-                    AluFunc <= "00110";
-                    dest <= Rdst;
+                elsif (func = "101") then  --in 
+                    AluFunc <= "00000";     --
+                    dest <= "0000";
                     WB <= '0';
-                    MR <= '0';
+                    MR <= '0';               ---change destination and write back iif in instructions
                     MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;   ---------------change if out in decode 
                 elsif (func = "110") then  --out  
-                    AluFunc <= "00111";
+                    AluFunc <= "00000";
                     dest <= Rdst;
                     WB <= '0';
                     MR <= '0';
@@ -93,6 +93,8 @@ architecture a_Control_Unit of Control_Unit is
                 end if;
 
             --elsif (opcode = "01" and flush =0 )   then )   --  two operand 
+
+
             -- else then     AluFunc <= "00000";
                   --  dest <= "0000";
                    -- WB <= '0';
