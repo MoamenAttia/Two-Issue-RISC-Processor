@@ -9,9 +9,9 @@ ENTITY system IS
 		  interupt : in std_logic   -- to decode file 
 		  );
 END system;
-
+----------------------------------------
 ARCHITECTURE my_system OF system IS
----------------------------------------signals connecting each componant
+---------------------------------------------------signals connecting each componant
 signal clk_inv :std_logic;
 signal  i1,i2 : std_logic_vector(15 downto 0);
 signal  pc_out : std_logic_vector(31 downto 0); -- input to fecth
@@ -50,7 +50,7 @@ signal	i2_WB_DEC_out : std_logic;
 signal	i2_MR_DEC_out:std_logic;
 signal	i2_MW_DEC_out : std_logic;
 signal	i2_alu_op_DEC_out :  std_logic_vector(4 downto 0);
-------------------------------------------------------------------- Execute Input
+------------------------------------------------------------------Execute Input
 signal	i1_Rdst_Exec_in: std_logic_vector(3 DOWNTO 0);
 signal	i1_Rsrc_Exec_in:  std_logic_vector(3 DOWNTO 0);
 signal	i1_branch_taken_Exec_in :  std_logic;
@@ -74,22 +74,7 @@ signal	i2_WB_Exec_in : std_logic;
 signal	i2_MR_Exec_in : std_logic;
 signal	i2_MW_Exec_in : std_logic;
 signal	i2_alu_op_Exec_in: std_logic_vector (4 downto 0);
-
----------------forward signals---------------- 
---signal	ex_mem_regWrite_1_Exec_in         :  STD_LOGIC;
---signal	ex_mem_registerRd_1_Exec_in       :  STD_LOGIC_VECTOR(3 downto 0);
---signal	mem_wb_regWrite_1_Exec_in         :  STD_LOGIC;
---signal	mem_wb_registerRd_1_Exec_in 	  :  STD_LOGIC_VECTOR(3 downto 0);
---signal	ex_mem_regWrite_2_Exec_in         :  STD_LOGIC;
---signal	ex_mem_registerRd_2_Exec_in       :  STD_LOGIC_VECTOR(3 downto 0);
---signal	mem_wb_regWrite_2_Exec_in         :  STD_LOGIC;
---signal	mem_wb_registerRd_2_Exec_in 	  :  STD_LOGIC_VECTOR(3 downto 0);
---signal	ex_mem_Rd_data_out_1_Exec_in	  : std_logic_vector(15 downto 0);
---signal	mem_wb_Rd_data_out_1_Exec_in	  : std_logic_vector(15 downto 0);
---
---signal	ex_mem_Rd_data_out_2_Exec_in	  : std_logic_vector(15 downto 0);
---signal	mem_wb_Rd_data_out_2_Exec_in	  : std_logic_vector(15 downto 0);
------------------------------------------------------------------------------------------- Execute Outputs 
+-------------------------------------------------------------------Execute Outputs 
 signal	i1_Rdst_Exec_out : std_logic_vector (3 downto 0);
 signal	i1_WB_Exec_out : std_logic;
 signal	i1_stall_long_Exec_out : std_logic;
@@ -105,7 +90,7 @@ signal	i2_MW_Exec_out : std_logic;
 signal	i2_alu_result_Exec_out : std_logic_vector (15 downto 0);
 signal  MEM_sel : std_logic_vector (3 downto 0);
 signal  MEM_data : std_logic_vector (15 downto 0);
-----------------------------------------------------------------------------------  Execute Memory Buffer outputs
+-------------------------------------------------------------------Execute Memory Buffer outputs
 signal	i1_Rdst_Mem_in : std_logic_vector (3 downto 0);
 signal	i1_WB_Mem_in : std_logic;
 signal	i1_stall_long_Mem_in : std_logic;
@@ -119,33 +104,32 @@ signal	i2_stall_long_Mem_in : std_logic;
 signal	i2_MR_Mem_in : std_logic;
 signal	i2_MW_Mem_in : std_logic;
 signal	i2_alu_result_Mem_in : std_logic_vector (15 downto 0);
--------------------------------------------------------------------------------------- MEMORY OUTPUTS
-SIGNAL	i1_Rdst_MEM_out : std_logic_vector (3 downto 0);
-SIGNAL	i1_WB_MEM_out 	: std_logic;
-SIGNAL	i1_MR_MEM_out 	: std_logic;
-SIGNAL	i1_stall_long_MEM_out 	: std_logic;
-SIGNAL	i1_result_MEM_out	: std_logic_vector (15 downto 0);
-
-SIGNAL	i2_Rdst_MEM_out 		: std_logic_vector (3 downto 0);
-SIGNAL	i2_WB_MEM_out 	: std_logic;
-SIGNAL	i2_MR_MEM_out 	: std_logic;
-SIGNAL	i2_stall_long_MEM_out 	: std_logic;
-SIGNAL	i2_result_MEM_out 	: std_logic_vector (15 downto 0);
-
------------------------------------------------------------------------------------------- mem write back buffer outputs
+-------------------------------------------------------------------MEMORY OUTPUTS
+signal	i1_Rdst_MEM_out : std_logic_vector (3 downto 0);
+signal	i1_WB_MEM_out 	: std_logic;
+signal	i1_MR_MEM_out 	: std_logic;
+signal	i1_stall_long_MEM_out 	: std_logic;
+signal	i1_result_MEM_out	: std_logic_vector (15 downtsignal
+signal	i2_Rdst_MEM_out 		: std_logic_vector (3 downto 0);
+signal	i2_WB_MEM_out 	: std_logic;
+signal	i2_MR_MEM_out 	: std_logic;
+signal	i2_stall_long_MEM_out 	: std_logic;
+signal	i2_result_MEM_out 	: std_logic_vector (15 downto 0);
+----------------------------------------------------------------- mem write back buffer outputs
 signal 	i1_Rdst_WB_out : std_logic_vector (3 downto 0);
 signal 	i1_WB_WB_out : std_logic;
 signal 	i1_MR_WB_out :  std_logic;
 signal 	i1_stall_long_WB_out : std_logic;
 signal 	i1_result_WB_out : std_logic_vector (15 downto 0);
-
  	--------------------------------------
 signal 	i2_Rdst_WB_out : std_logic_vector (3 downto 0);
 signal 	i2_WB_WB_out : std_logic;
 signal 	i2_MR_WB_out : std_logic;
 signal 	i2_stall_long_WB_out : std_logic;
 signal 	i2_result_WB_out : std_logic_vector (15 downto 0);
---------------------------------------------------------------------------------------
+---------------------------------------------------
+signal immediate :std_logic;
+---------------------------------------------------------------
 BEGIN----------------------------------------------
 ----------------------------------------------------fetch ---------  fetch & pc & ir
 fetch:entity work.FETCH  port map (clk, pc_out ,i1 ,i2);
@@ -202,11 +186,11 @@ deocode : entity work.DECODE PORT map  (
 	MEM_data,   ---- to memory stage for store 
 	----------
 	IN_bus,
-	OUT_bus       ----- to in and out circuit
-
+	OUT_bus ,      ----- to in and out circuit
+	immediate
     );
- ----------------------------------------buffer decode/execute
- -------------------------------------------------------------------
+ ----------------------------------------buffer decode/execute     --###$## immediate 
+ -------make new signal for each instruction that signal is the data of the decode if no immediate and if immediate take the second ir
 dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	clk,  rst , 
     i1_Rdst_DEC_out,
@@ -258,8 +242,8 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i2_alu_op_Exec_in,
 	En
  );
- -------------------------------------------------------------------------------------- Execute
- -------------------------------------------------------------------------------
+ -------------------------------------------------------------Execute
+ ------------------------------------------------------------
  Execute :entity work.EXECUTE port map (
  	i1_Rdst_Exec_in,
 	i1_Rsrc_Exec_in,
@@ -272,7 +256,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i1_MR_Exec_in ,
 	i1_MW_Exec_in ,
 	i1_alu_op_Exec_in,
-	------------------------------------------------
+	-------------------------------
 	i2_Rdst_Exec_in,
 	i2_Rsrc_Exec_in,
 	i2_branch_taken_Exec_in ,
@@ -315,8 +299,8 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i2_MW_Exec_out ,
 	i2_alu_result_Exec_out 
 );
--------------------------------------------------------------- Exexcute/Memory Buffer
------------------------------------------------------------------
+----------------------------------------------------- Exexcute/Memory Buffer
+-------------------------------------------------------
 exec_mem_BUFFER:entity work.Execute_Memory_Buffer port map ( 
 	Clk,Rst,
 	i1_Rdst_Exec_out ,
@@ -332,7 +316,7 @@ exec_mem_BUFFER:entity work.Execute_Memory_Buffer port map (
 	i2_MR_Exec_out,
 	i2_MW_Exec_out ,
 	i2_alu_result_Exec_out,
-	-----------------------------------------------
+	----------------------------
 	i1_Rdst_Mem_in, 
 	i1_WB_Mem_in,
 	i1_stall_long_Mem_in,
@@ -348,7 +332,7 @@ exec_mem_BUFFER:entity work.Execute_Memory_Buffer port map (
 	i2_alu_result_Mem_in ,
 	En
  );
- ------------------------------------------------------------ MEMORY
+ --------------------------------------- MEMORY
 clk_inv <= not(clk);
  MEM :entity work.MEMORY port map (
 	clk , clk_inv ,rst , MEM_data, MEM_sel,
@@ -366,7 +350,6 @@ clk_inv <= not(clk);
 	i2_MW_Mem_in,
 	i2_alu_result_Mem_in ,
 	-------------------------------------------- outputs
-
 	i1_Rdst_MEM_out,
 	i1_WB_MEM_out ,
 	i1_MR_MEM_out,
@@ -378,7 +361,6 @@ clk_inv <= not(clk);
 	i2_MR_MEM_out,
 	i2_stall_long_MEM_out ,
 	i2_result_MEM_out 
-	
 	
  );
 ---------------------------------------------------------------------------------- MEMORY WRITE BACK BUFFER

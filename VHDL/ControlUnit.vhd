@@ -22,7 +22,8 @@ entity Control_Unit is
         OUT_signal:out std_logic;
     ----------------------------------
         -------------------------
-        in_out_dest : out std_logic_vector (3 downto 0)
+        in_out_dest : out std_logic_vector (3 downto 0);
+        immediate : out std_logic
     
     );
 end Control_Unit;
@@ -32,7 +33,8 @@ architecture a_Control_Unit of Control_Unit is
     begin 
     process ( opcode , func, Rsrc,Rdst,flush)
         begin 
-            if (opcode = "00" and flush = '0' )   then     -- one operand 
+            if (opcode = "00" and flush = '0' )   then  
+                    immediate <= '0';   -- one operand 
                 if (func = "000")  then  -- no op 
                     AluFunc <= "00000";
                     dest <= "0000";
@@ -130,7 +132,72 @@ architecture a_Control_Unit of Control_Unit is
                     in_out_dest <= Rdst;     
                 end if;
 
-            --elsif (opcode = "01" and flush =0 )   then )   --  two operand 
+            elsif (opcode = "01" and flush =0 )   then 
+                    IN_signal <= '0';
+                    OUT_signal <='0';
+                    in_out_dest <= "0000";
+                if (func = "000") then   -- mov 
+                    AluFunc <= "00111";  --pass rsc
+                    dest <= Rdst;
+                    WB <= '1';
+                    MR <= '0';
+                    MW <= '0';
+                    regOut1 <= Rsrc;
+                    regOut2 <= "0000";
+                    immediate <= '0';  
+                elsif  (func = "001") then   -- add  
+                    AluFunc <= "01000";  
+                    dest <= Rdst;
+                    WB <= '1';
+                    MR <= '0';
+                    MW <= '0';
+                    regOut1 <= Rsrc;
+                    regOut2 <= Rdst;
+                    immediate <= '0';
+                elsif  (func = "010") then   -- sub 
+                    AluFunc <= "01001";  
+                    WB <= '1';
+                    MR <= '0';
+                    MW <= '0';
+                    regOut1 <= Rsrc;
+                    regOut2 <= Rdst;
+                    immediate <= '0';
+                elsif  (func = "011") then   -- and
+                    AluFunc <= "01010";  
+                    WB <= '1';
+                    MR <= '0';
+                    MW <= '0';
+                    regOut1 <= Rsrc;
+                    regOut2 <= Rdst; 
+                    immediate <= '0'; 
+                elsif  (func = "100") then   -- or
+                    AluFunc <= "01011";  
+                    WB <= '1';
+                    MR <= '0';
+                    MW <= '0';
+                    regOut1 <= Rsrc;
+                    regOut2 <= Rdst;
+                    immediate <= '0';  
+                elsif   (func = "101") then   -- shift left  (need immediate value ) 
+                    AluFunc <= "01100";  
+                    WB <= '1';
+                    MR <= '0';
+                    MW <= '0';
+                    regOut1 <= Rsrc;
+                    regOut2 <= "0000"; -- immediate here  
+                    immediate <= '1'; 
+                elsif   (func = "110") then   -- shift right (need immediate value ) 
+                    AluFunc <= "01101";  
+                    WB <= '1';
+                    MR <= '0';
+                    MW <= '0';
+                    regOut1 <= Rsrc;
+                    regOut2 <= "0000"; -- immediate here 
+                    immediate <= '1'; 
+                end if ;          
+
+
+
             else     AluFunc <= "00000";
                     dest <= "0000";
                     WB <= '0';
@@ -138,6 +205,10 @@ architecture a_Control_Unit of Control_Unit is
                     MW <= '0';              --flush
                     regOut1 <= "0000";
                     regOut2 <= "0000";
+                    immediate <= '0';
+                    IN_signal <= '0';
+                    OUT_signal <='0';
+                    in_out_dest <= "0000";
             end if;  
          end process; 
 		src<=Rsrc;    
