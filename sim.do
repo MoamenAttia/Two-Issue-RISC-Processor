@@ -199,7 +199,7 @@ sim:/system/i2_WB_WB_out \
 sim:/system/i2_MR_WB_out \
 sim:/system/i2_stall_long_WB_out \
 sim:/system/i2_result_WB_out
-mem load -filltype value -filldata 0000001000010000 -fillradix binary /system/fetch/inst_ram/my_ram(0)
+mem load -filltype value -filldata 0000001000011100 -fillradix binary /system/fetch/inst_ram/my_ram(0)
 mem load -filltype value -filldata 0000010000010000 -fillradix binary /system/fetch/inst_ram/my_ram(1)
 force -freeze sim:/system/clk 1 0, 0 {50 ps} -r 100
 force -freeze sim:/system/rst 1 0

@@ -16,7 +16,7 @@ entity Control_Unit is
         Mw : out std_logic;
         regOut1 : out std_logic_vector (3 downto 0);
         regOut2 : out std_logic_vector (3 downto 0);
-        flush : in std_logic
+        flush : in std_logic;
         -----------------------------
         IN_signal:out std_logic;
         OUT_signal:out std_logic;
@@ -30,7 +30,7 @@ end Control_Unit;
 architecture a_Control_Unit of Control_Unit is
 
     begin 
-    process ( opcode , func, Rsrc,Rdst)
+    process ( opcode , func, Rsrc,Rdst,flush)
         begin 
             if (opcode = "00" and flush = '0' )   then     -- one operand 
                 if (func = "000")  then  -- no op 
@@ -43,7 +43,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= '0';
+                    in_out_dest <= "0000";
 
                 elsif (func = "001") then -- set carry 
                     AluFunc <= "00001";
@@ -55,7 +55,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= '0';
+                    in_out_dest <= "0000";
                  
                 elsif (func = "010") then -- clear carry )    
                     AluFunc <= "00010";
@@ -67,7 +67,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= '0';
+                    in_out_dest <= "0000";
                
                 elsif (func = "011")  then  -- not 
                     AluFunc <= "00011";
@@ -79,7 +79,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= '0';
+                    in_out_dest <= "0000";
             
                 elsif (func = "100") then  --increment
                     AluFunc <= "00100";
@@ -91,7 +91,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= '0';
+                    in_out_dest <= "0000";
              
                 elsif (func = "101") then  --decrement 
                     AluFunc <= "00101";
@@ -103,7 +103,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= '0';
+                    in_out_dest <= "0000";
         
                 elsif (func = "111") then  --in 
                     AluFunc <= "00000";
@@ -115,7 +115,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";  
                     IN_signal <= '1';
                     OUT_signal <='0';
-                    in_out_dest <= dest;
+                    in_out_dest <= Rdst;
            
                 elsif (func = "110") then  --out
                     AluFunc <= "00000";
@@ -127,17 +127,17 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";   
                     IN_signal <= '0';
                     OUT_signal <='1';
-                    in_out_dest <= dest;     
+                    in_out_dest <= Rdst;     
                 end if;
 
             --elsif (opcode = "01" and flush =0 )   then )   --  two operand 
-            -- else then     AluFunc <= "00000";
-                  --  dest <= "0000";
-                   -- WB <= '0';
-                    --MR <= '0';
-                    --MW <= '0';              --flush
-                    --regOut1 <= "0000";
-                    --regOut2 <= "0000";
+            else     AluFunc <= "00000";
+                    dest <= "0000";
+                    WB <= '0';
+                    MR <= '0';
+                    MW <= '0';              --flush
+                    regOut1 <= "0000";
+                    regOut2 <= "0000";
             end if;  
          end process; 
 		src<=Rsrc;    

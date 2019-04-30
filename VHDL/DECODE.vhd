@@ -71,7 +71,6 @@ signal i1_IN_signal   :std_logic;
 signal i1_OUT_signal  :std_logic;
 signal i2_IN_signal   :std_logic;
 signal i2_OUT_signal  :std_logic;
-signal ----------------------
 signal i1_in_out_dest : std_logic_vector (3 downto 0);
 signal i2_in_out_dest : std_logic_vector (3 downto 0);
 -------------------------------------------------
