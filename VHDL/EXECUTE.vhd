@@ -55,9 +55,9 @@ ENTITY EXECUTE IS
 	i2_alu_result_Exec_out :out std_logic_vector (15 downto 0)
 	);
 END EXECUTE;
-
+------------------------------------------
 ARCHITECTURE a_EXECUTE OF EXECUTE IS
-    
+ ------------------------------------------   
 signal forwarda   : std_logic_vector(2 downto 0);
 signal forwardb   : std_logic_vector(2 downto 0);
 signal forwarda_2 : std_logic_vector(2 downto 0);
@@ -66,9 +66,8 @@ signal opa_1	: std_logic_vector(15 downto 0);
 signal opb_1	: std_logic_vector(15 downto 0);
 signal opa_2	: std_logic_vector(15 downto 0);
 signal opb_2	: std_logic_vector(15 downto 0);
-
+--------------------------------------
 BEGIN
-
    ---- 2 alus
    ---- forwarding unit 
    fu : entity work.forwarding_unit port map (
