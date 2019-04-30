@@ -72,5 +72,19 @@ signal data_out 	: std_logic_vector(15 downto 0);
 	reg_sel <= instr_1_Rdst when instr_1_mem_write = '1'
 							else instr_2_Rdst when instr_2_mem_write = '1'
 							else "0000";
+
+	
+							
+	instr_1_Rdst_out <= instr_1_Rdst;
+	instr_1_write_back_out <= instr_1_write_back;
+	instr_1_mem_read_out <= instr_1_mem_read ;
+	instr_1_stall_long_out <=   instr_1_stall_long;
+	
+	instr_2_Rdst_out <= instr_2_Rdst;
+	instr_2_write_back_out <= instr_2_write_back;
+	instr_2_mem_read_out <= instr_2_mem_read ;
+	instr_2_stall_long_out <=   instr_2_stall_long;
+
+
 			
 END a_MEMORY;

@@ -35,13 +35,10 @@ ENTITY EXECUTE IS
 	ex_mem_registerRd_2       :in  STD_LOGIC_VECTOR(3 downto 0);
 	mem_wb_regWrite_2         :in  STD_LOGIC;
 	mem_wb_registerRd_2 	  :in  STD_LOGIC_VECTOR(3 downto 0);
-
 	ex_mem_Rd_data_out_1	  :in std_logic_vector(15 downto 0);
 	mem_wb_Rd_data_out_1	  :in std_logic_vector(15 downto 0);
-	
 	ex_mem_Rd_data_out_2	  :in std_logic_vector(15 downto 0);
 	mem_wb_Rd_data_out_2	  :in std_logic_vector(15 downto 0);
-
 	---these signals are connected with memory execute buffers
 	i1_Rdst_Exec_out :out std_logic_vector (3 downto 0);
 	i1_WB_Exec_out :out std_logic;
@@ -91,20 +88,35 @@ BEGIN
 		forwardb,
 		forwarda_2,
 		forwardb_2
-    );
+	);
+	
    ---- muxs
    mux1 : entity work.mux port map 
-   		(forwarda, i1_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opa_1);
+   		(forwarda, i1_Rsrc_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opa_1);
    mux2 : entity work.mux port map 
-   		(forwardb, i1_Rsrc_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_1);
+   		(forwardb, i1_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_1);
    
    mux3 : entity work.mux port map 
-   		(forwarda_2, i2_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opa_2);
+   		(forwarda_2, i2_Rsrc_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opa_2);
    mux4 : entity work.mux port map 
-   		(forwardb_2, i2_Rsrc_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_2);
+   		(forwardb_2, i2_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_2);
 		
    alu1: entity work.alu port map 
 		(opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op);
    alu2: entity work.alu port map 
 		(opa_2,opb_2,i2_alu_result_Exec_out,i2_alu_op);
+
+
+		i1_Rdst_Exec_out<= i1_Rdst;
+		i1_WB_Exec_out <= i1_WB;
+		i1_stall_long_Exec_out <= i1_stall_long;
+		i1_MR_Exec_out <= i1_MR;
+		i1_MW_Exec_out <= i1_MW;
+
+		i2_Rdst_Exec_out<= i2_Rdst;
+		i2_WB_Exec_out <= i2_WB;
+		i2_stall_long_Exec_out <= i2_stall_long;
+		i2_MR_Exec_out <= i2_MR;
+		i2_MW_Exec_out <= i2_MW;
+
 END a_EXECUTE;

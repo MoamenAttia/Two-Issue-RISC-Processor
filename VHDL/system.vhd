@@ -76,19 +76,19 @@ signal	i2_MW_Exec_in : std_logic;
 signal	i2_alu_op_Exec_in: std_logic_vector (4 downto 0);
 
 ---------------forward signals---------------- 
-signal	ex_mem_regWrite_1_Exec_in         :  STD_LOGIC;
-signal	ex_mem_registerRd_1_Exec_in       :  STD_LOGIC_VECTOR(3 downto 0);
-signal	mem_wb_regWrite_1_Exec_in         :  STD_LOGIC;
-signal	mem_wb_registerRd_1_Exec_in 	  :  STD_LOGIC_VECTOR(3 downto 0);
-signal	ex_mem_regWrite_2_Exec_in         :  STD_LOGIC;
-signal	ex_mem_registerRd_2_Exec_in       :  STD_LOGIC_VECTOR(3 downto 0);
-signal	mem_wb_regWrite_2_Exec_in         :  STD_LOGIC;
-signal	mem_wb_registerRd_2_Exec_in 	  :  STD_LOGIC_VECTOR(3 downto 0);
-signal	ex_mem_Rd_data_out_1_Exec_in	  : std_logic_vector(15 downto 0);
-signal	mem_wb_Rd_data_out_1_Exec_in	  : std_logic_vector(15 downto 0);
-
-signal	ex_mem_Rd_data_out_2_Exec_in	  : std_logic_vector(15 downto 0);
-signal	mem_wb_Rd_data_out_2_Exec_in	  : std_logic_vector(15 downto 0);
+--signal	ex_mem_regWrite_1_Exec_in         :  STD_LOGIC;
+--signal	ex_mem_registerRd_1_Exec_in       :  STD_LOGIC_VECTOR(3 downto 0);
+--signal	mem_wb_regWrite_1_Exec_in         :  STD_LOGIC;
+--signal	mem_wb_registerRd_1_Exec_in 	  :  STD_LOGIC_VECTOR(3 downto 0);
+--signal	ex_mem_regWrite_2_Exec_in         :  STD_LOGIC;
+--signal	ex_mem_registerRd_2_Exec_in       :  STD_LOGIC_VECTOR(3 downto 0);
+--signal	mem_wb_regWrite_2_Exec_in         :  STD_LOGIC;
+--signal	mem_wb_registerRd_2_Exec_in 	  :  STD_LOGIC_VECTOR(3 downto 0);
+--signal	ex_mem_Rd_data_out_1_Exec_in	  : std_logic_vector(15 downto 0);
+--signal	mem_wb_Rd_data_out_1_Exec_in	  : std_logic_vector(15 downto 0);
+--
+--signal	ex_mem_Rd_data_out_2_Exec_in	  : std_logic_vector(15 downto 0);
+--signal	mem_wb_Rd_data_out_2_Exec_in	  : std_logic_vector(15 downto 0);
 ------------------------------------------------------------------------------------------ Execute Outputs 
 signal	i1_Rdst_Exec_out : std_logic_vector (3 downto 0);
 signal	i1_WB_Exec_out : std_logic;
@@ -169,7 +169,7 @@ deocode : entity work.DECODE PORT map  (
 	i2_opcode,
 	i2_function,
 	i2_Rsrc ,
-    i2_Rdst ,
+     i2_Rdst ,
 	i2_result_WB_out ,  -- from last buffer
 	i2_Rdst_WB_out ,
 	i2_WB_WB_out,

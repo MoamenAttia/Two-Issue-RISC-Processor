@@ -2,7 +2,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 
 ENTITY Memory_write_back_Buffer IS
-GENERIC ( n : integer := 78);
+GENERIC ( n : integer :=46);
 PORT( Clk,Rst : IN std_logic;
 	--------------------------------------
 	instr_1_Rdst_in :in std_logic_vector (3 downto 0);
