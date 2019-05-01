@@ -1,9 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
--- note
--- in the D/E Buffer we need to augment a signal called jump instruction.
-
 entity hazard_unit is
 	port (
         -- first instruction
@@ -24,17 +21,19 @@ entity hazard_unit is
         ID_EXE_MemoryRead2   : in std_logic;
         ID_EXE_Rdst1         : in std_logic_vector(3 downto 0);
         ID_EXE_Rdst2         : in std_logic_vector(3 downto 0);
-        
-        -- Buffer between Execution and Memory
-        EXE_MEM_stall_long   : in std_logic;  
-    
-        -- output
-        clear_second : out std_logic;
-        stall_long   : out std_logic;
-        RST_IR       : out std_logic;
-        PC_selector  : out std_logic_vector(2 downto 0);
-        new_address  : out std_logic_vector(3 downto 0);
+        ID_EXE_flush_next    : in std_logic;
 
+        -- Buffer between Execute and Memory.
+        EXE_MEM_flush_next   : in std_logic;
+        
+        -- output
+        clear_second       : out std_logic;
+        late_clear_second  : out std_logic;
+        flush_next_ID_EXE  : out std_logic;
+        flush_next_EXE_MEM : out std_logic;
+        RST_IR             : out std_logic;
+        PC_selector        : out std_logic_vector(2 downto 0);
+        new_address        : out std_logic_vector(3 downto 0)
     );
 end hazard_unit;
 
@@ -86,16 +85,8 @@ signal raw_hazard                     : std_logic; -- read after write.
 signal waw_hazard                     : std_logic; -- write after write.
 signal jmp_inner_hazard               : std_logic; -- no jump in 2nd in packet.
 
-signal exception_data_inner           : std_logic;
-
 -- DATA INNER HAZARD
 signal data_inner_hazard              : std_logic;
-
-
-
-signal flush_due_to_branch            : std_logic;
-signal flush_due_to_load_immediate    : std_logic;
-signal flush_due_to_data_outer        : std_logic;
 
 signal exception_mov_first  : std_logic;
 signal exception_mov_second : std_logic;
@@ -139,8 +130,6 @@ signal data_outer_hazard       : std_logic;
 signal jmp_hazard              : std_logic;
 signal control_hazard          : std_logic;
 signal load_immediate_hazard   : std_logic;
-
-signal stall : std_logic;
 
 begin
 
@@ -249,28 +238,29 @@ begin
     load_immediate_hazard <= '1' when (IF_ID_opCode2 = "01" and (IF_ID_func2 = "101" or IF_ID_func2 = "110")) or (IF_ID_opCode2 = "10" and IF_ID_func2 = "010" ) else '0';
 
     control_hazard <= jmp_hazard or load_immediate_hazard;
-
-
-    flush_due_to_branch <= jmp_hazard;
-    flush_due_to_load_immediate <= '1' when (IF_ID_opCode1 = "01" and (IF_ID_func1 = "101" or IF_ID_func1 = "110")) or (IF_ID_opCode1 = "10" and IF_ID_func1 = "010" ) else '0';
-    flush_due_to_data_outer <= data_outer_hazard;
     --------------------------------------------------------------------
 
-    -- OUTPUT
-    stall <= data_inner_hazard or data_outer_hazard or control_hazard; 
-    stall_long  <= flush_due_to_branch or flush_due_to_data_outer; -- to reset IR twice. one in the decode buffer ( which has branch_taken ) and one in the Exe Buffer why!? EL PC mal724 el data and memory loaded another packet.
+    -- OUTPUTS
+    clear_second       <= data_inner_hazard  or load_immediate_hazard; -- to be passed to the control unit to make the 2nd instruction acts as NOP.
+    
+    late_clear_second  <= jmp_hazard; -- we'll modify the alu if this signal is raised then discard.
+
+    flush_next_ID_EXE  <=  data_inner_hazard or data_outer_hazard; -- to be put in the ID/EXE Buffer.
+
+    flush_next_EXE_MEM <= jmp_hazard; -- to be put in the EXE_MEM Buffer.
+
+    RST_IR             <= ID_EXE_flush_next or EXE_MEM_flush_next; -- Asyncronous Reset
+
+    PC_selector        <= "100" when        jmp_hazard = '1' else
+                          "001" when data_inner_hazard = '1' else
+                          "010" when data_outer_hazard = '1' else
+                          "000";
+    
     new_address <= ID_EXE_Rdst1; -- an input to entity that takes 4 bits ( register ) and returns its data.
-
-    clear_second <= stall or flush_due_to_load_immediate or flush_due_to_branch;
-
-    RST_IR <= '1' when stall_long = '1' or EXE_MEM_stall_long = '1' else '0';
-
-    PC_selector <= "100" when jump_hazard = '1' else
-                   "001" when stall = '1' else
-                   "000";
-
+ 
     -- assumnption
     -- 100 => PC = R[new_address]
     -- 000 => PC = PC + 2
     -- 001 => PC = PC - 1
+    -- 010 => PC = PC - 2
 end architecture;

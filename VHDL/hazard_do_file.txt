@@ -1,12 +1,46 @@
+
+# NOP
+# CLRC
+
+# op code
+force -freeze sim:/hazard_unit/IF_ID_opCode1 00 0
+force -freeze sim:/hazard_unit/IF_ID_opCode2 00 0
+
+# function
+force -freeze sim:/hazard_unit/IF_ID_func1 000 0
+force -freeze sim:/hazard_unit/IF_ID_func2 010 0
+
+# Rsrc
+force -freeze sim:/hazard_unit/IF_ID_Rsrc1 0000 0
+force -freeze sim:/hazard_unit/IF_ID_Rsrc2 0000 0
+
+# Rdst
+force -freeze sim:/hazard_unit/IF_ID_Rdst1 0000 0
+force -freeze sim:/hazard_unit/IF_ID_Rdst2 0000 0
+
+# Memory Read
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead1 0 0
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0000 0
+force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0000 0
+
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
+run
+
+
 # NOT R5
 # NOT R5
 # Verified
 
-# op code move
+# op code
 force -freeze sim:/hazard_unit/IF_ID_opCode1 00 0
 force -freeze sim:/hazard_unit/IF_ID_opCode2 00 0
 
-# function move
+# function
 force -freeze sim:/hazard_unit/IF_ID_func1 011 0
 force -freeze sim:/hazard_unit/IF_ID_func2 011 0
 
@@ -25,26 +59,23 @@ force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0000 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0000 0
 
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
 
-force -freeze sim:/hazard_unit/ID_EXE_jump_1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_jump_2 0 0
 
 force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_branch_taken2 0 0
-
-
-force -freeze sim:/hazard_unit/PCout 00000000000000000000000000000000 0
 run
+
 
 # ADD R5 ,R6
 # ADD R6 ,R4
 # Verified
 
-# op code move
+# op code
 force -freeze sim:/hazard_unit/IF_ID_opCode1 01 0
 force -freeze sim:/hazard_unit/IF_ID_opCode2 01 0
 
-# function move
+# function
 force -freeze sim:/hazard_unit/IF_ID_func1 001 0
 force -freeze sim:/hazard_unit/IF_ID_func2 001 0
 
@@ -63,15 +94,10 @@ force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0000 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0000 0
 
-
-force -freeze sim:/hazard_unit/ID_EXE_jump_1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_jump_2 0 0
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
 
 force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_branch_taken2 0 0
-
-
-force -freeze sim:/hazard_unit/PCout 00000000000000000000000000000000 0
 run
 
 
@@ -80,11 +106,11 @@ run
 # NOT R6
 # Verified
 
-# op code move
+# op code
 force -freeze sim:/hazard_unit/IF_ID_opCode1 01 0
 force -freeze sim:/hazard_unit/IF_ID_opCode2 00 0
 
-# function move
+# function
 force -freeze sim:/hazard_unit/IF_ID_func1 001 0
 force -freeze sim:/hazard_unit/IF_ID_func2 011 0
 
@@ -103,15 +129,10 @@ force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0000 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0000 0
 
-
-force -freeze sim:/hazard_unit/ID_EXE_jump_1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_jump_2 0 0
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
 
 force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_branch_taken2 0 0
-
-
-force -freeze sim:/hazard_unit/PCout 00000000000000000000000000000000 0
 run
 
 
@@ -120,9 +141,11 @@ run
 # ADD R6, R3
 # ADD R1, R2
 
+# op code
 force -freeze sim:/hazard_unit/IF_ID_opCode1 01 0
 force -freeze sim:/hazard_unit/IF_ID_opCode2 01 0
 
+# function
 force -freeze sim:/hazard_unit/IF_ID_func1 001 0
 force -freeze sim:/hazard_unit/IF_ID_func2 001 0
 
@@ -141,23 +164,21 @@ force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0111 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0100 0
 
-
-force -freeze sim:/hazard_unit/ID_EXE_jump_1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_jump_2 0 0
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
 
 force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_branch_taken2 0 0
-
-force -freeze sim:/hazard_unit/PCout 00000000000000000000000000000000 0
 run
 
 
 # LDD R5, R6
 # LDD R2, R1
 
+# op code
 force -freeze sim:/hazard_unit/IF_ID_opCode1 10 0
 force -freeze sim:/hazard_unit/IF_ID_opCode2 10 0
 
+# function
 force -freeze sim:/hazard_unit/IF_ID_func1 011 0
 force -freeze sim:/hazard_unit/IF_ID_func2 011 0
 
@@ -173,15 +194,178 @@ force -freeze sim:/hazard_unit/IF_ID_Rdst2 0010 0
 force -freeze sim:/hazard_unit/ID_EXE_MemoryRead1 0 0
 force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
 
+force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0111 0
+force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0100 0
+
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
+run
+
+
+# LDD R5, R6
+# MOV R4, R3
+# MOV R2, R6
+# ADD R1, R2
+
+# op code
+force -freeze sim:/hazard_unit/IF_ID_opCode1 01 0
+force -freeze sim:/hazard_unit/IF_ID_opCode2 01 0
+
+# function
+force -freeze sim:/hazard_unit/IF_ID_func1 000 0
+force -freeze sim:/hazard_unit/IF_ID_func2 001 0
+
+# Rsrc
+force -freeze sim:/hazard_unit/IF_ID_Rsrc1 0011 0
+force -freeze sim:/hazard_unit/IF_ID_Rsrc2 0010 0
+
+# Rdst
+force -freeze sim:/hazard_unit/IF_ID_Rdst1 0111 0
+force -freeze sim:/hazard_unit/IF_ID_Rdst2 0011 0
+
+# Memory Read
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead1 1 0
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0111 0
+force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0100 0
+
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
+run
+
+
+# JZ R6
+# ADD R1,R2
+# SUB R1,R3
+# SUB R4,R5
+
+# op code
+force -freeze sim:/hazard_unit/IF_ID_opCode1 01 0
+force -freeze sim:/hazard_unit/IF_ID_opCode2 01 0
+
+# function
+force -freeze sim:/hazard_unit/IF_ID_func1 010 0
+force -freeze sim:/hazard_unit/IF_ID_func2 010 0
+
+# Rsrc
+force -freeze sim:/hazard_unit/IF_ID_Rsrc1 0010 0
+force -freeze sim:/hazard_unit/IF_ID_Rsrc2 0101 0
+
+# Rdst
+force -freeze sim:/hazard_unit/IF_ID_Rdst1 0100 0
+force -freeze sim:/hazard_unit/IF_ID_Rdst2 0110 0
+
+# Memory Read
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead1 0 0
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0111 0
+force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0011 0
+
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 1 0
+run
+
+# ADD R1,R2
+# LDM R2,10
+
+# op code
+force -freeze sim:/hazard_unit/IF_ID_opCode1 01 0
+force -freeze sim:/hazard_unit/IF_ID_opCode2 10 0
+
+# function
+force -freeze sim:/hazard_unit/IF_ID_func1 001 0
+force -freeze sim:/hazard_unit/IF_ID_func2 010 0
+
+# Rsrc
+force -freeze sim:/hazard_unit/IF_ID_Rsrc1 0010 0
+force -freeze sim:/hazard_unit/IF_ID_Rsrc2 0011 0
+
+# Rdst
+force -freeze sim:/hazard_unit/IF_ID_Rdst1 0011 0
+force -freeze sim:/hazard_unit/IF_ID_Rdst2 0000 0
+
+# Memory Read
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead1 0 0
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
+
 force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0000 0
 force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0000 0
 
-
-force -freeze sim:/hazard_unit/ID_EXE_jump_1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_jump_2 0 0
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
 
 force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
-force -freeze sim:/hazard_unit/ID_EXE_branch_taken2 0 0
+run
 
-force -freeze sim:/hazard_unit/PCout 00000000000000000000000000000000 0
+
+# LDM R2,10
+# op code
+force -freeze sim:/hazard_unit/IF_ID_opCode1 10 0
+force -freeze sim:/hazard_unit/IF_ID_opCode2 00 0
+
+# function
+force -freeze sim:/hazard_unit/IF_ID_func1 010 0
+force -freeze sim:/hazard_unit/IF_ID_func2 000 0
+
+# Rsrc
+force -freeze sim:/hazard_unit/IF_ID_Rsrc1 0011 0
+force -freeze sim:/hazard_unit/IF_ID_Rsrc2 0000 0
+
+# Rdst
+force -freeze sim:/hazard_unit/IF_ID_Rdst1 0000 0
+force -freeze sim:/hazard_unit/IF_ID_Rdst2 0001 0
+
+# Memory Read
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead1 0 0
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0000 0
+force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0000 0
+
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
+run
+
+# LDD R5, R6
+# MOV R4, R3
+# LDD R2, R6
+# ADD R1, R2
+
+# op code
+force -freeze sim:/hazard_unit/IF_ID_opCode1 10 0
+force -freeze sim:/hazard_unit/IF_ID_opCode2 01 0
+
+# function
+force -freeze sim:/hazard_unit/IF_ID_func1 011 0
+force -freeze sim:/hazard_unit/IF_ID_func2 001 0
+
+# Rsrc
+force -freeze sim:/hazard_unit/IF_ID_Rsrc1 0011 0
+force -freeze sim:/hazard_unit/IF_ID_Rsrc2 0010 0
+
+# Rdst
+force -freeze sim:/hazard_unit/IF_ID_Rdst1 0111 0
+force -freeze sim:/hazard_unit/IF_ID_Rdst2 0011 0
+
+# Memory Read
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead1 1 0
+force -freeze sim:/hazard_unit/ID_EXE_MemoryRead2 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_Rdst1 0111 0
+force -freeze sim:/hazard_unit/ID_EXE_Rdst2 0100 0
+
+force -freeze sim:/hazard_unit/ID_EXE_flush_next 0 0
+force -freeze sim:/hazard_unit/EXE_MEM_flush_next 0 0
+
+force -freeze sim:/hazard_unit/ID_EXE_branch_taken1 0 0
 run
