@@ -52,7 +52,9 @@ ENTITY EXECUTE IS
 	i2_stall_long_Exec_out :out std_logic;
 	i2_MR_Exec_out :out std_logic;
 	i2_MW_Exec_out :out std_logic;
-	i2_alu_result_Exec_out :out std_logic_vector (15 downto 0)
+	i2_alu_result_Exec_out :out std_logic_vector (15 downto 0);
+	-----------------------------------------------
+	flags: out std_logic_vector(2 downto 0):="000"
 	);
 END EXECUTE;
 ------------------------------------------
@@ -66,6 +68,9 @@ signal opa_1	: std_logic_vector(15 downto 0);
 signal opb_1	: std_logic_vector(15 downto 0);
 signal opa_2	: std_logic_vector(15 downto 0);
 signal opb_2	: std_logic_vector(15 downto 0);
+------------------------Flgas
+signal alu_1_flags : std_logic_vector(2 downto 0);
+signal alu_2_flags : std_logic_vector(2 downto 0);
 --------------------------------------
 BEGIN
    ---- 2 alus
@@ -101,9 +106,9 @@ BEGIN
    		(forwardb_2, i2_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_2);
 		
    alu1: entity work.alu port map 
-		(opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op);
+		(opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op,alu_1_flags);
    alu2: entity work.alu port map 
-		(opa_2,opb_2,i2_alu_result_Exec_out,i2_alu_op);
+		(opa_2,opb_2,i2_alu_result_Exec_out,i2_alu_op,alu_2_flags);
 
 
 		i1_Rdst_Exec_out<= i1_Rdst;
@@ -117,5 +122,13 @@ BEGIN
 		i2_stall_long_Exec_out <= i2_stall_long;
 		i2_MR_Exec_out <= i2_MR;
 		i2_MW_Exec_out <= i2_MW;
+-----------------------------------------------------------Flags Logic !!!!!!!!!!!!!!!!!!!! hal lw 3mlt inc w dec ll sp l flags tt8yr ??!!!
+flags <= alu_2_flags when i2_alu_op = "00001" or i2_alu_op = "00010" or i2_alu_op = "00011" or i2_alu_op = "00100" or i2_alu_op = "00101"
+	or i2_alu_op = "01000"or i2_alu_op = "01001"or i2_alu_op = "01010"or i2_alu_op = "01011"or i2_alu_op = "01100"or i2_alu_op = "01101"
+	or i2_alu_op = "10000"or i2_alu_op = "10001"
+
+else alu_1_flags when i2_alu_op = "00001" or i2_alu_op = "00010" or i2_alu_op = "00011" or i2_alu_op = "00100" or i2_alu_op = "00101"
+	or i2_alu_op = "01000"or i2_alu_op = "01001"or i2_alu_op = "01010"or i2_alu_op = "01011"or i2_alu_op = "01100"or i2_alu_op = "01101"
+	or i2_alu_op = "10000"or i2_alu_op = "10001";
 
 END a_EXECUTE;

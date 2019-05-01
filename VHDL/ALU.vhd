@@ -8,15 +8,16 @@ entity ALU is
         in1  : in  std_logic_vector(15 downto 0);
         in2  : in  std_logic_vector(15 downto 0);
         result   : out std_logic_vector(15 downto 0);
-        sel : in std_logic_vector(4 downto 0)
+        sel : in std_logic_vector(4 downto 0);
+	flags : out std_logic_vector(2 downto 0)
     );
 end ALU;
 
 architecture a_ALU of ALU is
 
     signal cout : std_logic;
-    signal input1 : std_logic_vector(15 downto 0);
-    signal input2 : std_logic_vector(15 downto 0);
+    --signal input1 : std_logic_vector(15 downto 0);
+    --signal input2 : std_logic_vector(15 downto 0);
     signal A : std_logic_vector (15 downto 0);
     signal B : std_logic_vector (15 downto 0);
     signal AluSelect :std_logic_vector(2 downto 0);
@@ -24,18 +25,27 @@ architecture a_ALU of ALU is
     signal carryadd : std_logic ;
     signal CIN : std_logic;
     signal r : std_logic_vector(15 downto 0);
-    signal unsignedshift : unsigned(15 downto 0);
+    signal carryShift : std_logic;
+    signal tempShift : std_logic_vector(15 downto 0);
+    signal carryFlag :std_logic := '0';
+    signal negFlag :std_logic := '0';
+    signal zeroFlag :std_logic := '0';
+
 
     begin
         u3: entity work.AddOperations PORT MAP (A,B,CIN,AluSelect(0),AluSelect(1),AluSelect(2),outAdd,carryadd);
-		process ( in1 , in2 , sel,outadd,A,B,CIN,AluSelect)
+		process ( in1 , in2 , sel,outadd,A,B,CIN,AluSelect,carryShift,tempShift)
 			begin 
+
                 if (sel = "00001") then 
                     cout <= '1';     --set carry 
+
                 elsif (sel = "00010") then 
                     cout<= '0';    -- clear carry 
+
                 elsif  (sel ="00011") then 
-                    r <= not in2;  -- not   
+                    r <= not in2;  -- not  
+ 
                 elsif (sel = "00100")    then 
                     A <= in2;   
                     B<= x"0000";
@@ -66,8 +76,21 @@ architecture a_ALU of ALU is
                
                 elsif (sel = "01010")   then 
                     r <= in1 and in2 ; --and
+
                 elsif (sel = "01011")  then 
                     r <= in1 or in2 ;  --or 
+
+                elsif (sel = "01100") then -- shift left 
+
+                    tempShift <= std_logic_vector(shift_left(unsigned(in1),natural(to_integer(unsigned(in2)) -1  )));
+		   
+                    carryShift <=tempShift(15);
+
+                elsif (sel = "01101") then -- shift right 
+
+                    tempShift <= std_logic_vector(shift_right(unsigned(in1),natural(to_integer(unsigned(in2)) -1  )));
+                    
+		    carryShift <= tempShift(0);
 
                 elsif (sel ="10000") then 
                     A <= in1;   
@@ -78,20 +101,52 @@ architecture a_ALU of ALU is
                     A <= in1;   
                     B<= x"0000";
                     CIN <='0';         -- dec
-                    AluSelect <="101";
-                elsif (sel = "01100") then
-                    unsignedshift <= unsigned(in1);
-                    r <= std_logic_vector(unsignedshift sll 2);
-                elsif (sel = "01101") then
-                    unsignedshift <= unsigned(in1);
-                    r <= std_logic_vector(unsignedshift srl 2);
-    
-                end if;    
+                    AluSelect <="101";  
                  
-                
+                end if;                 
         end process;
         result <= outAdd when sel = "00100" or sel = "00101" or sel = "01000" or sel = "01001" or sel ="10000" or sel = "10001"
-        else r  when sel = "00011" or sel = "00110" or sel = "00111" or sel = "01011" or sel = "01010" ; 
+        else r  when sel = "00011" or sel = "00110" or sel = "00111" or sel = "01011" or sel = "01010" 
+	else tempShift(14 downto 0) & '0' when sel="01100" 
+	else '0' & tempShift(15 downto 1) when sel ="01101"; 
+
+
+----------------------------------------------------------------------------------------- flags
+
+	process (in1 , in2 , sel,outadd,A,B,CIN,AluSelect,cout,carryAdd,carryShift,tempShift)
+	begin
+------------------------------FLAGS DEFAULT VALUE
+	carryFlag<='0' ; negFlag<='0'; zeroFlag<='0';
+------------------------------ carry
+	if (sel = "00001" or sel = "00010") then 
+		carryFlag <= cout ;
+	elsif (sel = "00100" or sel = "00101" or sel = "01000" or sel = "01001" or sel = "10000" or sel = "10001")then -- arithmatic op
+		carryFlag <= carryAdd;
+	elsif ( sel = "01100" or sel = "01101")then -- shfift op
+		carryFlag <= carryShift;
+	end if;
+------------------------------ Negative
+        if ((sel ="00100" or sel ="00101" or sel ="01000" or sel ="01001" or sel ="10000"or sel ="10001")and outAdd(15) = '1') then --arithmatic op
+		negFlag <= '1' ;
+	elsif  ((sel ="00011" or sel ="01010" or sel ="01011") and r(15) = '1')then --logical op
+		negFlag <= '1' ;
+	elsif  ((sel ="01100" or sel ="01101" )and tempShift(15) = '1')then  -- shift op
+		negFlag <= '1' ;
+	end if;
+------------------------------ Zero
+	if ( (sel ="00100" or sel ="00101" or sel ="01000" or sel ="01001" or sel ="10000"or sel ="10001")and outAdd = x"0000" ) then --arithmatic op
+		zeroFlag <= '1';
+	elsif  ((sel ="00011" or sel ="01010" or sel ="01011") and r = x"0000")then  --logical op
+		zeroFlag <= '1';
+	elsif  ((sel ="01100" or sel ="01101") and tempShift = x"0000")then -- shift op
+		zeroFlag <= '1';
+
+	end if;
+	end process ;
+
+
+	flags <= carryFlag&negFlag&zeroFlag;
+
 
 end architecture;
 

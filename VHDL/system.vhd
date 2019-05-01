@@ -109,7 +109,7 @@ signal	i1_Rdst_MEM_out : std_logic_vector (3 downto 0);
 signal	i1_WB_MEM_out 	: std_logic;
 signal	i1_MR_MEM_out 	: std_logic;
 signal	i1_stall_long_MEM_out 	: std_logic;
-signal	i1_result_MEM_out	: std_logic_vector (15 downtsignal
+signal	i1_result_MEM_out	: std_logic_vector (15 downto 0 );
 signal	i2_Rdst_MEM_out 		: std_logic_vector (3 downto 0);
 signal	i2_WB_MEM_out 	: std_logic;
 signal	i2_MR_MEM_out 	: std_logic;
