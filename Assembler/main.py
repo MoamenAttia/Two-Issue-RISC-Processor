@@ -3,7 +3,7 @@ import sys , os , pathlib
 '''
 IR (16 bits)
 Opcode      Func        Rsrc        Rdst
-  2          3           3           3
+  2          3           4           4
 
 -----------
 One Operand
@@ -100,10 +100,10 @@ instructionMap = {
 
     # Mem Operand
     "PUSH": "10",
-    "POP": "10",
-    "LDM": "10",
-    "LDD": "10",
-    "STD": "10",
+    "POP":  "10",
+    "LDM":  "10",
+    "LDD":  "10",
+    "STD":  "10",
 
     # Jmp Operand
     "JZ":  "11",
@@ -115,14 +115,18 @@ instructionMap = {
     "RTI": "11"
 }
 registerMap = {
-    "R0": "000",
-    "R1": "001",
-    "R2": "010",
-    "R3": "011",
-    "R4": "100",
-    "R5": "101",
-    "R6": "110",
-    "R7": "111"
+    "NONE"  : "0000",
+    "R0"    : "0001",
+    "R1"    : "0010",
+    "R2"    : "0011",
+    "R3"    : "0100",
+    "R4"    : "0101",
+    "R5"    : "0110",
+    "R6"    : "0111",
+    "R7"    : "1000",
+    "sp"    : "1001",
+    "pc"    : "1010",
+    "flag"  : "1011"
 }
 
 
@@ -141,12 +145,21 @@ def assemble(instruction, firstOperand, secondOperand):
         IR[5] = registerMap[firstOperand][0]
         IR[6] = registerMap[firstOperand][1]
         IR[7] = registerMap[firstOperand][2]
+        IR[8] = registerMap[firstOperand][3]
     if secondOperand != None and secondOperand in registerMap.keys():
-        IR[8] = registerMap[secondOperand][0]
-        IR[9] = registerMap[secondOperand][1]
-        IR[10] = registerMap[secondOperand][2]
+        IR[9] = registerMap[secondOperand][0]
+        IR[10] = registerMap[secondOperand][1]
+        IR[11] = registerMap[secondOperand][2]
+        IR[12] = registerMap[secondOperand][3]
     elif secondOperand != None and not(secondOperand in registerMap.keys()):
         immediateVal = format(int(secondOperand), '016b')
+    elif secondOperand == None:
+        IR[9]  = IR[5]
+        IR[10] = IR[6]
+        IR[11] = IR[7]
+        IR[12] = IR[8]
+        IR[5]  = IR[6] = IR[7] = IR[8] = "0"
+    
     if immediateVal == None:
         return [''.join(IR)]
     else:
