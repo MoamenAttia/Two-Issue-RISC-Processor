@@ -26,7 +26,7 @@ SUB Rsrc, Rdst
 AND Rsrc, Rdst
 OR Rsrc, Rdst
 SHL Rsrc, Imm
-SHR Rsrc, Imms
+SHR Rsrc, Imm
 
 -----------
 Mem Operand
@@ -134,32 +134,34 @@ def assemble(instruction, firstOperand, secondOperand):
     IR = ["0"] * 16
     immediateVal = None
 
-    IR[0] = instructionMap[instruction][0]
-    IR[1] = instructionMap[instruction][1]
+    IR[14] = instructionMap[instruction][0]
+    IR[15] = instructionMap[instruction][1]
 
-    IR[2] = functionMap[instruction][0]
-    IR[3] = functionMap[instruction][1]
-    IR[4] = functionMap[instruction][2]
+    IR[11] = functionMap[instruction][0]
+    IR[12] = functionMap[instruction][1]
+    IR[13] = functionMap[instruction][2]
 
     if firstOperand != None:
-        IR[5] = registerMap[firstOperand][0]
-        IR[6] = registerMap[firstOperand][1]
-        IR[7] = registerMap[firstOperand][2]
-        IR[8] = registerMap[firstOperand][3]
+        IR[7]  = registerMap[firstOperand][0]
+        IR[8]  = registerMap[firstOperand][1]
+        IR[9]  = registerMap[firstOperand][2]
+        IR[10] = registerMap[firstOperand][3]
     if secondOperand != None and secondOperand in registerMap.keys():
-        IR[9] = registerMap[secondOperand][0]
-        IR[10] = registerMap[secondOperand][1]
-        IR[11] = registerMap[secondOperand][2]
-        IR[12] = registerMap[secondOperand][3]
+        IR[3] = registerMap[secondOperand][0]
+        IR[4] = registerMap[secondOperand][1]
+        IR[5] = registerMap[secondOperand][2]
+        IR[6] = registerMap[secondOperand][3]
     elif secondOperand != None and not(secondOperand in registerMap.keys()):
         immediateVal = format(int(secondOperand), '016b')
-    elif secondOperand == None:
-        IR[9]  = IR[5]
-        IR[10] = IR[6]
-        IR[11] = IR[7]
-        IR[12] = IR[8]
-        IR[5]  = IR[6] = IR[7] = IR[8] = "0"
+        secondOperand = None
     
+    if secondOperand == None:
+        IR[3]  = IR[7]
+        IR[4]  = IR[8]
+        IR[5]  = IR[9]
+        IR[6]  = IR[10]
+        IR[7]  = IR[8] = IR[9] = IR[10] = "0"
+
     if immediateVal == None:
         return [''.join(IR)]
     else:
@@ -206,3 +208,14 @@ if __name__ == "__main__":
         outputFileName = sys.argv[2]
     lines = readFile(inputFileName)
     writeFile(outputFileName, lines)
+    
+    out_list = []
+    i = 0
+    with open("code.txt","r") as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip()
+            out_list.append("mem load -filltype value -filldata "+ line +"-fillradix binary /system/fetch/inst_ram/my_ram("+ str(i) +")")
+            i += 1
+    
+    writeFile("do file",out_list)
