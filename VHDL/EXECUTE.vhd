@@ -3,6 +3,7 @@ USE IEEE.std_logic_1164.all;
 
 ENTITY EXECUTE IS
 	PORT (   --these signals from the decode execute buffer
+	clk    : in std_logic;
 	i1_Rdst: in std_logic_vector(3 DOWNTO 0);
 	i1_Rsrc: in std_logic_vector(3 DOWNTO 0);
 	i1_branch_taken : in std_logic;
@@ -57,6 +58,10 @@ ENTITY EXECUTE IS
 	flags: out std_logic_vector(2 downto 0):="000"
 	);
 END EXECUTE;
+
+
+
+
 ------------------------------------------
 ARCHITECTURE a_EXECUTE OF EXECUTE IS
  ------------------------------------------   
@@ -72,6 +77,8 @@ signal opb_2	: std_logic_vector(15 downto 0);
 signal alu_1_flags : std_logic_vector(2 downto 0);
 signal alu_2_flags : std_logic_vector(2 downto 0);
 --------------------------------------
+----------testing 
+signal temp1,temp2 :std_logic_vector(15 downto 0);
 BEGIN
    ---- 2 alus
    ---- forwarding unit 
@@ -104,11 +111,11 @@ BEGIN
    		(forwarda_2, i2_Rsrc_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opa_2);
    mux4 : entity work.mux port map 
    		(forwardb_2, i2_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_2);
-		
+   --temp1 <= opa_1; temp2 <= opb_1;	
    alu1: entity work.alu port map 
-		(opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op,alu_1_flags);
+		(clk ,opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op,alu_1_flags);
    alu2: entity work.alu port map 
-		(opa_2,opb_2,i2_alu_result_Exec_out,i2_alu_op,alu_2_flags);
+		(clk ,opa_2,opb_2,i2_alu_result_Exec_out,i2_alu_op,alu_2_flags);
 
 
 		i1_Rdst_Exec_out<= i1_Rdst;
@@ -127,8 +134,8 @@ flags <= alu_2_flags when i2_alu_op = "00001" or i2_alu_op = "00010" or i2_alu_o
 	or i2_alu_op = "01000"or i2_alu_op = "01001"or i2_alu_op = "01010"or i2_alu_op = "01011"or i2_alu_op = "01100"or i2_alu_op = "01101"
 	or i2_alu_op = "10000"or i2_alu_op = "10001"
 
-else alu_1_flags when i2_alu_op = "00001" or i2_alu_op = "00010" or i2_alu_op = "00011" or i2_alu_op = "00100" or i2_alu_op = "00101"
-	or i2_alu_op = "01000"or i2_alu_op = "01001"or i2_alu_op = "01010"or i2_alu_op = "01011"or i2_alu_op = "01100"or i2_alu_op = "01101"
-	or i2_alu_op = "10000"or i2_alu_op = "10001";
+else alu_1_flags when i1_alu_op = "00001" or i1_alu_op = "00010" or i1_alu_op = "00011" or i1_alu_op = "00100" or i1_alu_op = "00101"
+	or i1_alu_op = "01000"or i1_alu_op = "01001"or i1_alu_op = "01010"or i1_alu_op = "01011"or i1_alu_op = "01100"or i1_alu_op = "01101"
+	or i1_alu_op = "10000"or i1_alu_op = "10001";
 
 END a_EXECUTE;

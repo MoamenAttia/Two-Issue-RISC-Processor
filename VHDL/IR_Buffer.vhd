@@ -16,7 +16,10 @@ PORT( Clk,Rst : IN std_logic;
 	instr_2_Rsrc : OUT std_logic_vector(3 DOWNTO 0);
 	instr_2_Rdst : OUT std_logic_vector(3 DOWNTO 0);
 	--------------------------------------------
-	En:in std_logic);
+	En:in std_logic;
+	--------------------
+	immediate : OUT std_logic_vector(15 DOWNTO 0)
+	);
 END IR_Buffer;
 
 ARCHITECTURE my_IR_Buffer OF IR_Buffer IS
@@ -36,5 +39,6 @@ n_dff:entity work.my_nDFF  generic map (32) port map (clk,  rst , d ,q ,EN);
 	instr_2_Rsrc <= q(8 downto 5);
 	instr_2_Rdst <= q(12 downto 9);
 -------------------------------------------------
+	immediate <= q (15 downto 0);
 
 END my_IR_Buffer;

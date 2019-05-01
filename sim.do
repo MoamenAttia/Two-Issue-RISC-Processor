@@ -1,6 +1,6 @@
 vsim -gui work.system
 # vsim -gui work.system 
-# Start time: 11:32:14 on Apr 30,2019
+# Start time: 17:03:08 on May 01,2019
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
@@ -39,50 +39,12 @@ vsim -gui work.system
 # This port will contribute value (U) to the signal network.
 # ** Warning: (vsim-8683) Uninitialized out port /system/deocode/i2_stall_long has no driver.
 # This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/deocode/OUT_bus(15 downto 0) has no driver.
-# This port will contribute value (UUUUUUUUUUUUUUUU) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i1_Rdst_Exec_out(3 downto 0) has no driver.
-# This port will contribute value (UUUU) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i1_WB_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i1_stall_long_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i1_MR_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i1_MW_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i2_Rdst_Exec_out(3 downto 0) has no driver.
-# This port will contribute value (UUUU) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i2_WB_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i2_stall_long_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i2_MR_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/Execute/i2_MW_Exec_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_1_Rdst_out(3 downto 0) has no driver.
-# This port will contribute value (UUUU) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_1_write_back_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_1_mem_read_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_1_stall_long_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_2_Rdst_out(3 downto 0) has no driver.
-# This port will contribute value (UUUU) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_2_write_back_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_2_mem_read_out has no driver.
-# This port will contribute value (U) to the signal network.
-# ** Warning: (vsim-8683) Uninitialized out port /system/MEM/instr_2_stall_long_out has no driver.
-# This port will contribute value (U) to the signal network.
 add wave -position insertpoint  \
 sim:/system/clk \
 sim:/system/rst \
 sim:/system/En \
 sim:/system/IN_bus \
-sim:/system/OUT_bus \
+sim:/system/OUT_bus_data \
 sim:/system/interupt \
 sim:/system/clk_inv \
 sim:/system/i1 \
@@ -130,6 +92,7 @@ sim:/system/i1_WB_Exec_in \
 sim:/system/i1_MR_Exec_in \
 sim:/system/i1_MW_Exec_in \
 sim:/system/i1_alu_op_Exec_in \
+sim:/system/flags \
 sim:/system/i2_Rdst_Exec_in \
 sim:/system/i2_Rsrc_Exec_in \
 sim:/system/i2_branch_taken_Exec_in \
@@ -141,18 +104,6 @@ sim:/system/i2_WB_Exec_in \
 sim:/system/i2_MR_Exec_in \
 sim:/system/i2_MW_Exec_in \
 sim:/system/i2_alu_op_Exec_in \
-sim:/system/ex_mem_regWrite_1_Exec_in \
-sim:/system/ex_mem_registerRd_1_Exec_in \
-sim:/system/mem_wb_regWrite_1_Exec_in \
-sim:/system/mem_wb_registerRd_1_Exec_in \
-sim:/system/ex_mem_regWrite_2_Exec_in \
-sim:/system/ex_mem_registerRd_2_Exec_in \
-sim:/system/mem_wb_regWrite_2_Exec_in \
-sim:/system/mem_wb_registerRd_2_Exec_in \
-sim:/system/ex_mem_Rd_data_out_1_Exec_in \
-sim:/system/mem_wb_Rd_data_out_1_Exec_in \
-sim:/system/ex_mem_Rd_data_out_2_Exec_in \
-sim:/system/mem_wb_Rd_data_out_2_Exec_in \
 sim:/system/i1_Rdst_Exec_out \
 sim:/system/i1_WB_Exec_out \
 sim:/system/i1_stall_long_Exec_out \
@@ -198,9 +149,26 @@ sim:/system/i2_Rdst_WB_out \
 sim:/system/i2_WB_WB_out \
 sim:/system/i2_MR_WB_out \
 sim:/system/i2_stall_long_WB_out \
-sim:/system/i2_result_WB_out
-mem load -filltype value -filldata 0000001000011100 -fillradix binary /system/fetch/inst_ram/my_ram(0)
-mem load -filltype value -filldata 0000010000010000 -fillradix binary /system/fetch/inst_ram/my_ram(1)
+sim:/system/i2_result_WB_out \
+sim:/system/i1_immediate \
+sim:/system/i2_immediate \
+sim:/system/immediate_op \
+sim:/system/i1_source_dec_out \
+sim:/system/OUT_bus
+add wave -position insertpoint sim:/system/Execute/fu/*
+add wave -position insertpoint sim:/system/Execute/mux1/*
+add wave -position insertpoint sim:/system/Execute/mux2/*
+add wave -position insertpoint sim:/system/Execute/alu1/*
+add wave -position insertpoint sim:/system/deocode/Register_file/*
+mem load -filltype value -filldata 0000000000000100 -fillradix binary /system/fetch/inst_ram/my_ram(0)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /system/fetch/inst_ram/my_ram(1)
+mem load -filltype value -filldata 0000001000010000 -fillradix binary /system/fetch/inst_ram/my_ram(2)
+mem load -filltype value -filldata 0000010000010100 -fillradix binary /system/fetch/inst_ram/my_ram(3)
+mem load -filltype value -filldata 0000011000001100 -fillradix binary /system/fetch/inst_ram/my_ram(4)
+mem load -filltype value -filldata 0000100000011000 -fillradix binary /system/fetch/inst_ram/my_ram(5)
+mem load -filltype value -filldata 0000101000011100 -fillradix binary /system/fetch/inst_ram/my_ram(6)
+mem load -filltype value -filldata 0000110000010000 -fillradix binary /system/fetch/inst_ram/my_ram(7)
+
 force -freeze sim:/system/clk 1 0, 0 {50 ps} -r 100
 force -freeze sim:/system/rst 1 0
 force -freeze sim:/system/En 1 0

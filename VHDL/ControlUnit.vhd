@@ -20,9 +20,10 @@ entity Control_Unit is
         -----------------------------
         IN_signal:out std_logic;
         OUT_signal:out std_logic;
-    ----------------------------------
+        ----------------------------------
         -------------------------
         in_out_dest : out std_logic_vector (3 downto 0);
+        ---------------------------------
         immediate : out std_logic
     
     );
@@ -132,7 +133,7 @@ architecture a_Control_Unit of Control_Unit is
                     in_out_dest <= Rdst;     
                 end if;
 
-            elsif (opcode = "01" and flush =0 )   then 
+            elsif (opcode = "01" and flush ='0' )   then 
                     IN_signal <= '0';
                     OUT_signal <='0';
                     in_out_dest <= "0000";
@@ -155,7 +156,8 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     immediate <= '0';
                 elsif  (func = "010") then   -- sub 
-                    AluFunc <= "01001";  
+                    AluFunc <= "01001"; 
+                    dest <= Rdst; 
                     WB <= '1';
                     MR <= '0';
                     MW <= '0';
@@ -164,6 +166,7 @@ architecture a_Control_Unit of Control_Unit is
                     immediate <= '0';
                 elsif  (func = "011") then   -- and
                     AluFunc <= "01010";  
+                    dest <= Rdst;
                     WB <= '1';
                     MR <= '0';
                     MW <= '0';
@@ -171,7 +174,8 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst; 
                     immediate <= '0'; 
                 elsif  (func = "100") then   -- or
-                    AluFunc <= "01011";  
+                    AluFunc <= "01011";
+                    dest <= Rdst;  
                     WB <= '1';
                     MR <= '0';
                     MW <= '0';
@@ -180,19 +184,21 @@ architecture a_Control_Unit of Control_Unit is
                     immediate <= '0';  
                 elsif   (func = "101") then   -- shift left  (need immediate value ) 
                     AluFunc <= "01100";  
+                    dest <= Rdst;
                     WB <= '1';
                     MR <= '0';
                     MW <= '0';
-                    regOut1 <= Rsrc;
-                    regOut2 <= "0000"; -- immediate here  
+                    regOut1 <= "0000";
+                    regOut2 <= Rdst; -- immediate here  
                     immediate <= '1'; 
                 elsif   (func = "110") then   -- shift right (need immediate value ) 
                     AluFunc <= "01101";  
+                    dest <= Rdst;
                     WB <= '1';
                     MR <= '0';
                     MW <= '0';
-                    regOut1 <= Rsrc;
-                    regOut2 <= "0000"; -- immediate here 
+                    regOut1 <= "0000";
+                    regOut2 <= Rdst; -- immediate here  
                     immediate <= '1'; 
                 end if ;          
 

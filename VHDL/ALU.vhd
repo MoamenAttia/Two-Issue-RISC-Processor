@@ -2,9 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use IEEE.NUMERIC_STD.all;
 
-
 entity ALU is
 	port (
+	clk  : in  std_logic;
         in1  : in  std_logic_vector(15 downto 0);
         in2  : in  std_logic_vector(15 downto 0);
         result   : out std_logic_vector(15 downto 0);
@@ -34,75 +34,75 @@ architecture a_ALU of ALU is
 
     begin
         u3: entity work.AddOperations PORT MAP (A,B,CIN,AluSelect(0),AluSelect(1),AluSelect(2),outAdd,carryadd);
-		process ( in1 , in2 , sel,outadd,A,B,CIN,AluSelect,carryShift,tempShift)
+		process ( clk, in1 , in2 , sel,outadd,A,B,CIN,AluSelect,carryShift,tempShift)
 			begin 
+                if(rising_edge(clk)) then
+                    if (sel = "00001") then 
+                        cout <= '1';     --set carry 
 
-                if (sel = "00001") then 
-                    cout <= '1';     --set carry 
+                    elsif (sel = "00010") then 
+                        cout<= '0';    -- clear carry 
 
-                elsif (sel = "00010") then 
-                    cout<= '0';    -- clear carry 
-
-                elsif  (sel ="00011") then 
-                    r <= not in2;  -- not  
- 
-                elsif (sel = "00100")    then 
-                    A <= in2;   
-                    B<= x"0000";
-                    CIN <='0';         -- inc
-                    AluSelect <="100";
-                   
-                elsif  (sel = "00101")    then 
-                    A <= in2; 
-                    B<= x"0000";
-                    CIN<='0';             -- dec 
-                    AluSelect <="101";
-         
-                elsif (sel = "00110") then 
-                    r <= in2;        --rdst
-                elsif (sel = "00111")  then
-                    r <= in1 ;        --rsrc 
-                elsif (sel ="01000") then 
-                    A <= in1 ;
-                    B<= in2;
-                    CIN<='0';             -- add 
-                    AluSelect <="000";
-                  
-                elsif (sel ="01001") then 
-                    A <= in1 ;
-                    B<= in2;
-                    CIN<='0';             -- sub 
-                    AluSelect <="010"; 
-               
-                elsif (sel = "01010")   then 
-                    r <= in1 and in2 ; --and
-
-                elsif (sel = "01011")  then 
-                    r <= in1 or in2 ;  --or 
-
-                elsif (sel = "01100") then -- shift left 
-
-                    tempShift <= std_logic_vector(shift_left(unsigned(in1),natural(to_integer(unsigned(in2)) -1  )));
-		   
-                    carryShift <=tempShift(15);
-
-                elsif (sel = "01101") then -- shift right 
-
-                    tempShift <= std_logic_vector(shift_right(unsigned(in1),natural(to_integer(unsigned(in2)) -1  )));
+                    elsif  (sel ="00011") then 
+                        r <= not in2;  -- not  
                     
-		    carryShift <= tempShift(0);
+                    elsif (sel = "00100")    then 
+                        A <= in2;   
+                        B<= x"0000";
+                        CIN <='0';         -- inc
+                        AluSelect <="100";
+                    
+                    elsif  (sel = "00101")    then 
+                        A <= in2; 
+                        B<= x"0000";
+                        CIN<='0';             -- dec 
+                        AluSelect <="101";
+                    
+                    elsif (sel = "00110") then 
+                        r <= in2;        --rdst
+                    elsif (sel = "00111")  then
+                        r <= in1 ;        --rsrc 
+                    elsif (sel ="01000") then 
+                        A <= in1 ;
+                        B<= in2;
+                        CIN<='0';             -- add 
+                        AluSelect <="000";
+                    
+                    elsif (sel ="01001") then 
+                        A <= in1 ;
+                        B<= in2;
+                        CIN<='0';             -- sub 
+                        AluSelect <="010"; 
+                    
+                    elsif (sel = "01010")   then 
+                        r <= in1 and in2 ; --and
 
-                elsif (sel ="10000") then 
-                    A <= in1;   
-                    B<= x"0000";
-                    CIN <='0';         -- inc
-                    AluSelect <="100";
-                elsif (sel = "10001") then 
-                    A <= in1;   
-                    B<= x"0000";
-                    CIN <='0';         -- dec
-                    AluSelect <="101";  
-                 
+                    elsif (sel = "01011")  then 
+                        r <= in1 or in2 ;  --or 
+
+                    elsif (sel = "01100") then -- shift left 
+
+                        tempShift <= std_logic_vector(shift_left(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+                    
+                        carryShift <=tempShift(15);
+
+                    elsif (sel = "01101") then -- shift right 
+
+                        tempShift <= std_logic_vector(shift_right(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+
+		                carryShift <= tempShift(0);
+
+                    elsif (sel ="10000") then 
+                        A <= in1;   
+                        B<= x"0000";
+                        CIN <='0';         -- inc
+                        AluSelect <="100";
+                    elsif (sel = "10001") then 
+                        A <= in1;   
+                        B<= x"0000";
+                        CIN <='0';         -- dec
+                        AluSelect <="101";  
+                    end if;
                 end if;                 
         end process;
         result <= outAdd when sel = "00100" or sel = "00101" or sel = "01000" or sel = "01001" or sel ="10000" or sel = "10001"
@@ -112,8 +112,7 @@ architecture a_ALU of ALU is
 
 
 ----------------------------------------------------------------------------------------- flags
-
-	process (in1 , in2 , sel,outadd,A,B,CIN,AluSelect,cout,carryAdd,carryShift,tempShift)
+	process (in1 , in2 , sel,outadd,A,B,CIN,AluSelect,cout,carryAdd,carryShift,tempShift,r)
 	begin
 ------------------------------FLAGS DEFAULT VALUE
 	carryFlag<='0' ; negFlag<='0'; zeroFlag<='0';

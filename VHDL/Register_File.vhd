@@ -43,6 +43,9 @@ PORT( Clk,Rst : IN std_logic;
 END Register_File;
 
 ARCHITECTURE my_Register_File OF Register_File IS
+-- clk
+signal clk_inv : std_logic;
+
 ------------------------------------------------- En Signals
 signal R0_En :std_logic;
 signal R1_En :std_logic;
@@ -81,7 +84,11 @@ signal R7_data_out :std_logic_vector(15 downto 0);
 --signal PC_data_out :std_logic_vector(31 downto 0);
 --signal flag_data_out :std_logic_vector(15 downto 0);
 --------------------------------------------------
+signal bus_out :std_logic_vector (15 downto 0) := x"1111";
 BEGIN
+-- clk
+
+clk_inv <= not(Clk);
 R0:entity work.my_nDFF  generic map (16) port map (clk,  rst , R0_data_in ,R0_data_out ,R0_EN);
 R1:entity work.my_nDFF  generic map (16) port map (clk,  rst , R1_data_in ,R1_data_out ,R1_EN);
 R2:entity work.my_nDFF  generic map (16) port map (clk,  rst , R2_data_in ,R2_data_out ,R2_EN);
@@ -210,7 +217,10 @@ process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_wr
 end process;	
 
 process(clk ,rst,
-i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus,i1_IN_signal,i1_OUT_signal,i2_IN_signal,i2_OUT_signal,i1_in_out_dest,i2_in_out_dest)
+i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus,i1_IN_signal,i1_OUT_signal,i2_IN_signal,i2_OUT_signal,i1_in_out_dest,i2_in_out_dest
+,
+---------------------
+R0_data_out,R1_data_out,R2_data_out,R3_data_out,R4_data_out,R5_data_out,R6_data_out,R7_data_out)
 begin
 -------------------------------------------------------- instr 1 Rsrc data out
 	if (i1_Rsrc = "0001") then
@@ -304,7 +314,6 @@ begin
 	elsif (i2_Rsrc = "0000") then 
 		i2_Rsrc_data_out <= "ZZZZZZZZZZZZZZZZ";
 	end if;
-
 	-------------------------------------------------------- instr 2 Rdst data out
 	if (i2_Rdst = "0001") then
 		i2_Rdst_data_out <= R0_data_out;
@@ -346,10 +355,13 @@ begin
 --------------------------------------------------------------
 	if (i1_in_out_dest = "0001" and i1_OUT_signal = '1') then
 		OUT_bus <= R0_data_out;
+
 	elsif (i1_in_out_dest = "0010" and i1_OUT_signal = '1') then
 		OUT_bus <= R1_data_out;
+
 	elsif (i1_in_out_dest = "0011" and i1_OUT_signal = '1') then
 		OUT_bus <= R2_data_out;
+
 	elsif (i1_in_out_dest = "0100" and i1_OUT_signal = '1') then
 		OUT_bus <= R3_data_out;
 	elsif (i1_in_out_dest = "0101" and i1_OUT_signal = '1') then
@@ -360,12 +372,8 @@ begin
 		OUT_bus <= R6_data_out;
 	elsif (i1_in_out_dest = "1000" and i1_OUT_signal = '1') then
 		OUT_bus <= R7_data_out;
-	elsif (i1_in_out_dest = "0000") then 
-	   OUT_bus <= "ZZZZZZZZZZZZZZZZ";
-	end if;
-
 ---------------------------------------------------------------------
-	if (i2_in_out_dest = "0001" and i2_OUT_signal = '1') then
+	elsif (i2_in_out_dest = "0001" and i2_OUT_signal = '1') then
 		OUT_bus <= R0_data_out;
 	elsif (i2_in_out_dest = "0010" and i2_OUT_signal = '1') then
 		OUT_bus <= R1_data_out;
@@ -381,8 +389,8 @@ begin
 		OUT_bus <= R6_data_out;
 	elsif (i2_in_out_dest = "1000" and i2_OUT_signal = '1') then
 		OUT_bus <= R7_data_out;
-	elsif (i2_in_out_dest = "0000") then 
-	   OUT_bus <= "ZZZZZZZZZZZZZZZZ";
+	elsif (i2_in_out_dest = "0000" or i1_in_out_dest = "0000" ) then 
+		OUT_bus	 <= "ZZZZZZZZZZZZZZZZ";
 	end if;
 
 end process;
@@ -448,127 +456,6 @@ begin
 
 	end if;
 end process;
---------------------------------------------------------
---process(clk ,rst,IN_bus ,i1_IN_signal,i1_OUT_signal,i2_IN_signal,i2_OUT_signal,i1_in_out_dest,i2_in_out_dest )
---begin
---
---if (i1_IN_signal='1') then
---	if (i1_in_out_dest = "0001" ) then 
---		R0_data_in <= IN_bus;
---		R0_En <= '1';
---	elsif (i1_in_out_dest = "0010") then 
---		R1_data_in <= IN_bus;
---		R1_En <= '1';
---	elsif (i1_in_out_dest = "0011") then 
---		R2_data_in <= IN_bus;
---		R2_En <= '1';
---	elsif (i1_in_out_dest = "0100") then 
---		R3_data_in <= IN_bus;
---		R3_En <= '1';
---	elsif (i1_in_out_dest = "0101") then 
---		R4_data_in <= IN_bus;
---		R4_En <= '1';
---	elsif (i1_in_out_dest = "0110") then 
---		R5_data_in <= IN_bus;
---		R5_En <= '1';
---	elsif (i1_in_out_dest = "0111") then 
---		R6_data_in <= IN_bus;
---		R6_En <= '1';
---	elsif (i1_in_out_dest = "1000") then 
---		R7_data_in <= IN_bus;
---		R7_En <= '1';
---	end if;
---end if;
---
---if (i2_IN_signal='1') then
---	if (i2_in_out_dest = "0001" ) then 
---		R0_data_in <= IN_bus;
---		R0_En <= '1';
---	elsif (i2_in_out_dest = "0010") then 
---		R1_data_in <= IN_bus;
---		R1_En <= '1';
---	elsif (i2_in_out_dest = "0011") then 
---		R2_data_in <= IN_bus;
---		R2_En <= '1';
---	elsif (i2_in_out_dest = "0100") then 
---		R3_data_in <= IN_bus;
---		R3_En <= '1';
---	elsif (i2_in_out_dest = "0101") then 
---		R4_data_in <= IN_bus;
---		R4_En <= '1';
---	elsif (i2_in_out_dest = "0110") then 
---		R5_data_in <= IN_bus;
---		R5_En <= '1';
---	elsif (i2_in_out_dest = "0111") then 
---		R6_data_in <= IN_bus;
---		R6_En <= '1';
---	elsif (i2_in_out_dest = "1000") then 
---		R7_data_in <= IN_bus;
---		R7_En <= '1';
---	end if;
---end if;
--------------------------------------------------------------------
---if (i1_OUT_signal='1') then
---	if (i1_in_out_dest = "0001") then
---		OUT_bus <= R0_data_out;
---
---	elsif (i1_in_out_dest = "0010") then
---		OUT_bus <= R1_data_out;
---
---	elsif (i1_in_out_dest = "0011") then
---		OUT_bus <= R2_data_out;
---
---	elsif (i1_in_out_dest = "0100") then
---		OUT_bus <= R3_data_out;
---
---	elsif (i1_in_out_dest = "0101") then
---		OUT_bus <= R4_data_out;
---
---	elsif (i1_in_out_dest = "0110") then
---		OUT_bus <= R5_data_out;
---
---	elsif (i1_in_out_dest = "0111") then
---		OUT_bus <= R6_data_out;
---
---	elsif (i1_in_out_dest = "1000") then
---		OUT_bus <= R7_data_out;
---	elsif (i1_in_out_dest = "0000") then
---			OUT_bus <= "ZZZZZZZZZZZZZZZZ";
---
---	end if;
---	
---end if ;
---
---if (i2_OUT_signal='1') then
---	if (i2_in_out_dest = "0001") then
---		OUT_bus <= R0_data_out;
---
---	elsif (i2_in_out_dest = "0010") then
---		OUT_bus <= R1_data_out;
---
---	elsif (i2_in_out_dest = "0011") then
---		OUT_bus <= R2_data_out;
---
---	elsif (i2_in_out_dest = "0100") then
---		OUT_bus <= R3_data_out;
---
---	elsif (i2_in_out_dest = "0101") then
---		OUT_bus <= R4_data_out;
---
---	elsif (i2_in_out_dest = "0110") then
---		OUT_bus <= R5_data_out;
---
---	elsif (i2_in_out_dest = "0111") then
---		OUT_bus <= R6_data_out;
---
---	elsif (i2_in_out_dest = "1000") then
---		OUT_bus <= R7_data_out;
---
---	elsif (i2_in_out_dest = "0000") then
---			OUT_bus <= "ZZZZZZZZZZZZZZZZ";
---	end if;
---	
---end if ;
---
---end process;
+
+
 END my_Register_File;
