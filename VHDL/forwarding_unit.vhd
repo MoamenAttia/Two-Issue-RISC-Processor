@@ -50,14 +50,14 @@ begin
 				forward_a_1 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
-			and (ex_mem_registerRd_1 /= "0000")
+			and (mem_wb_registerRd_1 /= "0000")
 			and not(ex_mem_regWrite_1 = '1'
 				and (ex_mem_registerRd_1 = id_ex_registerRs_1))
 			and (mem_wb_registerRd_1 = id_ex_registerRs_1)) then
 				forward_a_1 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
-			and (ex_mem_registerRd_2 /= "0000")
+			and (mem_wb_registerRd_2 /= "0000")
 			and not(ex_mem_regWrite_2 = '1'
 				and (ex_mem_registerRd_2 = id_ex_registerRs_1))
 			and (mem_wb_registerRd_2 = id_ex_registerRs_1)) then
@@ -78,14 +78,14 @@ begin
 				forward_b_1 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
-			and (ex_mem_registerRd_1 /= "0000")
+			and (mem_wb_registerRd_1 /= "0000")
 			and not(ex_mem_regWrite_1 = '1' 
 				and (ex_mem_registerRd_1 = id_ex_registerRt_1))
 			and (mem_wb_registerRd_1 = id_ex_registerRt_1)) then
 				forward_b_1 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
-			and (ex_mem_registerRd_2 /= "0000")
+			and (mem_wb_registerRd_2 /= "0000")
 			and not(ex_mem_regWrite_2 = '1'
 				and (ex_mem_registerRd_2 = id_ex_registerRt_1))
 			and (mem_wb_registerRd_2 = id_ex_registerRt_1)) then
@@ -106,14 +106,14 @@ begin
 				forward_a_2 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
-			and (ex_mem_registerRd_1 /= "0000")
+			and (mem_wb_registerRd_1 /= "0000")
 			and not(ex_mem_regWrite_1 = '1' 
 				and (ex_mem_registerRd_1 = id_ex_registerRs_1))
 			and (mem_wb_registerRd_1 = id_ex_registerRs_2)) then
 				forward_a_2 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
-			and (ex_mem_registerRd_2 /= "0000")
+			and (mem_wb_registerRd_2 /= "0000")
 			and not(ex_mem_regWrite_2 = '1'
 				and (ex_mem_registerRd_2 = id_ex_registerRs_2))
 			and (mem_wb_registerRd_2 = id_ex_registerRs_2)) then
@@ -134,12 +134,14 @@ begin
 				forward_b_2 <= "010";
 				
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
+			and (mem_wb_registerRd_1 /= "0000")
 			and not(ex_mem_regWrite_1 = '1' 
 				and (ex_mem_registerRd_1 = id_ex_registerRt_2))
 			and (mem_wb_registerRd_1 = id_ex_registerRt_2)) then
 				forward_b_2 <= "011";
 
 		elsif ((mem_wb_regWrite_2 = '1')
+			and (mem_wb_registerRd_2 /= "0000")
 			and not(ex_mem_regWrite_2 = '1' 
 				and (ex_mem_registerRd_2 = id_ex_registerRt_2))
 			and (mem_wb_registerRd_2 = id_ex_registerRt_2)) then

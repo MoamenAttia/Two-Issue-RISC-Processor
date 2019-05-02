@@ -161,14 +161,14 @@ add wave -position insertpoint sim:/system/Execute/mux2/*
 add wave -position insertpoint sim:/system/Execute/alu1/*
 add wave -position insertpoint sim:/system/deocode/Register_file/*
 
-mem load -filltype value -filldata 0000001000010000 -fillradix binary /system/fetch/inst_ram/my_ram(0)
-mem load -filltype value -filldata 0000010000010000 -fillradix binary /system/fetch/inst_ram/my_ram(1)
-mem load -filltype value -filldata 0000011000010000 -fillradix binary /system/fetch/inst_ram/my_ram(2)
-mem load -filltype value -filldata 0000100000010000 -fillradix binary /system/fetch/inst_ram/my_ram(3)
+mem load -filltype value -filldata 0000000000001000 -fillradix binary /system/fetch/inst_ram/my_ram(0)
+mem load -filltype value -filldata 0000010000000100 -fillradix binary /system/fetch/inst_ram/my_ram(1)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /system/fetch/inst_ram/my_ram(2)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /system/fetch/inst_ram/my_ram(3)
 mem load -filltype value -filldata 0000101000010000 -fillradix binary /system/fetch/inst_ram/my_ram(4)
 mem load -filltype value -filldata 0000110000010000 -fillradix binary /system/fetch/inst_ram/my_ram(5)
-mem load -filltype value -filldata 0000111000010000 -fillradix binary /system/fetch/inst_ram/my_ram(6)
-mem load -filltype value -filldata 0001000000010000 -fillradix binary /system/fetch/inst_ram/my_ram(7)
+mem load -filltype value -filldata 0000111000001100 -fillradix binary /system/fetch/inst_ram/my_ram(6)
+mem load -filltype value -filldata 0001000000000000 -fillradix binary /system/fetch/inst_ram/my_ram(7)
 mem load -filltype value -filldata 0000110000010101 -fillradix binary /system/fetch/inst_ram/my_ram(8)
 mem load -filltype value -filldata 0000000000000010 -fillradix binary /system/fetch/inst_ram/my_ram(9)
 
@@ -176,8 +176,6 @@ force -freeze sim:/system/clk 1 0, 0 {50 ps} -r 100
 force -freeze sim:/system/rst 1 0
 force -freeze sim:/system/En 1 0
 run
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 0 ps  Iteration: 0  Instance: /system/fetch
 run
 run
 force -freeze sim:/system/rst 0 0

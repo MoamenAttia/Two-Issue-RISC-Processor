@@ -109,7 +109,7 @@ architecture a_ALU of ALU is
 
 
 ----------------------------------------------------------------------------------------- flags
-	process (in1 , in2 , sel,outadd,A,B,CIN,AluSelect,cout,carryAdd,carryShift,tempShift,r)
+	process (sel,outadd,cout,carryAdd,carryShift,tempShift,r)
 	begin
 ------------------------------FLAGS DEFAULT VALUE
 	carryFlag<='0' ; negFlag<='0'; zeroFlag<='0';
