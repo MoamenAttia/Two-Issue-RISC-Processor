@@ -27,13 +27,12 @@ entity hazard_unit is
         EXE_MEM_flush_next   : in std_logic;
         
         -- output
+        clear_first        : out std_logic;
         clear_second       : out std_logic;
-        late_clear_second  : out std_logic;
-        flush_next_ID_EXE  : out std_logic;
-        flush_next_EXE_MEM : out std_logic;
         RST_IR             : out std_logic;
         PC_selector        : out std_logic_vector(2 downto 0);
-        new_address        : out std_logic_vector(3 downto 0)
+        new_address        : out std_logic_vector(3 downto 0);
+        structural_hazard  : out std_logic
     );
 end hazard_unit;
 
@@ -131,6 +130,11 @@ signal jmp_hazard              : std_logic;
 signal control_hazard          : std_logic;
 signal load_immediate_hazard   : std_logic;
 
+-- Structural Hazard
+signal SIG_structural_hazard       : std_logic;
+signal structural_first        : std_logic;
+signal structural_second       : std_logic;
+
 begin
 
 
@@ -180,37 +184,37 @@ begin
     out_hazard <= '1' when (out_first_in_packet_handle = '1' and out_second_in_packet_handle = '1') else '0';
    
     -- RAW HAZARD
-    raw_hazard <= '1' when (IF_ID_Rsrc2 = IF_ID_Rdst1 and not(IF_ID_Rdst1 = "0000")) else '0'; 
-    waw_hazard <= '1' when (IF_ID_Rdst2 = IF_ID_Rdst1 and not(IF_ID_Rdst1 = "0000")) else '0';
+    raw_hazard <= '1' when (IF_ID_Rsrc2 = IF_ID_Rdst1 and IF_ID_Rdst1 /= "0000") else '0'; 
+    waw_hazard <= '1' when (IF_ID_Rdst2 = IF_ID_Rdst1 and IF_ID_Rdst1 /= "0000") else '0';
 
     -- DATA INNER HAZARD
-    data_inner_hazard <= raw_hazard or waw_hazard or memory_hazard or in_hazard or out_hazard or jmp_inner_hazard;
+    data_inner_hazard <= raw_hazard or waw_hazard or memory_hazard or in_hazard or out_hazard or jmp_inner_hazard or load_immediate_hazard;
 
 
     -- DATA OUTER HAZARD DETECTION
 
     ------ EXCEPTION MOV, LOAD, OUT -----------
-    src1_depend_outer_dst1 <= '1' when (IF_ID_Rsrc1 = ID_EXE_Rdst1) else '0';
-    src2_depend_outer_dst1 <= '1' when (IF_ID_Rsrc2 = ID_EXE_Rdst1) else '0';
-    src1_depend_outer_dst2 <= '1' when (IF_ID_Rsrc1 = ID_EXE_Rdst2) else '0';
-    src2_depend_outer_dst2 <= '1' when (IF_ID_Rsrc2 = ID_EXE_Rdst2) else '0';
+    src1_depend_outer_dst1 <= '1' when IF_ID_Rsrc1 = ID_EXE_Rdst1 else '0';
+    src2_depend_outer_dst1 <= '1' when IF_ID_Rsrc2 = ID_EXE_Rdst1 else '0';
+    src1_depend_outer_dst2 <= '1' when IF_ID_Rsrc1 = ID_EXE_Rdst2 else '0';
+    src2_depend_outer_dst2 <= '1' when IF_ID_Rsrc2 = ID_EXE_Rdst2 else '0';
 
-    dst1_depend_outer_dst1 <= '1' when (IF_ID_Rdst1 = ID_EXE_Rdst1) else '0';
-    dst2_depend_outer_dst1 <= '1' when (IF_ID_Rdst2 = ID_EXE_Rdst1) else '0';
-    dst1_depend_outer_dst2 <= '1' when (IF_ID_Rdst1 = ID_EXE_Rdst2) else '0';
-    dst2_depend_outer_dst2 <= '1' when (IF_ID_Rdst2 = ID_EXE_Rdst2) else '0';
+    dst1_depend_outer_dst1 <= '1' when IF_ID_Rdst1 = ID_EXE_Rdst1 else '0';
+    dst2_depend_outer_dst1 <= '1' when IF_ID_Rdst2 = ID_EXE_Rdst1 else '0';
+    dst1_depend_outer_dst2 <= '1' when IF_ID_Rdst1 = ID_EXE_Rdst2 else '0';
+    dst2_depend_outer_dst2 <= '1' when IF_ID_Rdst2 = ID_EXE_Rdst2 else '0';
 
     -- EXCEPTION MOV
-    exception_mov_first   <= '1' when (mov_first_in_packet_handle = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0') else '0';
-    exception_mov_second  <= '1' when (mov_first_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0') else '0';
+    exception_mov_first   <= '1' when mov_first_in_packet_handle = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0' else '0';
+    exception_mov_second  <= '1' when mov_first_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0' else '0';
     
     -- EXCEPTION LOAD
-    exception_load_first  <= '1' when (load_first_in_packet_handle  = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0') else '0';
-    exception_load_second <= '1' when (load_second_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0') else '0';
+    exception_load_first  <= '1' when load_first_in_packet_handle  = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0' else '0';
+    exception_load_second <= '1' when load_second_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0' else '0';
     
     -- EXCEPTION OUT
-    exception_out_first   <= '1' when (out_first_in_packet_handle  = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0') else '0';
-    exception_out_second  <= '1' when (out_second_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0') else '0';
+    exception_out_first   <= '1' when out_first_in_packet_handle  = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0' else '0';
+    exception_out_second  <= '1' when out_second_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0' else '0';
 
     -- EXCEPTION DATA OUTER
     exception_data_outer_first  <= exception_mov_first  or exception_load_first  or exception_out_first;
@@ -238,24 +242,29 @@ begin
     load_immediate_hazard <= '1' when (IF_ID_opCode2 = "01" and (IF_ID_func2 = "101" or IF_ID_func2 = "110")) or (IF_ID_opCode2 = "10" and IF_ID_func2 = "010" ) else '0';
 
     control_hazard <= jmp_hazard or load_immediate_hazard;
+
+    -- Structural Hazard
+    structural_first  <= '1' when (IF_ID_Rdst1 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst1 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1');
+    structural_second <= '1' when (IF_ID_Rdst2 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst2 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1'); 
+    SIG_structural_hazard <= structural_first or structural_second;
     --------------------------------------------------------------------
 
     -- OUTPUTS
-    clear_second       <= data_inner_hazard  or load_immediate_hazard; -- to be passed to the control unit to make the 2nd instruction acts as NOP.
-    
-    late_clear_second  <= jmp_hazard; -- we'll modify the alu if this signal is raised then discard.
+    clear_first  <= data_outer_hazard;
+    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard;
+    RST_IR       <= jmp_hazard;
+    PC_selector  <= "100" when        jmp_hazard = '1' else
+                    "001" when data_inner_hazard = '1' else
+                    "010" when data_outer_hazard = '1' or SIG_structural_hazard = '1' else
+                    "000";
 
-    flush_next_ID_EXE  <=  data_inner_hazard or data_outer_hazard; -- to be put in the ID/EXE Buffer.
+    structural_hazard <= SIG_structural_hazard;
 
-    flush_next_EXE_MEM <= jmp_hazard; -- to be put in the EXE_MEM Buffer.
+    -- comments
+    -- data_inner_hazard, load_immediate_hazard does not need to flush anything. just clear_second.
+    -- data_outer_hazard need flush signal (necessary).
+    -- jmp_hazard need async reset.
 
-    RST_IR             <= ID_EXE_flush_next or EXE_MEM_flush_next; -- Asyncronous Reset
-
-    PC_selector        <= "100" when        jmp_hazard = '1' else
-                          "001" when data_inner_hazard = '1' else
-                          "010" when data_outer_hazard = '1' else
-                          "000";
-    
     new_address <= ID_EXE_Rdst1; -- an input to entity that takes 4 bits ( register ) and returns its data.
  
     -- assumnption
