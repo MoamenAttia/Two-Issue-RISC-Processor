@@ -79,11 +79,11 @@ signal i2_in_out_dest : std_logic_vector (3 downto 0);
 -------------------------------------------------
 BEGIN
 ---------------------- control unit instr 1
-controli1_unit:entity work.Control_Unit  generic map (32) port map (i1_opcode, i1_function,i1_Rsrc_in,i1_Rdst_in,
+controli1_unit:entity work.Control_Unit port map (i1_opcode, i1_function,i1_Rsrc_in,i1_Rdst_in,
 i1_alu_op,i1_Rsrc_out, i1_Rdst_out , i1_WB,i1_MR ,i1_MW , i1_Rsrc_in_regFile,i1_Rdst_in_regFile,'0' -- 0 is the flush
  ,i1_IN_signal ,  i1_OUT_signal ,i1_in_out_dest,i1_immediate);
 ---------------------- control unit instr 2		
-controli2_unit:entity work.Control_Unit  generic map (32) port map (i2_opcode, i2_function,i2_Rsrc_in,i2_Rdst_in,
+controli2_unit:entity work.Control_Unit  port map (i2_opcode, i2_function,i2_Rsrc_in,i2_Rdst_in,
 i2_alu_op, i2_Rsrc_out,i2_Rdst_out , i2_WB,i2_MR ,i2_MW , i2_Rsrc_in_regFile,i2_Rdst_in_regFile,'0'
 ,i2_IN_signal ,  i2_OUT_signal ,i2_in_out_dest,i2_immediate);	--0 is the flush	
 -------------------------- Register file  -------- '0' to be replaced by write back signal fro last buffer 

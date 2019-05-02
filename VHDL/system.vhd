@@ -274,7 +274,6 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
  ------------------------------------------Execute
  -----------------------------------------
  Execute :entity work.EXECUTE port map (
-	clk,
  	i1_Rdst_Exec_in,
 	i1_Rsrc_Exec_in,
 	i1_branch_taken_Exec_in,

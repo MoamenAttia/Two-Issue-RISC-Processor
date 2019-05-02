@@ -4,7 +4,6 @@ use IEEE.NUMERIC_STD.all;
 
 entity ALU is
 	port (
-	clk  : in  std_logic;
         in1  : in  std_logic_vector(15 downto 0);
         in2  : in  std_logic_vector(15 downto 0);
         result   : out std_logic_vector(15 downto 0);
@@ -34,9 +33,8 @@ architecture a_ALU of ALU is
 
     begin
         u3: entity work.AddOperations PORT MAP (A,B,CIN,AluSelect(0),AluSelect(1),AluSelect(2),outAdd,carryadd);
-		process ( clk, in1 , in2 , sel,outadd,A,B,CIN,AluSelect,carryShift,tempShift)
+		process (in1 , in2 , sel,outadd,A,B,CIN,AluSelect,carryShift,tempShift)
 			begin 
-                if(rising_edge(clk)) then
                     if (sel = "00001") then 
                         cout <= '1';     --set carry 
 
@@ -80,17 +78,17 @@ architecture a_ALU of ALU is
                     elsif (sel = "01011")  then 
                         r <= in1 or in2 ;  --or 
 
-                    elsif (sel = "01100") then -- shift left 
-
-                        tempShift <= std_logic_vector(shift_left(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
-                    
-                        carryShift <=tempShift(15);
-
+                    elsif (sel = "01100") then -- shift left
+                        if(in1 /= "ZZZZZZZZZZZZZZZZ" and in2 /= "ZZZZZZZZZZZZZZZZ") then
+                            tempShift <= std_logic_vector(shift_left(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+                            carryShift <=tempShift(15);
+                        end if;
+                        
                     elsif (sel = "01101") then -- shift right 
-
-                        tempShift <= std_logic_vector(shift_right(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
-
-		                carryShift <= tempShift(0);
+                        if(in1 /= "ZZZZZZZZZZZZZZZZ" and in2 /= "ZZZZZZZZZZZZZZZZ") then
+                            tempShift <= std_logic_vector(shift_right(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+    		                carryShift <= tempShift(0);
+                        end if;
 
                     elsif (sel ="10000") then 
                         A <= in1;   
@@ -103,7 +101,6 @@ architecture a_ALU of ALU is
                         CIN <='0';         -- dec
                         AluSelect <="101";  
                     end if;
-                end if;                 
         end process;
         result <= outAdd when sel = "00100" or sel = "00101" or sel = "01000" or sel = "01001" or sel ="10000" or sel = "10001"
         else r  when sel = "00011" or sel = "00110" or sel = "00111" or sel = "01011" or sel = "01010" 

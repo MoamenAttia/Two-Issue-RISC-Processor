@@ -3,7 +3,6 @@ USE IEEE.std_logic_1164.all;
 
 ENTITY EXECUTE IS
 	PORT (   --these signals from the decode execute buffer
-	clk    : in std_logic;
 	i1_Rdst: in std_logic_vector(3 DOWNTO 0);
 	i1_Rsrc: in std_logic_vector(3 DOWNTO 0);
 	i1_branch_taken : in std_logic;
@@ -113,9 +112,9 @@ BEGIN
    		(forwardb_2, i2_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_2);
    --temp1 <= opa_1; temp2 <= opb_1;	
    alu1: entity work.alu port map 
-		(clk ,opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op,alu_1_flags);
+		(opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op,alu_1_flags);
    alu2: entity work.alu port map 
-		(clk ,opa_2,opb_2,i2_alu_result_Exec_out,i2_alu_op,alu_2_flags);
+		(opa_2,opb_2,i2_alu_result_Exec_out,i2_alu_op,alu_2_flags);
 
 
 		i1_Rdst_Exec_out<= i1_Rdst;
