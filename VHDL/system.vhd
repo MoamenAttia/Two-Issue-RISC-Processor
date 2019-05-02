@@ -140,6 +140,12 @@ signal i1_source_dec_out: std_logic_vector(15 downto 0);
 signal OUT_bus :  std_logic_vector (15 downto 0);
 -------
 
+
+-- MOAMEN MAGIC BIT
+signal late_stall_long_in  :  std_logic;
+signal late_stall_long_out :  std_logic;
+
+
 -----------------------hazard out 
 signal hazard_data_out : std_logic_vector(15 downto 0) ;
 signal PC_select_out : std_logic_vector(2 downto 0) ;
@@ -150,7 +156,7 @@ signal branch_taken_2 :std_logic;
 signal hard_address :std_logic_vector(31 downto 0) ;
 BEGIN----------------------------------------------
 ----------------------------------------------------fetch ---------  fetch & pc & ir
-fetch:entity work.FETCH  port map (clk_inv, pc_out ,i1 ,i2);
+fetch:entity work.FETCH  port map (clk, rst , pc_out ,i1 ,i2);
 ir_input <= i1&i2;
 -------------------------------------------------------------------IR 
 IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (
@@ -174,6 +180,9 @@ pc:entity work.PC  generic map (32) port map (clk_inv,  rst ,hard_address ,pc_ou
 ---------------------------------------------------decode --------decode 
 ---------------------------------------------------
 out_bus_data <= out_bus ;
+
+
+
 deocode : entity work.DECODE PORT map  (
 	clk ,rst,
     --this data is directly from ir buffer 
@@ -187,8 +196,8 @@ deocode : entity work.DECODE PORT map  (
 	---------------
 	i2_opcode,
 	i2_function,
-	i2_Rsrc ,
-     i2_Rdst ,
+	i2_Rsrc,
+    i2_Rdst,
 	i2_result_WB_out ,  -- from last buffer
 	i2_Rdst_WB_out ,
 	i2_WB_WB_out,
@@ -239,8 +248,9 @@ deocode : entity work.DECODE PORT map  (
 	RST_IR_out ,
 	branch_taken_1, 
 	branch_taken_2 ,
-	i1_stall_long_Exec_in
 
+	late_stall_long_in,
+	late_stall_long_out
 
     );
  ----------------------------------------buffer decode/execute     
@@ -251,6 +261,8 @@ deocode : entity work.DECODE PORT map  (
  --decode if no immediate and if immediate take the second ir
 dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	clk_inv,  rst , 
+	late_stall_long_in,
+	late_stall_long_out,
     i1_Rdst_DEC_out,
 	i1_Rsrc_DEC_out,
 	branch_taken_1,
@@ -450,5 +462,6 @@ mem_writeback :entity work.Memory_write_back_Buffer port map (
 	En
  );
 END my_system;
+
 
 

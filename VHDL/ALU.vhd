@@ -8,7 +8,7 @@ entity ALU is
         in2  : in  std_logic_vector(15 downto 0);
         result   : out std_logic_vector(15 downto 0);
         sel : in std_logic_vector(4 downto 0);
-	flags : out std_logic_vector(2 downto 0)
+	    flags : out std_logic_vector(2 downto 0)
     );
 end ALU;
 
@@ -105,7 +105,8 @@ architecture a_ALU of ALU is
         result <= outAdd when sel = "00100" or sel = "00101" or sel = "01000" or sel = "01001" or sel ="10000" or sel = "10001"
         else r  when sel = "00011" or sel = "00110" or sel = "00111" or sel = "01011" or sel = "01010" 
 	else tempShift(14 downto 0) & '0' when sel="01100" 
-	else '0' & tempShift(15 downto 1) when sel ="01101"; 
+	else '0' & tempShift(15 downto 1) when sel ="01101" 
+    else  "ZZZZZZZZZZZZZZZZ" when sel = "00000"; 
 
 
 ----------------------------------------------------------------------------------------- flags
@@ -145,6 +146,3 @@ architecture a_ALU of ALU is
 
 
 end architecture;
-
-
-

@@ -203,39 +203,19 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst; -- immediate here  
                     immediate <= '1'; 
                 end if ;          
-
-
-            elsif (opcode = "10" and flush ='0' )   then 
-                    IN_signal <= '0';
-                    OUT_signal <='0';
-                    in_out_dest <= "0000";
-
-                if (func ="000")    then   -- push 
-                     AluFunc <= "100001";  
-                    dest <= "0000";
-                    WB <= '0';
-                    MR <= '0';
-                    MW <= '1';
-                    regOut1 <= "1000";
-                    regOut2 <= "0000"; -- immediate here  
-                    immediate <= '0'; 
-
-
-            else     AluFunc <= "00000";
-                    dest <= "0000";
-                    WB <= '0';
-                    MR <= '0';
-                    MW <= '0';              --flush
-                    regOut1 <= "0000";
-                    regOut2 <= "0000";
-                    immediate <= '0';
-                    IN_signal <= '0';
-                    OUT_signal <='0';
-                    in_out_dest <= "0000";
+            else     
+                AluFunc <= "00000";
+                dest <= "0000";
+                WB <= '0';
+                MR <= '0';
+                MW <= '0';              --flush
+                regOut1 <= "0000";
+                regOut2 <= "0000";
+                immediate <= '0';
+                IN_signal <= '0';
+                OUT_signal <='0';
+                in_out_dest <= "0000";
             end if;
-	    end if;
-         end process; 
+	end process; 
 		src<=Rsrc;    
 end architecture;
-
-

@@ -34,7 +34,7 @@ entity hazard_unit is
         flags        : in std_logic_vector(2 downto 0);
 
         -- stall_long
-        ID_EXE_late_flush : in std_logic;
+        ID_EXE_late_flush : in std_logic; -- stall_long_output_buffer.
         
         -- output
         clear_first        : out std_logic;
@@ -45,13 +45,13 @@ entity hazard_unit is
         structural_hazard  : out std_logic;
         branch_taken1      : out std_logic;
         branch_taken2      : out std_logic;
-        late_flush_ID_EXE  : out std_logic -- stall_long
+        late_flush_ID_EXE  : out std_logic -- stall_long_input_buffer.
     );
 end hazard_unit;
 
 architecture a_hazard_unit of hazard_unit is
 
-
+signal temp : std_logic;
 ------------------ one operand hazard detection ---------------------
 -- NOP 
 signal nop_first_in_packet_handle  : std_logic; -- nop is an exception because rsrc and rdst are x"0" which can make hazard if we didn't handle it.
@@ -288,27 +288,28 @@ begin
     --------------------------------------------------------------------
 
     -- OUTPUTS
-    clear_first  <= data_outer_hazard;
-    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard or SIG_branch_taken1;
-    RST_IR       <= jmp_hazard or ID_EXE_late_flush;
+    clear_first  <= data_outer_hazard or jmp_hazard or ID_EXE_late_flush;
+    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard or SIG_branch_taken1 or jmp_hazard or ID_EXE_late_flush;
+    -- RST_IR       <= jmp_hazard or ID_EXE_late_flush;
     PC_selector  <= "010" when SIG_branch_taken1 = '1' or SIG_branch_taken2 = '1' else
                     "001" when data_inner_hazard = '1' else
                     "100" when data_outer_hazard = '1' or SIG_structural_hazard = '1' else
                     "000";
-
+    RST_IR <= '0';
     structural_hazard <= SIG_structural_hazard;
     branch_taken1 <= SIG_branch_taken1;
     branch_taken2 <= SIG_branch_taken2;
 
-    late_flush_ID_EXE <= data_inner_hazard  or SIG_structural_hazard or data_outer_hazard;
-
+    late_flush_ID_EXE <= temp;
+    temp <= data_inner_hazard  or SIG_structural_hazard or data_outer_hazard;
     -- comments
     -- data_inner_hazard, load_immediate_hazard does not need to flush anything. just clear_second.
     -- data_outer_hazard need flush signal (necessary).
     -- jmp_hazard need async reset.
 
     new_address <= ID_EXE_Rdst1; -- an input to entity that takes 4 bits ( register ) and returns its data.
- 
+    
+
 
 
    -- assumnption

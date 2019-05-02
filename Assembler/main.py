@@ -215,7 +215,7 @@ if __name__ == "__main__":
         lines = file.readlines()
         for line in lines:
             line = line.strip()
-            out_list.append("mem load -filltype value -filldata "+ line +"-fillradix binary /system/fetch/inst_ram/my_ram("+ str(i) +")")
+            out_list.append("mem load -filltype value -filldata "+ line +" -fillradix binary /system/fetch/inst_ram/my_ram("+ str(i) +")")
             i += 1
     
     writeFile("do file",out_list)

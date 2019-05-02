@@ -70,8 +70,8 @@ ENTITY DECODE IS
 	 branch_taken_1_out : out std_logic;
 	 branch_taken_2_out : out std_logic;
 
-
-	 stall_long_in   : in std_logic
+	 DEC_EXE_stall_lone_out  : out std_logic;
+	 DEC_EXE_stall_long_in   : in std_logic
 	
 	----------------
     );
@@ -106,20 +106,60 @@ signal structural_hazard  : std_logic;
 signal branch_taken_1      : std_logic;   
 signal branch_taken_2      : std_logic; 
 -----------------------------
-signal stall_long_out : std_logic;
+
+signal SIG_ID_EXE_late_flush : std_logic;
+signal SIG_late_flush_ID_EXE : std_logic;
 
 BEGIN
 
-i1_stall_long <= stall_long_out;
+i1_stall_long <= clear_first;
+i2_stall_long <= clear_second;
+
+DEC_EXE_stall_lone_out  <= SIG_late_flush_ID_EXE;
+SIG_ID_EXE_late_flush   <=DEC_EXE_stall_long_in;
 
 ---------------------- control unit instr 1
-controli1_unit:entity work.Control_Unit port map (i1_opcode, i1_function,i1_Rsrc_in,i1_Rdst_in,
-i1_alu_op,i1_Rsrc_out, i1_Rdst_out , i1_WB,i1_MR ,i1_MW , i1_Rsrc_in_regFile,i1_Rdst_in_regFile,clear_first -- 0 is the flush
- ,i1_IN_signal ,  i1_OUT_signal ,i1_in_out_dest,i1_immediate , structural_hazard);
+controli1_unit:entity work.Control_Unit port map (
+opcode => i1_opcode,
+func => i1_function,
+Rsrc => i1_Rsrc_in,
+Rdst => i1_Rdst_in,
+AluFunc => i1_alu_op,
+src => i1_Rsrc_out,
+dest => i1_Rdst_out,
+WB => i1_WB,
+MR => i1_MR,
+Mw => i1_MW,
+regOut1 => i1_Rsrc_in_regFile,
+regOut2 => i1_Rdst_in_regFile,
+flush => clear_first, -- 0 is the flush
+IN_signal => i1_IN_signal,
+OUT_signal => i1_OUT_signal,
+in_out_dest => i1_in_out_dest,
+immediate => i1_immediate,
+structural_hazard => structural_hazard
+);
 ---------------------- control unit instr 2		
-controli2_unit:entity work.Control_Unit  port map (i2_opcode, i2_function,i2_Rsrc_in,i2_Rdst_in,
-i2_alu_op, i2_Rsrc_out,i2_Rdst_out , i2_WB,i2_MR ,i2_MW , i2_Rsrc_in_regFile,i2_Rdst_in_regFile,clear_second
-,i2_IN_signal ,  i2_OUT_signal ,i2_in_out_dest,i2_immediate,structural_hazard);	--0 is the flush	
+controli2_unit:entity work.Control_Unit  port map (
+opcode => i2_opcode,
+func => i2_function,
+Rsrc => i2_Rsrc_in,
+Rdst => i2_Rdst_in,
+AluFunc => i2_alu_op,
+src => i2_Rsrc_out,
+dest => i2_Rdst_out,
+WB => i2_WB,
+MR => i2_MR,
+Mw => i2_MW,
+regOut1 => i2_Rsrc_in_regFile,
+regOut2 => i2_Rdst_in_regFile,
+flush => clear_second,
+IN_signal => i2_IN_signal,
+OUT_signal => i2_OUT_signal,
+in_out_dest => i2_in_out_dest,
+immediate => i2_immediate,
+structural_hazard => structural_hazard
+);	--0 is the flush	
 -------------------------- Register file  -------- '0' to be replaced by write back signal fro last buffer 
 
 Register_file:entity work.Register_file  generic map (16) port map (clk , rst ,
@@ -130,40 +170,42 @@ MEM_sel ,MEM_data,
 IN_bus,OUT_bus ,
 i1_IN_signal ,i1_OUT_signal ,i2_IN_signal,i2_OUT_signal ,i1_in_out_dest,i2_in_out_dest);
 -----------------------------hazard detection and its connection 
-hazard : entity work.hazard_unit port map (
-i1_opcode,
-i1_function,
-i1_Rsrc_in, 
-i1_Rdst_in, 
-i2_opcode,
-i2_function,
-i2_Rsrc_in, 
-i2_Rdst_in,
-------------branch taken 1 ,2 
-DEC_EXE_branch_taken_1,
-DEC_EXE_branch_taken_2,
-DEC_EXE_Memory_read_1 ,
-DEC_EXE_Memory_read_2 ,
-DEC_EXE_Rdst_1 ,			
-DEC_EXE_Rdst_2 ,
--------------	
-i1_WB_Rdst,
-i2_WB_Rdst,
-i1_WB_signal,
-i2_WB_signal,
-flags,
-stall_long_in,
-----out 
-clear_first ,
-clear_second,
-RST_IR  ,   ---out from here 
-PC_select ,   -- out from here --
-reg_file_select,  
-structural_hazard,
-branch_taken_1 ,   -- out  
-branch_taken_2 , -- out 
-i1_stall_long
+hazard : entity work.hazard_unit port map 
+(
+	IF_ID_opCode1 		 => i1_opcode,
+	IF_ID_func1 		 => i1_function,
+	IF_ID_Rsrc1 		 => i1_Rsrc_in, 
+	IF_ID_Rdst1 		 => i1_Rdst_in, 
+	IF_ID_opCode2 		 => i2_opcode,
+	IF_ID_func2 		 => i2_function,
+	IF_ID_Rsrc2 		 => i2_Rsrc_in, 
+	IF_ID_Rdst2 		 => i2_Rdst_in,
+	ID_EXE_branch_taken1 => DEC_EXE_branch_taken_1,
+	ID_EXE_branch_taken2 => DEC_EXE_branch_taken_2,
+	ID_EXE_MemoryRead1 	 => DEC_EXE_Memory_read_1 ,
+	ID_EXE_MemoryRead2 	 => DEC_EXE_Memory_read_2 ,
+	ID_EXE_Rdst1 		 => DEC_EXE_Rdst_1 ,			
+	ID_EXE_Rdst2 		 => DEC_EXE_Rdst_2 ,
+	MEM_WB_Rdst1 		 => i1_WB_Rdst,
+	MEM_WB_Rdst2 		 => i2_WB_Rdst,
+	MEM_WB_WB1 		     => i1_WB_signal,
+	MEM_WB_WB2 		     => i2_WB_signal,
+	flags 				 => flags,
+	ID_EXE_late_flush 	 => SIG_ID_EXE_late_flush, -- from output buffer
+	clear_first 		 => clear_first ,
+	clear_second 		 => clear_second,
+	RST_IR 				 => RST_IR,
+	PC_selector 		 => PC_select,
+	new_address 		 => reg_file_select,  
+	structural_hazard 	 => structural_hazard,
+	branch_taken1 		 => branch_taken_1,
+	branch_taken2 		 => branch_taken_2,
+	late_flush_ID_EXE    => SIG_late_flush_ID_EXE      -- to be put in the DEC_EXE buffer
 );
+
+
+
+
   -- make output signals here 
   hazard_data_out <=  hazard_data;
   PC_select_out <= PC_select;

@@ -5,6 +5,7 @@ use ieee.numeric_std.all;
 entity fetch is
 	port (
         clk               : in std_logic;
+        rst               : in std_logic;
         address           : in  std_logic_vector (31 downto 0);
         instruction1      : out std_logic_vector (15 downto 0);
         instruction2      : out std_logic_vector (15 downto 0)
@@ -21,11 +22,11 @@ architecture a_fetch of fetch is
 
     signal dummy    : std_logic_vector(15 downto 0);
     signal address_2 : std_logic_vector(31 downto 0);
-    
+
     begin
 	
 	address_2 <= std_logic_vector(to_unsigned(to_integer(unsigned( address )) + 1, 32));
 
-        inst_ram : entity work.inst_ram port map ( clk , '0' , address , dummy , instruction1 , address_2 , instruction2 );
+        inst_ram : entity work.inst_ram port map ( clk , rst ,  '0' , address , dummy , instruction1 , address_2 , instruction2 );
 		
 end a_fetch;

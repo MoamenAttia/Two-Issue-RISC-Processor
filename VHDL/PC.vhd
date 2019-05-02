@@ -20,7 +20,7 @@ signal cout :std_logic;
 begin
 
 n_dff:entity work.my_nDFF  generic map (32) port map (clk,  rst , d ,q ,'1');
-process (clk , rst , sel)
+process (clk , rst , sel,in_address)
 begin 
 if(sel="000") then 
 input2 <= x"00000002";
