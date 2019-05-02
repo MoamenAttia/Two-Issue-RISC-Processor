@@ -34,7 +34,7 @@ signal	i1_branch_taken_DEC_out : std_logic;
 signal	i1_load_use_DEC_out : std_logic;
 signal	i1_Rsrc_data_DEC_out: std_logic_vector(15 DOWNTO 0);
 signal	i1_Rdst_data_DEC_out: std_logic_vector(15 DOWNTO 0);
-signal	i1_stall_long_DEC_out : std_logic;
+signal	i1_stall_long_DEC_out : std_logic := '0';
 signal	i1_WB_DEC_out : std_logic;
 signal	i1_MR_DEC_out:std_logic;
 signal	i1_MW_DEC_out : std_logic;
@@ -138,13 +138,23 @@ signal immediate_op : std_logic_vector(15 downto 0);
 signal i1_source_dec_out: std_logic_vector(15 downto 0);
 -------- out
 signal OUT_bus :  std_logic_vector (15 downto 0);
+-------
+
+-----------------------hazard out 
+signal hazard_data_out : std_logic_vector(15 downto 0) ;
+signal PC_select_out : std_logic_vector(2 downto 0) ;
+signal RST_IR_out : std_logic;
+signal branch_taken_1 : std_logic;
+signal branch_taken_2 :std_logic;       
+-----
+signal hard_address :std_logic_vector(31 downto 0) ;
 BEGIN----------------------------------------------
 ----------------------------------------------------fetch ---------  fetch & pc & ir
 fetch:entity work.FETCH  port map (clk_inv, pc_out ,i1 ,i2);
 ir_input <= i1&i2;
 -------------------------------------------------------------------IR 
 IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (
-	clk_inv,  rst , 
+	clk_inv,  RST_IR_out , 
 	ir_input,
 	i1_opcode ,
 	i1_function ,
@@ -159,7 +169,8 @@ IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (
 	); --enable IR to be changed
 -----------------------------------------------------------------PC
 -- HAZARD !! sel to be changed , in_address to be changed 
-pc:entity work.PC  generic map (32) port map (clk_inv,  rst ,x"00000000" ,pc_out ,"000");
+hard_address <= x"0000" & hazard_data_out;
+pc:entity work.PC  generic map (32) port map (clk_inv,  rst ,hard_address ,pc_out ,PC_select_out);
 ---------------------------------------------------decode --------decode 
 ---------------------------------------------------
 out_bus_data <= out_bus ;
@@ -212,23 +223,41 @@ deocode : entity work.DECODE PORT map  (
 	IN_bus,
 	OUT_bus ,      ----- to in and out circuit
 	i1_immediate,
-	i2_immediate
+	i2_immediate,
+	-----------------------to hazard 
+	i1_branch_taken_Exec_in	, 
+	i2_branch_taken_Exec_in ,	
+	i1_MR_Exec_in ,	
+	i2_MR_Exec_in ,	
+	i1_Rdst_Exec_in, 			
+	i2_Rdst_Exec_in ,		   
+	"000" ,	
+
+	--------------from hazard 
+	hazard_data_out, 
+	PC_select_out ,
+	RST_IR_out ,
+	branch_taken_1, 
+	branch_taken_2 ,
+	i1_stall_long_Exec_in
+
+
     );
  ----------------------------------------buffer decode/execute     
  i1_source_dec_out <= i1_Rsrc_data_DEC_out when i1_immediate = '0'
 				else immediate_op when i1_immediate = '1';
-				--immediate logic
+		--immediate logic
  -------make new signal for each instruction that signal is the data of the 
  --decode if no immediate and if immediate take the second ir
 dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	clk_inv,  rst , 
     i1_Rdst_DEC_out,
 	i1_Rsrc_DEC_out,
-	i1_branch_taken_DEC_out,
+	branch_taken_1,
 	i1_load_use_DEC_out ,
 	i1_source_dec_out,
 	i1_Rdst_data_DEC_out,
-	i1_stall_long_DEC_out ,
+	i1_stall_long_DEC_out ,  -- stall_long_output
 	i1_WB_DEC_out ,
 	i1_MR_DEC_out,
 	i1_MW_DEC_out,
@@ -236,7 +265,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	---------------------
 	i2_Rdst_DEC_out,
 	i2_Rsrc_DEC_out,
-	i2_branch_taken_DEC_out,
+	branch_taken_2,
 	i2_load_use_DEC_out ,
 	i2_Rsrc_data_DEC_out,
 	i2_Rdst_data_DEC_out,
@@ -252,7 +281,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i1_load_use_Exec_in ,
 	i1_Rsrc_data_Exec_in,
 	i1_Rdst_data_Exec_in,
-	i1_stall_long_Exec_in ,
+	i1_stall_long_Exec_in , -- stall_long_output
 	i1_WB_Exec_in,
 	i1_MR_Exec_in ,
 	i1_MW_Exec_in ,
@@ -309,7 +338,6 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 
 	i1_alu_result_Mem_in,
 	i1_result_WB_out,
-
 	i2_alu_result_Mem_in,
 	i2_result_WB_out  ,
 

@@ -32,10 +32,13 @@ elsif(sel="010") then
 o <=in_address;
 elsif(sel="011")  then  
 o <=q;
+elsif(sel = "100") then
+temp <= '1';
+input2 <= x"FFFFFFFD";   
 end if;
 end process;
 n_add: entity work.nadder GENERIC MAP (32) port map (q ,input2,temp,f,cout);
-d <= f when sel = "000" or sel = "001"
+d <= f when sel = "000" or sel = "001" or sel = "100"
 else o when sel = "010" or sel = "011";
 out_address <= q;
 END my_PC;

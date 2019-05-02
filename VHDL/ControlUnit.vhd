@@ -24,7 +24,9 @@ entity Control_Unit is
         -------------------------
         in_out_dest : out std_logic_vector (3 downto 0);
         ---------------------------------
-        immediate : out std_logic
+        immediate : out std_logic;
+        -----
+        structural_hazard : in std_logic 
     
     );
 end Control_Unit;
@@ -108,7 +110,7 @@ architecture a_Control_Unit of Control_Unit is
                     OUT_signal <='0';
                     in_out_dest <= "0000";
         
-                elsif (func = "111") then  --in 
+                elsif (func = "111" and structural_hazard = '0') then  --in 
                     AluFunc <= "00000";
                     dest <= "0000";
                     WB <= '0';
@@ -203,6 +205,21 @@ architecture a_Control_Unit of Control_Unit is
                 end if ;          
 
 
+            elsif (opcode = "10" and flush ='0' )   then 
+                    IN_signal <= '0';
+                    OUT_signal <='0';
+                    in_out_dest <= "0000";
+
+                if (func ="000")    then   -- push 
+                     AluFunc <= "100001";  
+                    dest <= "0000";
+                    WB <= '0';
+                    MR <= '0';
+                    MW <= '1';
+                    regOut1 <= "1000";
+                    regOut2 <= "0000"; -- immediate here  
+                    immediate <= '0'; 
+
 
             else     AluFunc <= "00000";
                     dest <= "0000";
@@ -215,7 +232,8 @@ architecture a_Control_Unit of Control_Unit is
                     IN_signal <= '0';
                     OUT_signal <='0';
                     in_out_dest <= "0000";
-            end if;  
+            end if;
+	    end if;
          end process; 
 		src<=Rsrc;    
 end architecture;
