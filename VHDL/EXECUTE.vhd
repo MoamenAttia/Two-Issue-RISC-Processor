@@ -90,10 +90,10 @@ BEGIN
 		ex_mem_registerRd_2,
 		mem_wb_regWrite_2,
 		mem_wb_registerRd_2,
-		i1_Rdst,
 		i1_Rsrc,
-		i2_Rdst,
+		i1_Rdst,
 		i2_Rsrc,
+		i2_Rdst,
 		forwarda,
 		forwardb,
 		forwarda_2,
@@ -110,7 +110,7 @@ BEGIN
    		(forwarda_2, i2_Rsrc_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opa_2);
    mux4 : entity work.mux port map 
    		(forwardb_2, i2_Rdst_data, ex_mem_Rd_data_out_1, ex_mem_Rd_data_out_2, mem_wb_Rd_data_out_1, mem_wb_Rd_data_out_2, opb_2);
-   --temp1 <= opa_1; temp2 <= opb_1;	
+ 
    alu1: entity work.alu port map 
 		(opa_1,opb_1,i1_alu_result_Exec_out,i1_alu_op,alu_1_flags);
    alu2: entity work.alu port map 
