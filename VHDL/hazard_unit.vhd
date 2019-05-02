@@ -25,6 +25,12 @@ entity hazard_unit is
 
         -- Buffer between Execute and Memory.
         EXE_MEM_flush_next   : in std_logic;
+
+        -- Buffer between Memory and write back
+        MEM_WB_Rdst1 : in std_logic_vector(3 downto 0);
+        MEM_WB_Rdst2 : in std_logic_vector(3 downto 0);
+        MEM_WB_WB1   : in std_logic;
+        MEM_WB_WB2   : in std_logic;
         
         -- output
         clear_first        : out std_logic;
@@ -244,14 +250,14 @@ begin
     control_hazard <= jmp_hazard or load_immediate_hazard;
 
     -- Structural Hazard
-    structural_first  <= '1' when (IF_ID_Rdst1 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst1 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1');
-    structural_second <= '1' when (IF_ID_Rdst2 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst2 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1'); 
+    structural_first  <= '1' when (IF_ID_Rdst1 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst1 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1') else '0';
+    structural_second <= '1' when (IF_ID_Rdst2 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst2 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1') else '0'; 
     SIG_structural_hazard <= structural_first or structural_second;
     --------------------------------------------------------------------
 
     -- OUTPUTS
     clear_first  <= data_outer_hazard;
-    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard;
+    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard or jmp_hazard;
     RST_IR       <= jmp_hazard;
     PC_selector  <= "100" when        jmp_hazard = '1' else
                     "001" when data_inner_hazard = '1' else
