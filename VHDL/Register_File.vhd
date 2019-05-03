@@ -102,7 +102,7 @@ R7:entity work.my_nDFF  generic map (16) port map (clk,  rst , R7_data_in ,R7_da
 --flag:entity work.my_nDFF  generic map (16) port map (clk,  rst , flag_data_in ,flag_data_out ,Flag_EN);
 -------------------------------------------------------
 ------------------------------------------------------- 
-process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus ,i1_IN_signal,i1_OUT_signal,i2_IN_signal,i2_OUT_signal,i1_in_out_dest,i2_in_out_dest)
+process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,i2_write_back_signal,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus ,i1_IN_signal,i1_OUT_signal,i2_IN_signal,i2_OUT_signal,i1_in_out_dest,i2_in_out_dest,i1_Rdst_data_in,i2_Rdst_data_in)
 	begin
 	--------------------------------------------------------- instr 1 write back and in from bus
 	if (i1_Rdst_write_back = "0001" and i1_write_back_signal = '1' ) then 

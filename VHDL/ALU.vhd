@@ -79,14 +79,20 @@ architecture a_ALU of ALU is
                         r <= in1 or in2 ;  --or 
 
                     elsif (sel = "01100") then -- shift left
-                        if(in1 /= "ZZZZZZZZZZZZZZZZ" and in2 /= "ZZZZZZZZZZZZZZZZ") then
-                            tempShift <= std_logic_vector(shift_left(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
-                            carryShift <=tempShift(15);
+                        if(in1=x"0000" or in1="ZZZZZZZZZZZZZZZZ") then
+				tempShift <= in2;
+				
+			else
+                            	tempShift <= std_logic_vector(shift_left(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+                            	carryShift <=tempShift(15);
                         end if;
                         
                     elsif (sel = "01101") then -- shift right 
-                        if(in1 /= "ZZZZZZZZZZZZZZZZ" and in2 /= "ZZZZZZZZZZZZZZZZ") then
-                            tempShift <= std_logic_vector(shift_right(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+                        if(in1=x"0000" or in1="ZZZZZZZZZZZZZZZZ") then
+				tempShift <= in2;
+				
+			else
+                            	tempShift <= std_logic_vector(shift_right(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
     		                carryShift <= tempShift(0);
                         end if;
 

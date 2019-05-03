@@ -108,7 +108,7 @@ begin
 		elsif ((mem_wb_regWrite_1 = '1') -- MEM HAZARD
 			and (mem_wb_registerRd_1 /= "0000")
 			and not(ex_mem_regWrite_1 = '1' 
-				and (ex_mem_registerRd_1 = id_ex_registerRs_1))
+				and (ex_mem_registerRd_1 = id_ex_registerRs_2))
 			and (mem_wb_registerRd_1 = id_ex_registerRs_2)) then
 				forward_a_2 <= "011";
 

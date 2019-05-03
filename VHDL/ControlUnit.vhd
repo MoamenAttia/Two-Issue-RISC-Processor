@@ -275,18 +275,19 @@ architecture a_Control_Unit of Control_Unit is
                 immediate <= '0'; 
             end if;
 
-    else     AluFunc <= "00000";
-                dest <= "0000";
-                WB <= '0';
-                MR <= '0';
-                MW <= '0';              --flush
-                regOut1 <= "0000";
-                regOut2 <= "0000";
-                immediate <= '0';
-                IN_signal <= '0';
-                OUT_signal <='0';
-                in_out_dest <= "0000";
-        end if;  
+    else     
+        AluFunc <= "00000";
+        dest <= "0000";
+        WB <= '0';
+        MR <= '0';
+        MW <= '0';              --flush
+        regOut1 <= "0000";
+        regOut2 <= "0000";
+        immediate <= '0';
+        IN_signal <= '0';
+        OUT_signal <='0';
+        in_out_dest <= "0000";
+    end if;  
 	end process; 
-		src<=Rsrc;    
+	src<=Rsrc;    
 end architecture;
