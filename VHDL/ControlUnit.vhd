@@ -20,14 +20,7 @@ entity Control_Unit is
         -----------------------------
         IN_signal:out std_logic;
         OUT_signal:out std_logic;
-        ----------------------------------
-        -------------------------
-        in_out_dest : out std_logic_vector (3 downto 0);
-        ---------------------------------
-        immediate : out std_logic;
-        -----
-        structural_hazard : in std_logic 
-    
+        immediate : out std_logic
     );
 end Control_Unit;
 
@@ -48,7 +41,6 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= "0000";
 
                 elsif (func = "001") then -- set carry 
                     AluFunc <= "00001";
@@ -60,9 +52,9 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= "0000";
+               
                  
-                elsif (func = "010") then -- clear carry )    
+                elsif (func = "010") then -- clear carry  
                     AluFunc <= "00010";
                     dest <= "0000";
                     WB <= '0';
@@ -72,7 +64,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= "0000";
+              
                
                 elsif (func = "011")  then  -- not 
                     AluFunc <= "00011";
@@ -84,7 +76,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= "0000";
+             
             
                 elsif (func = "100") then  --increment
                     AluFunc <= "00100";
@@ -96,7 +88,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= "0000";
+                  
              
                 elsif (func = "101") then  --decrement 
                     AluFunc <= "00101";
@@ -108,37 +100,35 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= "0000";
-        
-                elsif (func = "111" and structural_hazard = '0') then  --in 
-                    AluFunc <= "00000";
-                    dest <= "0000";
-                    WB <= '0';
+              
+                elsif (func = "111" ) then  --in 
+                    AluFunc <= "01101";
+                    dest <= Rdst;
+                    WB <= '1';
                     MR <= '0';
                     MW <= '0';
                     regOut1 <= "0000";
-                    regOut2 <= "0000";  
+                    regOut2 <= "1110";  -- this takes from in bus
                     IN_signal <= '1';
                     OUT_signal <='0';
-                    in_out_dest <= Rdst;
            
                 elsif (func = "110") then  --out
-                    AluFunc <= "00110";
-                    dest <= Rdst;
+                    AluFunc <= "01101";
+                    dest <= "1111"; --this writes to out bus
                     WB <= '1';
                     MR <= '0';
                     MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;   
                     IN_signal <= '0';
-                    OUT_signal <='0';
-                    in_out_dest <= "0000";     
+                    OUT_signal <='1';
+               
                 end if;
 
             elsif (opcode = "01" and flush ='0' )   then 
                     IN_signal <= '0';
                     OUT_signal <='0';
-                    in_out_dest <= "0000";
+    
                 if (func = "000") then   -- mov 
                     AluFunc <= "00111";  --pass rsc
                     dest <= Rdst;
@@ -147,7 +137,8 @@ architecture a_Control_Unit of Control_Unit is
                     MW <= '0';
                     regOut1 <= Rsrc;
                     regOut2 <= "0000";
-                    immediate <= '0';  
+                    immediate <= '0'; 
+
                 elsif  (func = "001") then   -- add  
                     AluFunc <= "01000";  
                     dest <= Rdst;
@@ -191,7 +182,7 @@ architecture a_Control_Unit of Control_Unit is
                     MR <= '0';
                     MW <= '0';
                     regOut1 <= "0000";
-                    regOut2 <= Rdst; -- immediate here  
+                    regOut2 <= Rdst;   
                     immediate <= '1'; 
                 elsif   (func = "110") then   -- shift right (need immediate value ) 
                     AluFunc <= "01101";  
@@ -200,26 +191,26 @@ architecture a_Control_Unit of Control_Unit is
                     MR <= '0';
                     MW <= '0';
                     regOut1 <= "0000";
-                    regOut2 <= Rdst; -- immediate here  
+                    regOut2 <= Rdst;  
                     immediate <= '1'; 
                 end if ;          
             
-        elsif (opcode = "10" and flush ='0' )   then 
+        elsif (opcode = "10" and flush ='0' )   then --memory
                 IN_signal <= '0';
                 OUT_signal <='0';
-                in_out_dest <= "0000";
 
             if (func ="000")    then   -- push ()
-                    AluFunc <= "10001";  
-                    dest <= Rdst;
-                    WB <= '0';
-                    MR <= '0';
-                    MW <= '1';
-                    regOut1 <= "1000";
-                    regOut2 <= "0000"; 
-                    immediate <= '0'; 
+                AluFunc <= "10001";  
+                dest <= Rdst;
+                WB <= '0';
+                MR <= '0';
+                MW <= '1';
+                regOut1 <= "1000";
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+
             elsif (func ="001")    then   -- pop ()
-                    AluFunc <= "10001";  
+                AluFunc <= "10001";  
                 dest <= Rdst;
                 WB <= '0';
                 MR <= '0';
@@ -260,10 +251,10 @@ architecture a_Control_Unit of Control_Unit is
             
             end if;
 
-        elsif (opcode = "11" and flush ='0' )   then 
+        elsif (opcode = "11" and flush ='0' )   then --branch
             IN_signal <= '0';
             OUT_signal <='0';
-            in_out_dest <= "0000";
+    
             if (func ="000" or func ="001" or func ="010" or func ="001")    then  
                 AluFunc <= "00000"; 
                 dest <= "0000";
@@ -286,7 +277,7 @@ architecture a_Control_Unit of Control_Unit is
         immediate <= '0';
         IN_signal <= '0';
         OUT_signal <='0';
-        in_out_dest <= "0000";
+       
     end if;  
 	end process; 
 	src<=Rsrc;    
