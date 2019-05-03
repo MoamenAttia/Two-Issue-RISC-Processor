@@ -4,16 +4,16 @@ use ieee.std_logic_1164.all;
 entity hazard_unit is
 	port (
         -- first instruction
-        IF_ID_opCode1 : in std_logic_vector(1 downto 0);
-        IF_ID_func1   : in std_logic_vector(2 downto 0);
-        IF_ID_Rsrc1   : in std_logic_vector(3 downto 0);
-        IF_ID_Rdst1   : in std_logic_vector(3 downto 0);
+        TEMP_IF_ID_opCode1 : in std_logic_vector(1 downto 0);
+        TEMP_IF_ID_func1   : in std_logic_vector(2 downto 0);
+        TEMP_IF_ID_Rsrc1   : in std_logic_vector(3 downto 0);
+        TEMP_IF_ID_Rdst1   : in std_logic_vector(3 downto 0);
         
         -- second instruction
-        IF_ID_opCode2 : in std_logic_vector(1 downto 0);
-        IF_ID_func2   : in std_logic_vector(2 downto 0);
-        IF_ID_Rsrc2   : in std_logic_vector(3 downto 0);
-        IF_ID_Rdst2   : in std_logic_vector(3 downto 0);
+        TEMP_IF_ID_opCode2 : in std_logic_vector(1 downto 0);
+        TEMP_IF_ID_func2   : in std_logic_vector(2 downto 0);
+        TEMP_IF_ID_Rsrc2   : in std_logic_vector(3 downto 0);
+        TEMP_IF_ID_Rdst2   : in std_logic_vector(3 downto 0);
 
         -- Buffer between Decode and Execute
         ID_EXE_branch_taken1 : in std_logic;
@@ -52,6 +52,21 @@ end hazard_unit;
 architecture a_hazard_unit of hazard_unit is
 
 signal temp : std_logic;
+
+-- SIGNALS RESET
+
+-- first instruction
+signal IF_ID_opCode1 : std_logic_vector(1 downto 0);
+signal IF_ID_func1   : std_logic_vector(2 downto 0);
+signal IF_ID_Rsrc1   : std_logic_vector(3 downto 0);
+signal IF_ID_Rdst1   : std_logic_vector(3 downto 0);
+        
+-- second instruction
+signal IF_ID_opCode2 : std_logic_vector(1 downto 0);
+signal IF_ID_func2   : std_logic_vector(2 downto 0);
+signal IF_ID_Rsrc2   : std_logic_vector(3 downto 0);
+signal IF_ID_Rdst2   : std_logic_vector(3 downto 0);
+
 ------------------ one operand hazard detection ---------------------
 -- NOP 
 signal nop_first_in_packet_handle  : std_logic; -- nop is an exception because rsrc and rdst are x"0" which can make hazard if we didn't handle it.
@@ -161,6 +176,20 @@ signal SIG_branch_taken2 : std_logic;
 signal first_alu_operation : std_logic;
 
 begin
+
+
+    -- LOGIC RESET
+    IF_ID_opCode1 <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_opCode1;
+    IF_ID_func1   <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_func1;
+    IF_ID_Rsrc1   <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_Rsrc1;
+    IF_ID_Rdst1   <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_Rdst1;
+        
+    -- second instruction
+    IF_ID_opCode2 <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_opCode2; 
+    IF_ID_func2   <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_func2; 
+    IF_ID_Rsrc2   <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_Rsrc2; 
+    IF_ID_Rdst2   <= (others => '0') when (jmp_hazard = '1' or ID_EXE_late_flush = '1') else TEMP_IF_ID_Rdst2; 
+
 
 
     -- NOP EXCEPTION.

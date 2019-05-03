@@ -172,14 +172,14 @@ i1_IN_signal ,i1_OUT_signal ,i2_IN_signal,i2_OUT_signal ,i1_in_out_dest,i2_in_ou
 -----------------------------hazard detection and its connection 
 hazard : entity work.hazard_unit port map 
 (
-	IF_ID_opCode1 		 => i1_opcode,
-	IF_ID_func1 		 => i1_function,
-	IF_ID_Rsrc1 		 => i1_Rsrc_in, 
-	IF_ID_Rdst1 		 => i1_Rdst_in, 
-	IF_ID_opCode2 		 => i2_opcode,
-	IF_ID_func2 		 => i2_function,
-	IF_ID_Rsrc2 		 => i2_Rsrc_in, 
-	IF_ID_Rdst2 		 => i2_Rdst_in,
+	TEMP_IF_ID_opCode1 		 => i1_opcode,
+	TEMP_IF_ID_func1 		 => i1_function,
+	TEMP_IF_ID_Rsrc1 		 => i1_Rsrc_in, 
+	TEMP_IF_ID_Rdst1 		 => i1_Rdst_in, 
+	TEMP_IF_ID_opCode2 		 => i2_opcode,
+	TEMP_IF_ID_func2 		 => i2_function,
+	TEMP_IF_ID_Rsrc2 		 => i2_Rsrc_in, 
+	TEMP_IF_ID_Rdst2 		 => i2_Rdst_in,
 	ID_EXE_branch_taken1 => DEC_EXE_branch_taken_1,
 	ID_EXE_branch_taken2 => DEC_EXE_branch_taken_2,
 	ID_EXE_MemoryRead1 	 => DEC_EXE_Memory_read_1 ,
