@@ -214,6 +214,45 @@ process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_wr
 	--	flag_data_in <= i2_Rdst_data_in;
 	--	flag_En <= '1';
 	end if;
+	if (i1_Rdst_write_back = "0001" and i1_OUT_signal = '1') then
+		OUT_bus <= R0_data_out;
+
+	elsif (i1_Rdst_write_back = "0010" and i1_OUT_signal = '1') then
+		OUT_bus <= R1_data_out;
+
+	elsif (i1_Rdst_write_back = "0011" and i1_OUT_signal = '1') then
+		OUT_bus <= R2_data_out;
+
+	elsif (i1_Rdst_write_back = "0100" and i1_OUT_signal = '1') then
+		OUT_bus <= R3_data_out;
+	elsif (i1_Rdst_write_back = "0101" and i1_OUT_signal = '1') then
+		OUT_bus <= R4_data_out;
+	elsif (i1_Rdst_write_back = "0110"and i1_OUT_signal = '1') then
+		OUT_bus <= R5_data_out;
+	elsif (i1_Rdst_write_back = "0111" and i1_OUT_signal = '1') then
+		OUT_bus <= R6_data_out;
+	elsif (i1_Rdst_write_back = "1000" and i1_OUT_signal = '1') then
+		OUT_bus <= R7_data_out;
+---------------------------------------------------------------------
+	elsif (i2_Rdst_write_back = "0001" and i2_OUT_signal = '1') then
+		OUT_bus <= R0_data_out;
+	elsif (i2_Rdst_write_back = "0010" and i2_OUT_signal = '1') then
+		OUT_bus <= R1_data_out;
+	elsif (i2_Rdst_write_back = "0011" and i2_OUT_signal = '1') then
+		OUT_bus <= R2_data_out;
+	elsif (i2_Rdst_write_back = "0100" and i2_OUT_signal = '1') then
+		OUT_bus <= R3_data_out;
+	elsif (i2_Rdst_write_back = "0101" and i2_OUT_signal = '1') then
+		OUT_bus <= R4_data_out;
+	elsif (i2_Rdst_write_back = "0110"and i2_OUT_signal = '1') then
+		OUT_bus <= R5_data_out;
+	elsif (i2_Rdst_write_back = "0111" and i2_OUT_signal = '1') then
+		OUT_bus <= R6_data_out;
+	elsif (i2_Rdst_write_back = "1000" and i2_OUT_signal = '1') then
+		OUT_bus <= R7_data_out;
+	elsif (i2_Rdst_write_back = "0000" or i2_OUT_signal = '0' ) then 
+		OUT_bus	 <= "ZZZZZZZZZZZZZZZZ";
+	end if;
 end process;	
 
 process(clk ,rst,
@@ -353,45 +392,7 @@ begin
 	end if;
 	-------------------------------------------------------- out operation
 --------------------------------------------------------------
-	if (i1_in_out_dest = "0001" and i1_OUT_signal = '1') then
-		OUT_bus <= R0_data_out;
-
-	elsif (i1_in_out_dest = "0010" and i1_OUT_signal = '1') then
-		OUT_bus <= R1_data_out;
-
-	elsif (i1_in_out_dest = "0011" and i1_OUT_signal = '1') then
-		OUT_bus <= R2_data_out;
-
-	elsif (i1_in_out_dest = "0100" and i1_OUT_signal = '1') then
-		OUT_bus <= R3_data_out;
-	elsif (i1_in_out_dest = "0101" and i1_OUT_signal = '1') then
-		OUT_bus <= R4_data_out;
-	elsif (i1_in_out_dest = "0110"and i1_OUT_signal = '1') then
-		OUT_bus <= R5_data_out;
-	elsif (i1_in_out_dest = "0111" and i1_OUT_signal = '1') then
-		OUT_bus <= R6_data_out;
-	elsif (i1_in_out_dest = "1000" and i1_OUT_signal = '1') then
-		OUT_bus <= R7_data_out;
----------------------------------------------------------------------
-	elsif (i2_in_out_dest = "0001" and i2_OUT_signal = '1') then
-		OUT_bus <= R0_data_out;
-	elsif (i2_in_out_dest = "0010" and i2_OUT_signal = '1') then
-		OUT_bus <= R1_data_out;
-	elsif (i2_in_out_dest = "0011" and i2_OUT_signal = '1') then
-		OUT_bus <= R2_data_out;
-	elsif (i2_in_out_dest = "0100" and i2_OUT_signal = '1') then
-		OUT_bus <= R3_data_out;
-	elsif (i2_in_out_dest = "0101" and i2_OUT_signal = '1') then
-		OUT_bus <= R4_data_out;
-	elsif (i2_in_out_dest = "0110"and i2_OUT_signal = '1') then
-		OUT_bus <= R5_data_out;
-	elsif (i2_in_out_dest = "0111" and i2_OUT_signal = '1') then
-		OUT_bus <= R6_data_out;
-	elsif (i2_in_out_dest = "1000" and i2_OUT_signal = '1') then
-		OUT_bus <= R7_data_out;
-	elsif (i2_in_out_dest = "0000" or i1_in_out_dest = "0000" ) then 
-		OUT_bus	 <= "ZZZZZZZZZZZZZZZZ";
-	end if;
+	
 
 end process;
 -------------------------------------------------------- hazard sel data out process

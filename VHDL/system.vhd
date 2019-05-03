@@ -31,7 +31,7 @@ signal	i2_Rdst : std_logic_vector(3 DOWNTO 0);
 signal	i1_Rdst_DEC_out:  std_logic_vector(3 DOWNTO 0);
 signal	i1_Rsrc_DEC_out: std_logic_vector(3 DOWNTO 0);
 signal	i1_branch_taken_DEC_out : std_logic;
-signal	i1_load_use_DEC_out : std_logic;
+signal	i1_OUT_DEC_out : std_logic;
 signal	i1_Rsrc_data_DEC_out: std_logic_vector(15 DOWNTO 0);
 signal	i1_Rdst_data_DEC_out: std_logic_vector(15 DOWNTO 0);
 signal	i1_stall_long_DEC_out : std_logic := '0';
@@ -43,7 +43,7 @@ signal	i1_alu_op_DEC_out : std_logic_vector (4 downto 0);
 signal	i2_Rdst_DEC_out: std_logic_vector(3 DOWNTO 0);
 signal	i2_Rsrc_DEC_out: std_logic_vector(3 DOWNTO 0);
 signal	i2_branch_taken_DEC_out : std_logic;
-signal	i2_load_use_DEC_out :  std_logic;
+signal	i2_OUT_DEC_out :  std_logic;
 signal	i2_Rsrc_data_DEC_out:  std_logic_vector(15 DOWNTO 0);
 signal	i2_Rdst_data_DEC_out:std_logic_vector(15 DOWNTO 0);
 signal	i2_stall_long_DEC_out : std_logic;
@@ -55,7 +55,7 @@ signal	i2_alu_op_DEC_out :  std_logic_vector(4 downto 0);
 signal	i1_Rdst_Exec_in: std_logic_vector(3 DOWNTO 0);
 signal	i1_Rsrc_Exec_in:  std_logic_vector(3 DOWNTO 0);
 signal	i1_branch_taken_Exec_in :  std_logic;
-signal	i1_load_use_Exec_in :  std_logic;
+signal	i1_OUT_Exec_in :  std_logic;
 signal	i1_Rsrc_data_Exec_in:  std_logic_vector(15 DOWNTO 0);
 signal	i1_Rdst_data_Exec_in:  std_logic_vector(15 DOWNTO 0);
 signal	i1_stall_long_Exec_in : std_logic;
@@ -69,7 +69,7 @@ signal flags : std_logic_vector(2 downto 0);
 signal	i2_Rdst_Exec_in:  std_logic_vector(3 DOWNTO 0);
 signal	i2_Rsrc_Exec_in:  std_logic_vector(3 DOWNTO 0);
 signal	i2_branch_taken_Exec_in :  std_logic;
-signal	i2_load_use_Exec_in :  std_logic;
+signal	i2_OUT_Exec_in :  std_logic;
 signal	i2_Rsrc_data_Exec_in:  std_logic_vector(15 DOWNTO 0);
 signal	i2_Rdst_data_Exec_in:  std_logic_vector(15 DOWNTO 0);
 signal	i2_stall_long_Exec_in : std_logic;
@@ -205,7 +205,7 @@ deocode : entity work.DECODE PORT map  (
     i1_Rdst_DEC_out,
 	i1_Rsrc_DEC_out,
 	i1_branch_taken_DEC_out,
-	i1_load_use_DEC_out ,
+	i1_OUT_DEC_out ,
 	i1_Rsrc_data_DEC_out,
 	i1_Rdst_data_DEC_out,
 	i1_stall_long_DEC_out ,
@@ -217,7 +217,7 @@ deocode : entity work.DECODE PORT map  (
 	i2_Rdst_DEC_out,
 	i2_Rsrc_DEC_out,
 	i2_branch_taken_DEC_out,
-	i2_load_use_DEC_out ,
+	i2_OUT_DEC_out ,
 	i2_Rsrc_data_DEC_out,
 	i2_Rdst_data_DEC_out,
 	i2_stall_long_DEC_out ,
@@ -248,7 +248,7 @@ deocode : entity work.DECODE PORT map  (
 	RST_IR_out ,
 	branch_taken_1, 
 	branch_taken_2 ,
-
+	
 	late_stall_long_in,
 	late_stall_long_out
 
@@ -266,7 +266,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
     i1_Rdst_DEC_out,
 	i1_Rsrc_DEC_out,
 	branch_taken_1,
-	i1_load_use_DEC_out ,
+	i1_OUT_DEC_out ,
 	i1_source_dec_out,
 	i1_Rdst_data_DEC_out,
 	i1_stall_long_DEC_out ,  -- stall_long_output
@@ -278,7 +278,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i2_Rdst_DEC_out,
 	i2_Rsrc_DEC_out,
 	branch_taken_2,
-	i2_load_use_DEC_out ,
+	i2_OUT_DEC_out ,
 	i2_Rsrc_data_DEC_out,
 	i2_Rdst_data_DEC_out,
 	i2_stall_long_DEC_out ,
@@ -290,7 +290,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i1_Rdst_Exec_in,
 	i1_Rsrc_Exec_in,
 	i1_branch_taken_Exec_in ,
-	i1_load_use_Exec_in ,
+	i1_OUT_Exec_in ,
 	i1_Rsrc_data_Exec_in,
 	i1_Rdst_data_Exec_in,
 	i1_stall_long_Exec_in , -- stall_long_output
@@ -302,7 +302,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i2_Rdst_Exec_in,
 	i2_Rsrc_Exec_in,
 	i2_branch_taken_Exec_in ,
-	i2_load_use_Exec_in ,
+	i2_OUT_Exec_in ,
 	i2_Rsrc_data_Exec_in,
 	i2_Rdst_data_Exec_in,
 	i2_stall_long_Exec_in,
@@ -318,7 +318,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
  	i1_Rdst_Exec_in,
 	i1_Rsrc_Exec_in,
 	i1_branch_taken_Exec_in,
-	i1_load_use_Exec_in ,
+	i1_OUT_Exec_in ,
 	i1_Rsrc_data_Exec_in,
 	i1_Rdst_data_Exec_in,
 	i1_stall_long_Exec_in ,
@@ -330,7 +330,7 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i2_Rdst_Exec_in,
 	i2_Rsrc_Exec_in,
 	i2_branch_taken_Exec_in ,
-	i2_load_use_Exec_in ,
+	i2_OUT_Exec_in ,
 	i2_Rsrc_data_Exec_in,
 	i2_Rdst_data_Exec_in,
 	i2_stall_long_Exec_in,

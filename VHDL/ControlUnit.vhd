@@ -123,16 +123,16 @@ architecture a_Control_Unit of Control_Unit is
                     in_out_dest <= Rdst;
            
                 elsif (func = "110") then  --out
-                    AluFunc <= "00000";
+                    AluFunc <= "00110";
                     dest <= Rdst;
-                    WB <= '0';
+                    WB <= '1';
                     MR <= '0';
                     MW <= '0';
                     regOut1 <= "0000";
-                    regOut2 <= "0000";   
+                    regOut2 <= Rdst;   
                     IN_signal <= '0';
-                    OUT_signal <='1';
-                    in_out_dest <= Rdst;     
+                    OUT_signal <='0';
+                    in_out_dest <= "0000";     
                 end if;
 
             elsif (opcode = "01" and flush ='0' )   then 
@@ -203,8 +203,79 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst; -- immediate here  
                     immediate <= '1'; 
                 end if ;          
-            else     
-                AluFunc <= "00000";
+            
+        elsif (opcode = "10" and flush ='0' )   then 
+                IN_signal <= '0';
+                OUT_signal <='0';
+                in_out_dest <= "0000";
+
+            if (func ="000")    then   -- push ()
+                    AluFunc <= "10001";  
+                    dest <= Rdst;
+                    WB <= '0';
+                    MR <= '0';
+                    MW <= '1';
+                    regOut1 <= "1000";
+                    regOut2 <= "0000"; 
+                    immediate <= '0'; 
+            elsif (func ="001")    then   -- pop ()
+                    AluFunc <= "10001";  
+                dest <= Rdst;
+                WB <= '0';
+                MR <= '0';
+                MW <= '1';
+                regOut1 <= "1000";
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+                    
+            elsif (func ="010")    then   -- load immediate (done)
+                AluFunc <= "00111";  
+                dest <= Rdst;
+                WB <= '1';
+                MR <= '0';
+                MW <= '0';
+                regOut1 <= "0000";
+                regOut2 <= "0000"; 
+                immediate <= '1'; 
+                
+            elsif (func ="011")    then   -- load from memory 
+                AluFunc <= "00111";  --pass rsrc
+                dest <= Rdst;
+                WB <= '1';
+                MR <= '1';
+                MW <= '0';
+                regOut1 <= Rsrc;
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+                
+            elsif (func ="100")    then   -- store
+                AluFunc <= "00110";  
+                dest <= Rsrc;
+                WB <= '0';
+                MR <= '1';
+                MW <= '0';
+                regOut1 <= "0000";
+                regOut2 <= Rdst; 
+                immediate <= '0'; 
+            
+            end if;
+
+        elsif (opcode = "11" and flush ='0' )   then 
+            IN_signal <= '0';
+            OUT_signal <='0';
+            in_out_dest <= "0000";
+            if (func ="000" or func ="001" or func ="010" or func ="001")    then  
+                AluFunc <= "00000"; 
+                dest <= "0000";
+                WB <= '0';
+                MR <= '0';
+                MW <= '0';
+                regOut1 <= "0000";
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+            end if;
+
+    else     AluFunc <= "00000";
                 dest <= "0000";
                 WB <= '0';
                 MR <= '0';
@@ -215,7 +286,7 @@ architecture a_Control_Unit of Control_Unit is
                 IN_signal <= '0';
                 OUT_signal <='0';
                 in_out_dest <= "0000";
-            end if;
+        end if;  
 	end process; 
 		src<=Rsrc;    
 end architecture;
