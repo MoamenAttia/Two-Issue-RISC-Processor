@@ -170,6 +170,38 @@ begin
 	elsif (i1_Rsrc = "0000") then 
 		i1_Rsrc_data_out <= "ZZZZZZZZZZZZZZZZ";
 	end if;
+
+	if (i1_Rdst = "0001") then
+		i1_Rdst_data_out <= R0_data_out;
+
+	elsif (i1_Rdst = "0010") then
+		i1_Rdst_data_out <= R1_data_out;
+
+	elsif (i1_Rdst = "0011") then
+		i1_Rdst_data_out <= R2_data_out;
+
+	elsif (i1_Rdst = "0100") then
+		i1_Rdst_data_out <= R3_data_out;
+
+	elsif (i1_Rdst = "0101") then
+		i1_Rdst_data_out <= R4_data_out;
+
+	elsif (i1_Rdst = "0110") then
+		i1_Rdst_data_out <= R5_data_out;
+
+	elsif (i1_Rdst = "0111") then
+		i1_Rdst_data_out <= R6_data_out;
+
+	elsif (i1_Rdst = "1000") then
+		i1_Rdst_data_out <= R7_data_out;
+
+	elsif 	(i1_Rdst = "1110") then --in 
+		i1_Rdst_data_out <=IN_bus;	
+
+	elsif (i1_Rdst = "0000") then 
+		i1_Rdst_data_out <= "ZZZZZZZZZZZZZZZZ";
+
+	end if;
 	-------------------------------------------------------- instr 2 Rsrc data out
 	if (i2_Rsrc = "0001") then
 		i2_Rsrc_data_out <= R0_data_out;
@@ -188,9 +220,39 @@ begin
 	elsif (i2_Rsrc = "1000") then
 		i2_Rsrc_data_out <= R7_data_out;
 	elsif 	(i1_Rsrc = "1110") then --in 
-		i1_Rsrc_data_out <=IN_bus;
+		i2_Rsrc_data_out <=IN_bus;
 	elsif (i2_Rsrc = "0000") then 
 		i2_Rsrc_data_out <= "ZZZZZZZZZZZZZZZZ";
+	end if;
+
+	if (i2_Rdst = "0001") then
+		i2_Rdst_data_out <= R0_data_out;
+
+	elsif (i2_Rdst = "0010") then
+		i2_Rdst_data_out <= R1_data_out;
+
+	elsif (i2_Rdst = "0011") then
+		i2_Rdst_data_out <= R2_data_out;
+
+	elsif (i2_Rdst = "0100") then
+		i2_Rdst_data_out <= R3_data_out;
+
+	elsif (i2_Rdst = "0101") then
+		i2_Rdst_data_out <= R4_data_out;
+
+	elsif (i2_Rdst = "0110") then
+		i2_Rdst_data_out <= R5_data_out;
+
+	elsif (i2_Rdst = "0111") then
+		i2_Rdst_data_out <= R6_data_out;
+
+	elsif (i2_Rdst = "1000") then
+		i2_Rdst_data_out <= R7_data_out;
+	elsif 	(i2_Rdst = "1110") then --in 
+		i2_Rdst_data_out <=IN_bus;
+
+	elsif (i2_Rdst = "0000") then 
+		i2_Rdst_data_out <= "ZZZZZZZZZZZZZZZZ";
 	end if;
 end process;
 -------------------------------------------------------- hazard sel data out process

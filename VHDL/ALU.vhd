@@ -58,6 +58,8 @@ architecture a_ALU of ALU is
                     
                     elsif (sel = "00110") then 
                         r <= in2;        --rdst
+                    elsif (sel ="01111") then 
+                         r <= in2;
                     elsif (sel = "00111")  then
                         r <= in1 ;        --rsrc 
                     elsif (sel ="01000") then 

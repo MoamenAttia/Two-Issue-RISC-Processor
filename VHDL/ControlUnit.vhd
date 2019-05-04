@@ -102,7 +102,7 @@ architecture a_Control_Unit of Control_Unit is
                     OUT_signal <='0';
               
                 elsif (func = "111" ) then  --in 
-                    AluFunc <= "01101";
+                    AluFunc <= "01111";
                     dest <= Rdst;
                     WB <= '1';
                     MR <= '0';
