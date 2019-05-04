@@ -20,9 +20,9 @@ entity Control_Unit is
         -----------------------------
         IN_signal:out std_logic;
         OUT_signal:out std_logic;
-        immediate : out std_logic
+        immediate : out std_logic;
         ----------------------
-        PP_signal :out std_logic(1 downto 0);
+        PP_signal :out std_logic_vector(1 downto 0)
     );
 end Control_Unit;
 
@@ -207,7 +207,7 @@ architecture a_Control_Unit of Control_Unit is
                 end if ;          
             
         elsif (opcode = "10" and flush ='0' )   then --memory
-                src<=Rsrc;
+        
                 IN_signal <= '0';
                 OUT_signal <='0';
 
@@ -256,15 +256,15 @@ architecture a_Control_Unit of Control_Unit is
                 src<=Rsrc;
                 PP_signal <= "00";
             elsif (func ="100")    then   -- store
-                AluFunc <= "00110";  
+                AluFunc <= "00111";  
                 dest <= Rsrc;
                 WB <= '0';
                 MR <= '0';
                 MW <= '1';
-                regOut1 <= "0000";
-                regOut2 <= Rdst; 
+                regOut1 <= Rdst;
+                regOut2 <= "0000"; 
                 immediate <= '0'; 
-                src<="0000";
+                src<=Rdst;
                 PP_signal <= "00";
             end if;
 
@@ -296,8 +296,9 @@ architecture a_Control_Unit of Control_Unit is
         immediate <= '0';
         IN_signal <= '0';
         OUT_signal <='0';
+	PP_signal <= "00";
        
     end if;  
 	end process; 
-	src<=Rsrc;    
+   
 end architecture;

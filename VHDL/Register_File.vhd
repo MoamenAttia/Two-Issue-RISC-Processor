@@ -31,7 +31,7 @@ PORT(
 	IN_bus : in std_logic_vector (15 downto 0);
 	OUT_bus : out std_logic_vector (15 downto 0);
 	--------
-	PP_signal : in std_logic(1 downto 0)
+	PP_signal : in std_logic_vector(1 downto 0)
 
 );
 
@@ -75,7 +75,7 @@ signal R7_data_out :std_logic_vector(15 downto 0);
 -----------------------------------------------
 signal bus_out :std_logic_vector (15 downto 0);
 --------------------------------------------------SP
-signal sp : :std_logic_vector (15 downto 0);
+signal sp:std_logic_vector (15 downto 0);
 
 
 BEGIN
@@ -89,11 +89,12 @@ R5:entity work.my_nDFF  generic map (16) port map (clk,  rst , R5_data_in ,R5_da
 R6:entity work.my_nDFF  generic map (16) port map (clk,  rst , R6_data_in ,R6_data_out ,R6_EN);
 R7:entity work.my_nDFF  generic map (16) port map (clk,  rst , R7_data_in ,R7_data_out ,R7_EN);
 --sp:entity work.my_nDFF  generic map (32) port map (clk,  rst , SP_data_in ,SP_data_out ,SP_EN);
-SP:entity work.sp  generic map (16) port map (clk, PP_signal,sp);
+SP_1:entity work.sp port map (clk, PP_signal,sp);
 ------------------------------------------------------- 
 --temp_SP <=std_logic_vector(to_integer (unsigned (SP)) + 1) when PP_signal = '1';
 
-process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,i2_write_back_signal,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus ,i1_Rdst_data_in,i2_Rdst_data_in)
+process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,
+	i2_write_back_signal,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus ,i1_Rdst_data_in,i2_Rdst_data_in)
 	begin
 	--------------------------------------------------------- instr 1 write back and in from bus
 	if (i1_Rdst_write_back = "0001" and i1_write_back_signal = '1' ) then 
@@ -156,7 +157,9 @@ process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,i2_write
 	end process;	
 -----------------------------------------------------------------------------------
 process(clk ,rst,
-i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus,R0_data_out,R1_data_out,R2_data_out,R3_data_out,R4_data_out,R5_data_out,R6_data_out,R7_data_out)
+i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus,
+R0_data_out,R1_data_out,R2_data_out,R3_data_out,
+R4_data_out,R5_data_out,R6_data_out,R7_data_out,pp_signal,sp)
 begin
 -------------------------------------------------------- instr 1 Rsrc data out
 	if (i1_Rsrc = "0001") then
@@ -300,7 +303,7 @@ begin
 
 end process;
 -----------------------------------------------------memory sel data out process
-process(clk ,rst,MEM_sel)
+process(clk ,rst,MEM_sel,R0_data_out,R1_data_out,R2_data_out,R3_data_out,R4_data_out,R5_data_out,R6_data_out,R7_data_out)
 begin
 	if (MEM_sel = "0001") then
 		MEM_data <= R0_data_out;

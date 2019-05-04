@@ -104,7 +104,7 @@ signal branch_taken_2      : std_logic;
 signal SIG_ID_EXE_late_flush : std_logic;
 signal SIG_late_flush_ID_EXE : std_logic;
 ---------------
-signal  PP_signal :std_logic(1 downto 0);
+signal  PP_signal :std_logic_vector(1 downto 0);
 BEGIN
 
 i1_stall_long <= clear_first;

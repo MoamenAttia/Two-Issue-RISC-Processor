@@ -10,10 +10,10 @@ entity SP is
 end SP;
 
 architecture my_SP of SP is
-signal sp : std_logic_vector(15 downto 0):="1111111111111111";
-signal sp_minus : std_logic_vector(15 downto 0):="1111111111111110";
+signal sp : std_logic_vector(15 downto 0)      :="1111111111111111";
+signal sp_minus : std_logic_vector(15 downto 0):="0000000000000000";
 begin
-process(clk,pp_signal)
+process(clk)
 begin
 if(rising_edge(clk))then
     if (pp_signal = "01")then

@@ -14,6 +14,7 @@ add wave -position insertpoint sim:/system/mem_writeback/*
 add wave -position insertpoint sim:/system/deocode/controli1_unit/*
 add wave -position insertpoint sim:/system/deocode/controli2_unit/*
 add wave -position insertpoint sim:/system/deocode/Register_file/*
+add wave -position insertpoint sim:/system/deocode/Register_file/SP_1/*
 add wave -position insertpoint sim:/system/Execute/alu1/*
 add wave -position insertpoint sim:/system/Execute/alu2/*
 add wave -position insertpoint sim:/system/Execute/fu/*
@@ -23,16 +24,18 @@ add wave -position insertpoint sim:/system/Execute/mux3/*
 add wave -position insertpoint sim:/system/Execute/mux4/*
 
 
-mem load -filltype value -filldata 0000000000000100 -fillradix binary /system/fetch/inst_ram/my_ram(0)
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /system/fetch/inst_ram/my_ram(1)
-mem load -filltype value -filldata 0000000000001000 -fillradix binary /system/fetch/inst_ram/my_ram(2)
-mem load -filltype value -filldata 0000010000001100 -fillradix binary /system/fetch/inst_ram/my_ram(3)
-mem load -filltype value -filldata 0000010000010000 -fillradix binary /system/fetch/inst_ram/my_ram(4)
-mem load -filltype value -filldata 0000010000011100 -fillradix binary /system/fetch/inst_ram/my_ram(5)
-mem load -filltype value -filldata 0000011000011100 -fillradix binary /system/fetch/inst_ram/my_ram(6)
-mem load -filltype value -filldata 0000011000001100 -fillradix binary /system/fetch/inst_ram/my_ram(7)
-mem load -filltype value -filldata 0000010000010000 -fillradix binary /system/fetch/inst_ram/my_ram(8)
-mem load -filltype value -filldata 0000011000010100 -fillradix binary /system/fetch/inst_ram/my_ram(9)
+mem load -filltype value -filldata 0000001000001010 -fillradix binary /system/fetch/inst_ram/my_ram(0)
+mem load -filltype value -filldata 0000000000000101 -fillradix binary /system/fetch/inst_ram/my_ram(1)
+
+mem load -filltype value -filldata 0000010000110010 -fillradix binary /system/fetch/inst_ram/my_ram(2)
+
+mem load -filltype value -filldata 0000011001001110 -fillradix binary /system/fetch/inst_ram/my_ram(3)
+
+mem load -filltype value -filldata 0000011100000010 -fillradix binary /system/fetch/inst_ram/my_ram(4)
+
+
+
+
 
 
 
@@ -43,4 +46,3 @@ run
 run
 run
 force -freeze sim:/system/rst 0 0
-run

@@ -62,7 +62,7 @@ signal data_out 	: std_logic_vector(15 downto 0);
 	address <= instr_1_alu_result when instr_1_mem_write = '1' or instr_1_mem_read = '1'
 								  else instr_2_alu_result when instr_2_mem_write = '1' or instr_2_mem_read = '1';
 
-	data_ram : entity work.data_ram port map ( clk_inv , enable_write , enable_read , address , data_in , data_out);	
+	data_ram : entity work.data_ram port map ( clk , enable_write , enable_read , address , data_in , data_out);	
 
 	instr_1_result_out <= data_out when instr_1_mem_read = '1'
 									else instr_1_alu_result when instr_1_mem_read = '0';	
