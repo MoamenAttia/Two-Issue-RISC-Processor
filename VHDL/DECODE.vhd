@@ -103,7 +103,8 @@ signal branch_taken_2      : std_logic;
 -----------------------------
 signal SIG_ID_EXE_late_flush : std_logic;
 signal SIG_late_flush_ID_EXE : std_logic;
-
+---------------
+signal  PP_signal :std_logic(1 downto 0);
 BEGIN
 
 i1_stall_long <= clear_first;
@@ -129,7 +130,8 @@ regOut2 => i1_Rdst_in_regFile,
 flush => clear_first, 
 IN_signal => i1_IN_signal,
 OUT_signal => i1_OUT_signal,
-immediate => i1_immediate
+immediate => i1_immediate,
+PP_signal => PP_signal
 );
 ---------------------- control unit instr 2		
 controli2_unit:entity work.Control_Unit  port map (
@@ -173,7 +175,8 @@ hazard_data ,
 MEM_sel ,
 MEM_data,
 IN_bus,
-OUT_bus
+OUT_bus,
+pp_signal
  );
 -----------------------------hazard detection and its connection 
 hazard : entity work.hazard_unit port map 

@@ -29,7 +29,9 @@ PORT(
 	MEM_data : out std_logic_vector(15 downto 0) ;
 ------------------------------------------    in and out signals 
 	IN_bus : in std_logic_vector (15 downto 0);
-	OUT_bus : out std_logic_vector (15 downto 0)
+	OUT_bus : out std_logic_vector (15 downto 0);
+	--------
+	PP_signal : in std_logic(1 downto 0)
 
 );
 
@@ -72,6 +74,10 @@ signal R7_data_out :std_logic_vector(15 downto 0);
 --signal SP_data_out :std_logic_vector(31 downto 0);
 -----------------------------------------------
 signal bus_out :std_logic_vector (15 downto 0);
+--------------------------------------------------SP
+signal sp : :std_logic_vector (15 downto 0);
+
+
 BEGIN
 clk_inv <= not(Clk);
 R0:entity work.my_nDFF  generic map (16) port map (clk,  rst , R0_data_in ,R0_data_out ,R0_EN);
@@ -83,7 +89,10 @@ R5:entity work.my_nDFF  generic map (16) port map (clk,  rst , R5_data_in ,R5_da
 R6:entity work.my_nDFF  generic map (16) port map (clk,  rst , R6_data_in ,R6_data_out ,R6_EN);
 R7:entity work.my_nDFF  generic map (16) port map (clk,  rst , R7_data_in ,R7_data_out ,R7_EN);
 --sp:entity work.my_nDFF  generic map (32) port map (clk,  rst , SP_data_in ,SP_data_out ,SP_EN);
+SP:entity work.sp  generic map (16) port map (clk, PP_signal,sp);
 ------------------------------------------------------- 
+--temp_SP <=std_logic_vector(to_integer (unsigned (SP)) + 1) when PP_signal = '1';
+
 process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,i2_write_back_signal,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus ,i1_Rdst_data_in,i2_Rdst_data_in)
 	begin
 	--------------------------------------------------------- instr 1 write back and in from bus
@@ -168,6 +177,8 @@ begin
 		i1_Rsrc_data_out <= R7_data_out;
 	elsif 	(i1_Rsrc = "1110") then --out 
 		i1_Rsrc_data_out <=IN_bus;
+	elsif 	(i1_Rsrc = "1000" ) then 
+		i1_Rsrc_data_out<= sp;
 	elsif (i1_Rsrc = "0000") then 
 		i1_Rsrc_data_out <= "ZZZZZZZZZZZZZZZZ";
 	end if;
@@ -197,7 +208,9 @@ begin
 		i1_Rdst_data_out <= R7_data_out;
 
 	elsif 	(i1_Rdst = "1110") then --in 
-		i1_Rdst_data_out <=IN_bus;	
+		i1_Rdst_data_out <=IN_bus;
+	elsif 	(i1_Rdst = "1000" ) then 
+		i1_Rdst_data_out<= sp;	
 
 	elsif (i1_Rdst = "0000") then 
 		i1_Rdst_data_out <= "ZZZZZZZZZZZZZZZZ";
@@ -220,8 +233,10 @@ begin
 		i2_Rsrc_data_out <= R6_data_out;
 	elsif (i2_Rsrc = "1000") then
 		i2_Rsrc_data_out <= R7_data_out;
-	elsif 	(i1_Rsrc = "1110") then --in 
+	elsif 	(i2_Rsrc = "1110") then --in 
 		i2_Rsrc_data_out <=IN_bus;
+	elsif 	(i2_Rsrc = "1000" ) then 
+		i2_Rsrc_data_out<= sp;
 	elsif (i2_Rsrc = "0000") then 
 		i2_Rsrc_data_out <= "ZZZZZZZZZZZZZZZZ";
 	end if;
@@ -249,9 +264,13 @@ begin
 
 	elsif (i2_Rdst = "1000") then
 		i2_Rdst_data_out <= R7_data_out;
+
 	elsif 	(i2_Rdst = "1110") then --in 
 		i2_Rdst_data_out <=IN_bus;
 
+	elsif 	(i2_Rdst = "1000" ) then 
+		i2_Rdst_data_out<= sp;
+		
 	elsif (i2_Rdst = "0000") then 
 		i2_Rdst_data_out <= "ZZZZZZZZZZZZZZZZ";
 	end if;
@@ -304,6 +323,7 @@ begin
 
 	end if;
 end process;
+
 
 
 END my_Register_File;
