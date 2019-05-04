@@ -9,16 +9,16 @@ PORT(
 -----------------------------------------------
 	i1_Rsrc : in std_logic_vector(3 downto 0);
 	i1_Rdst : in std_logic_vector(3 downto 0);
-	i1_Rsrc_data_out : out std_logic_vector(15 downto 0);
-	i1_Rdst_data_out : out std_logic_vector(15 downto 0);
+	i1_Rsrc_data_out_1 : out std_logic_vector(15 downto 0);
+	i1_Rdst_data_out_1 : out std_logic_vector(15 downto 0);
 	i1_Rdst_data_in : in std_logic_vector(15 downto 0);
 	i1_Rdst_write_back : in std_logic_vector(3 downto 0);
 	i1_write_back_signal : in std_logic ;
 -----------------------------------------------
 	i2_Rsrc : in std_logic_vector(3 downto 0);
 	i2_Rdst : in std_logic_vector(3 downto 0);
-	i2_Rsrc_data_out : out std_logic_vector(15 downto 0);
-	i2_Rdst_data_out: out std_logic_vector(15 downto 0);
+	i2_Rsrc_data_out_1 : out std_logic_vector(15 downto 0);
+	i2_Rdst_data_out_1: out std_logic_vector(15 downto 0);
 	i2_Rdst_data_in : in std_logic_vector(15 downto 0);
 	i2_Rdst_write_back : in std_logic_vector(3 downto 0);	
 	i2_write_back_signal : in std_logic; 
@@ -38,6 +38,13 @@ PORT(
 END Register_File;
 
 ARCHITECTURE my_Register_File OF Register_File IS
+
+
+signal i1_Rsrc_data_out :  std_logic_vector(15 downto 0);
+signal	i1_Rdst_data_out :  std_logic_vector(15 downto 0);
+
+signal i2_Rsrc_data_out :  std_logic_vector(15 downto 0);
+signal 	i2_Rdst_data_out:  std_logic_vector(15 downto 0);
 -- clk
 signal clk_inv : std_logic;
 
@@ -50,8 +57,6 @@ signal R4_En :std_logic;
 signal R5_En :std_logic;
 signal R6_En :std_logic;
 signal R7_En :std_logic;
---signal SP_En :std_logic;
-
 -------------------------------------------------- data in
 signal R0_data_in :std_logic_vector(15 downto 0);
 signal R1_data_in :std_logic_vector(15 downto 0);
@@ -61,7 +66,6 @@ signal R4_data_in :std_logic_vector(15 downto 0);
 signal R5_data_in :std_logic_vector(15 downto 0);
 signal R6_data_in :std_logic_vector(15 downto 0);
 signal R7_data_in :std_logic_vector(15 downto 0);
---signal SP_data_in :std_logic_vector(31 downto 0);
 -------------------------------------------------- data out
 signal R0_data_out :std_logic_vector(15 downto 0);
 signal R1_data_out :std_logic_vector(15 downto 0);
@@ -71,14 +75,15 @@ signal R4_data_out :std_logic_vector(15 downto 0);
 signal R5_data_out :std_logic_vector(15 downto 0);
 signal R6_data_out :std_logic_vector(15 downto 0);
 signal R7_data_out :std_logic_vector(15 downto 0);
---signal SP_data_out :std_logic_vector(31 downto 0);
 -----------------------------------------------
 signal bus_out :std_logic_vector (15 downto 0);
 --------------------------------------------------SP
 signal sp:std_logic_vector (15 downto 0);
 
-
 BEGIN
+i1_Rsrc_data_out_1 <= sp when i1_Rsrc = "1000" 
+else i1_Rsrc_data_out;
+
 clk_inv <= not(Clk);
 R0:entity work.my_nDFF  generic map (16) port map (clk,  rst , R0_data_in ,R0_data_out ,R0_EN);
 R1:entity work.my_nDFF  generic map (16) port map (clk,  rst , R1_data_in ,R1_data_out ,R1_EN);
@@ -88,10 +93,8 @@ R4:entity work.my_nDFF  generic map (16) port map (clk,  rst , R4_data_in ,R4_da
 R5:entity work.my_nDFF  generic map (16) port map (clk,  rst , R5_data_in ,R5_data_out ,R5_EN);
 R6:entity work.my_nDFF  generic map (16) port map (clk,  rst , R6_data_in ,R6_data_out ,R6_EN);
 R7:entity work.my_nDFF  generic map (16) port map (clk,  rst , R7_data_in ,R7_data_out ,R7_EN);
---sp:entity work.my_nDFF  generic map (32) port map (clk,  rst , SP_data_in ,SP_data_out ,SP_EN);
 SP_1:entity work.sp port map (clk, PP_signal,sp);
 ------------------------------------------------------- 
---temp_SP <=std_logic_vector(to_integer (unsigned (SP)) + 1) when PP_signal = '1';
 
 process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,
 	i2_write_back_signal,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus ,i1_Rdst_data_in,i2_Rdst_data_in)
