@@ -59,7 +59,7 @@ architecture a_ALU of ALU is
                     elsif (sel = "00110") then 
                         r <= in2;        --rdst
                     elsif (sel ="01111") then 
-                         r <= in2;
+                         r <= in2;              --in
                     elsif (sel = "00111")  then
                         r <= in1 ;        --rsrc 
                     elsif (sel ="01000") then 
@@ -111,7 +111,7 @@ architecture a_ALU of ALU is
                     end if;
         end process;
         result <= outAdd when sel = "00100" or sel = "00101" or sel = "01000" or sel = "01001" or sel ="10000" or sel = "10001"
-        else r  when sel = "00011" or sel = "00110" or sel = "00111" or sel = "01011" or sel = "01010" 
+        else r  when sel = "00011" or sel = "00110" or sel = "00111" or sel = "01011" or sel = "01010" or sel ="01111"
 	else tempShift(14 downto 0) & '0' when sel="01100" 
 	else '0' & tempShift(15 downto 1) when sel ="01101" 
     else  "ZZZZZZZZZZZZZZZZ" when sel = "00000"; 

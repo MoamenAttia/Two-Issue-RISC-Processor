@@ -97,7 +97,9 @@ BEGIN
 		forwarda,
 		forwardb,
 		forwarda_2,
-		forwardb_2
+		forwardb_2,
+		i1_alu_op,
+		i2_alu_op
 	);
 	
    ---- muxs

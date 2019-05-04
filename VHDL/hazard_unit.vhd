@@ -338,7 +338,9 @@ begin
     -- data_outer_hazard need flush signal (necessary).
     -- jmp_hazard need async reset.
 
-    new_address <= ID_EXE_Rdst1; -- an input to entity that takes 4 bits ( register ) and returns its data.
+    new_address <= ID_EXE_Rdst1 when ID_EXE_branch_taken1 = '1' else
+                   ID_EXE_Rdst2 when ID_EXE_branch_taken2 = '1' else
+                   "0000"; -- an input to entity that takes 4 bits ( register ) and returns its data.
     
 
 

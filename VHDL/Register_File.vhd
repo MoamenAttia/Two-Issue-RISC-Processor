@@ -98,6 +98,7 @@ process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,i2_write
 		R2_En <= '1';
 	elsif (i1_Rdst_write_back = "0100"and i1_write_back_signal = '1') then 
 		R3_data_in <= i1_Rdst_data_in;
+		R3_En <= '1';
 	elsif (i1_Rdst_write_back = "0101"and i1_write_back_signal = '1') then 
 		R4_data_in <= i1_Rdst_data_in;
 		R4_En <= '1';

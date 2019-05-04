@@ -2,7 +2,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 
 ENTITY Decode_Execute_Buffer IS
-GENERIC ( n : integer := 107);
+GENERIC ( n : integer := 103);
 PORT( Clk,Rst : IN std_logic;
 
 	-- MOAMEN MAGIC BIT

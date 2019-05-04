@@ -41,6 +41,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
+                    src<=Rsrc;
 
                 elsif (func = "001") then -- set carry 
                     AluFunc <= "00001";
@@ -52,6 +53,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
+                    src<=Rsrc;
                
                  
                 elsif (func = "010") then -- clear carry  
@@ -64,6 +66,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
+                    src<=Rsrc;
               
                
                 elsif (func = "011")  then  -- not 
@@ -76,7 +79,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
-             
+                    src<=Rsrc;
             
                 elsif (func = "100") then  --increment
                     AluFunc <= "00100";
@@ -88,6 +91,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
+                    src<=Rsrc;
                   
              
                 elsif (func = "101") then  --decrement 
@@ -100,6 +104,7 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
+                    src<=Rsrc;
               
                 elsif (func = "111" ) then  --in 
                     AluFunc <= "01111";
@@ -111,21 +116,24 @@ architecture a_Control_Unit of Control_Unit is
                     regOut2 <= "1110";  -- this takes from in bus
                     IN_signal <= '1';
                     OUT_signal <='0';
+                    src<=Rsrc;
            
                 elsif (func = "110") then  --out
-                    AluFunc <= "01101";
+                    AluFunc <= "00111";
                     dest <= "1111"; --this writes to out bus
                     WB <= '1';
                     MR <= '0';
                     MW <= '0';
-                    regOut1 <= "0000";
-                    regOut2 <= Rdst;   
+                    regOut1 <= Rdst;
+                    regOut2 <= "0000";   
                     IN_signal <= '0';
                     OUT_signal <='1';
+                    src<=Rdst;
                
                 end if;
 
             elsif (opcode = "01" and flush ='0' )   then 
+                    src<=Rsrc;
                     IN_signal <= '0';
                     OUT_signal <='0';
     
@@ -196,6 +204,7 @@ architecture a_Control_Unit of Control_Unit is
                 end if ;          
             
         elsif (opcode = "10" and flush ='0' )   then --memory
+                src<=Rsrc;
                 IN_signal <= '0';
                 OUT_signal <='0';
 
@@ -254,6 +263,7 @@ architecture a_Control_Unit of Control_Unit is
         elsif (opcode = "11" and flush ='0' )   then --branch
             IN_signal <= '0';
             OUT_signal <='0';
+            src<=Rsrc;
     
             if (func ="000" or func ="001" or func ="010" or func ="001")    then  
                 AluFunc <= "00000"; 
