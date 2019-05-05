@@ -82,19 +82,18 @@ architecture a_ALU of ALU is
 
                     elsif (sel = "01100") then -- shift left
                         if(in1=x"0000" or in1="ZZZZZZZZZZZZZZZZ") then
-				tempShift <= in2;
-				
-			else
-                            	tempShift <= std_logic_vector(shift_left(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
-                            	carryShift <=tempShift(15);
+				            tempShift <= in2;
+			            else
+                            tempShift <= std_logic_vector(shift_left(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+                            carryShift <=tempShift(15);
                         end if;
                         
                     elsif (sel = "01101") then -- shift right 
                         if(in1=x"0000" or in1="ZZZZZZZZZZZZZZZZ") then
-				tempShift <= in2;
+				            tempShift <= in2;
 				
-			else
-                            	tempShift <= std_logic_vector(shift_right(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
+			            else
+                            tempShift <= std_logic_vector(shift_right(unsigned(in2),natural(to_integer(unsigned(in1)) -1  )));
     		                carryShift <= tempShift(0);
                         end if;
 
@@ -116,7 +115,6 @@ architecture a_ALU of ALU is
 	else '0' & tempShift(15 downto 1) when sel ="01101" 
     else  "ZZZZZZZZZZZZZZZZ" when sel = "00000"; 
 
-
 ----------------------------------------------------------------------------------------- flags
 	process (sel,outadd,cout,carryAdd,carryShift,tempShift,r)
 	begin
@@ -131,7 +129,7 @@ architecture a_ALU of ALU is
 		carryFlag <= carryShift;
 	end if;
 ------------------------------ Negative
-        if ((sel ="00100" or sel ="00101" or sel ="01000" or sel ="01001" or sel ="10000"or sel ="10001")and outAdd(15) = '1') then --arithmatic op
+    if ((sel ="00100" or sel ="00101" or sel ="01000" or sel ="01001" or sel ="10000"or sel ="10001")and outAdd(15) = '1') then --arithmatic op
 		negFlag <= '1' ;
 	elsif  ((sel ="00011" or sel ="01010" or sel ="01011") and r(15) = '1')then --logical op
 		negFlag <= '1' ;

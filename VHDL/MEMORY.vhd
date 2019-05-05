@@ -29,7 +29,7 @@ ENTITY MEMORY IS
 		instr_1_write_back_out 	:out std_logic;
 		instr_1_mem_read_out 	:out std_logic;
 		instr_1_stall_long_out 	:out std_logic;
-		instr_1_result_out	:out std_logic_vector (15 downto 0);
+		instr_1_result_out	    :out std_logic_vector (15 downto 0);
 
 		--------------------------------------
 		instr_2_Rdst_out 		:out std_logic_vector (3 downto 0);
@@ -43,15 +43,13 @@ END MEMORY;
 
 ARCHITECTURE a_MEMORY OF MEMORY IS
 
-signal enable_write : std_logic;
-signal enable_read	: std_logic;
-signal address		: std_logic_vector(15 downto 0);
+	signal enable_write : std_logic;
+	signal enable_read	: std_logic;
+	signal address		: std_logic_vector(15 downto 0);
+	signal data_out 	: std_logic_vector(15 downto 0);
 
-signal data_out 	: std_logic_vector(15 downto 0);
     BEGIN
     
---also connected to reg file with data
----data ram here 
 
 	enable_read <= '1' when instr_1_mem_read = '1' or instr_2_mem_read = '1'
 					   else '0';
@@ -74,7 +72,7 @@ signal data_out 	: std_logic_vector(15 downto 0);
 							else "0000";
 
 	
-							
+		--bufferss					
 	instr_1_Rdst_out <= instr_1_Rdst;
 	instr_1_write_back_out <= instr_1_write_back;
 	instr_1_mem_read_out <= instr_1_mem_read ;
