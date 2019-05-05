@@ -81,8 +81,11 @@ signal bus_out :std_logic_vector (15 downto 0);
 signal sp:std_logic_vector (15 downto 0);
 
 BEGIN
-i1_Rsrc_data_out_1 <= sp when i1_Rsrc = "1000" 
-else i1_Rsrc_data_out;
+
+i1_Rsrc_data_out_1 <= sp when i1_Rsrc = "1000" else i1_Rsrc_data_out;
+i1_Rdst_data_out_1 <= sp when i1_Rdst = "1000" else i1_Rdst_data_out;
+i2_Rsrc_data_out_1 <= sp when i2_Rsrc = "1000" else i2_Rsrc_data_out;
+i2_Rdst_data_out_1 <= sp when i2_Rdst = "1000" else i2_Rdst_data_out;
 
 clk_inv <= not(Clk);
 R0:entity work.my_nDFF  generic map (16) port map (clk,  rst , R0_data_in ,R0_data_out ,R0_EN);
@@ -96,8 +99,10 @@ R7:entity work.my_nDFF  generic map (16) port map (clk,  rst , R7_data_in ,R7_da
 SP_1:entity work.sp port map (clk, PP_signal,sp);
 ------------------------------------------------------- 
 
-process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,
-	i2_write_back_signal,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus ,i1_Rdst_data_in,i2_Rdst_data_in)
+process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,
+	i1_write_back_signal,i2_write_back_signal,
+	i1_Rdst_write_back,i2_Rdst_write_back,
+	IN_bus ,i1_Rdst_data_in,i2_Rdst_data_in)
 	begin
 	--------------------------------------------------------- instr 1 write back and in from bus
 	if (i1_Rdst_write_back = "0001" and i1_write_back_signal = '1' ) then 
@@ -159,10 +164,14 @@ process(clk ,rst,i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_write_back_signal,
 	end if;
 	end process;	
 -----------------------------------------------------------------------------------
-process(clk ,rst,
-i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,i1_Rdst_write_back,i2_Rdst_write_back,IN_bus,
+process(
+clk ,rst,
+i1_Rsrc,i1_Rdst,i2_Rsrc ,i2_Rdst ,
+i1_Rdst_write_back,i2_Rdst_write_back,
+IN_bus,
 R0_data_out,R1_data_out,R2_data_out,R3_data_out,
-R4_data_out,R5_data_out,R6_data_out,R7_data_out,pp_signal,sp)
+R4_data_out,R5_data_out,R6_data_out,R7_data_out,
+pp_signal,sp)
 begin
 -------------------------------------------------------- instr 1 Rsrc data out
 	if (i1_Rsrc = "0001") then
@@ -329,7 +338,4 @@ begin
 
 	end if;
 end process;
-
-
-
 END my_Register_File;

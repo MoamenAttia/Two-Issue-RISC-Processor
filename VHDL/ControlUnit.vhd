@@ -34,12 +34,13 @@ architecture a_Control_Unit of Control_Unit is
             if (opcode = "00" and flush = '0' )   then  
                     immediate <= '0';   -- one operand 
                     PP_signal <= "00";
+                    MR <= '0';
+                    MW <= '0';
+
                 if (func = "000")  then  -- no op 
                     AluFunc <= "00000";
                     dest <= "0000";
                     WB <= '0';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= "0000";
                     IN_signal <= '0';
@@ -50,21 +51,16 @@ architecture a_Control_Unit of Control_Unit is
                     AluFunc <= "00001";
                     dest <= "0000";
                     WB <= '0';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= "0000";
                     IN_signal <= '0';
                     OUT_signal <='0';
                     src<=Rsrc;
                
-                 
                 elsif (func = "010") then -- clear carry  
                     AluFunc <= "00010";
                     dest <= "0000";
                     WB <= '0';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= "0000";
                     IN_signal <= '0';
@@ -76,8 +72,6 @@ architecture a_Control_Unit of Control_Unit is
                     AluFunc <= "00011";
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;
                     IN_signal <= '0';
@@ -88,21 +82,16 @@ architecture a_Control_Unit of Control_Unit is
                     AluFunc <= "00100";
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;
                     IN_signal <= '0';
                     OUT_signal <='0';
                     src<=Rsrc;
                   
-             
                 elsif (func = "101") then  --decrement 
                     AluFunc <= "00101";
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;
                     IN_signal <= '0';
@@ -113,8 +102,6 @@ architecture a_Control_Unit of Control_Unit is
                     AluFunc <= "01111";
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= "1110";  -- this takes from in bus
                     IN_signal <= '1';
@@ -125,8 +112,6 @@ architecture a_Control_Unit of Control_Unit is
                     AluFunc <= "00111";
                     dest <= "1111"; --this writes to out bus
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= Rdst;
                     regOut2 <= "0000";   
                     IN_signal <= '0';
@@ -140,12 +125,12 @@ architecture a_Control_Unit of Control_Unit is
                     IN_signal <= '0';
                     OUT_signal <='0';
                     PP_signal <= "00";
+                    MR <= '0';
+                    MW <= '0';
                 if (func = "000") then   -- mov 
                     AluFunc <= "00111";  --pass rsc
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= Rsrc;
                     regOut2 <= "0000";
                     immediate <= '0'; 
@@ -154,53 +139,46 @@ architecture a_Control_Unit of Control_Unit is
                     AluFunc <= "01000";  
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= Rsrc;
                     regOut2 <= Rdst;
                     immediate <= '0';
+
                 elsif  (func = "010") then   -- sub 
                     AluFunc <= "01001"; 
                     dest <= Rdst; 
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= Rsrc;
                     regOut2 <= Rdst;
                     immediate <= '0';
+
                 elsif  (func = "011") then   -- and
                     AluFunc <= "01010";  
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= Rsrc;
                     regOut2 <= Rdst; 
-                    immediate <= '0'; 
+                    immediate <= '0';
+
                 elsif  (func = "100") then   -- or
                     AluFunc <= "01011";
                     dest <= Rdst;  
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= Rsrc;
                     regOut2 <= Rdst;
-                    immediate <= '0';  
+                    immediate <= '0';
+
                 elsif   (func = "101") then   -- shift left  (need immediate value ) 
                     AluFunc <= "01100";  
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;   
                     immediate <= '1'; 
+
                 elsif   (func = "110") then   -- shift right (need immediate value ) 
                     AluFunc <= "01101";  
                     dest <= Rdst;
                     WB <= '1';
-                    MR <= '0';
-                    MW <= '0';
                     regOut1 <= "0000";
                     regOut2 <= Rdst;  
                     immediate <= '1'; 
@@ -296,7 +274,8 @@ architecture a_Control_Unit of Control_Unit is
         immediate <= '0';
         IN_signal <= '0';
         OUT_signal <='0';
-	PP_signal <= "00";
+        PP_signal <= "00";
+        src <= "0000";
        
     end if;  
 	end process; 
