@@ -211,7 +211,7 @@ def output_data_file(ram_file_path):
     with open(ram_file_path, "w") as f:
             f.write("// instance=/system/MEM/data_ram/my_ram" + '\n')
             f.write("// format=mti addressradix=d dataradix=b version=1.0 wordsperline=1" + '\n')
-            NUMBER_OF_BITS = ram_size            
+            NUMBER_OF_BITS = 16            
             size = 0
             while size < 64:
                 f.write(" " * (4 - len(str(size))) + str(size) + ": " + ('0' * NUMBER_OF_BITS ) + '\n')

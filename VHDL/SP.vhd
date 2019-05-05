@@ -10,8 +10,8 @@ entity SP is
 end SP;
 
 architecture my_SP of SP is
-signal sp : std_logic_vector(15 downto 0)      :="1111111111111111";
-signal sp_minus : std_logic_vector(15 downto 0):="0000000000000000";
+signal sp : std_logic_vector(15 downto 0)      :="1111111111111010";
+signal sp_minus : std_logic_vector(15 downto 0):="1111111111111001";
 begin
 process(clk)
 begin
