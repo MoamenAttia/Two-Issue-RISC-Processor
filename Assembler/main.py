@@ -1,5 +1,7 @@
 import sys , os , pathlib
 
+ram_size = 64
+
 '''
 IR (16 bits)
 Opcode      Func        Rsrc        Rdst
@@ -124,8 +126,8 @@ registerMap = {
     "R5"    : "0110",
     "R6"    : "0111",
     "R7"    : "1000",
-    "sp"    : "1001",
-    "pc"    : "1010",
+    "SP"    : "1001",
+    "PC"    : "1010",
     "flag"  : "1011"
 }
 
@@ -162,6 +164,11 @@ def assemble(instruction, firstOperand, secondOperand):
         IR[6]  = IR[10]
         IR[7]  = IR[8] = IR[9] = IR[10] = "0"
 
+    if f"{IR[11]}{IR[12]}{IR[13]}" == functionMap["PUSH"] or f"{IR[11]}{IR[12]}{IR[13]}" == functionMap["POP"]:
+        IR[7]  = registerMap["SP"][0]
+        IR[8]  = registerMap["SP"][1]
+        IR[9]  = registerMap["SP"][2]
+        IR[10] = registerMap["SP"][3]
     if immediateVal == None:
         return [''.join(IR)]
     else:
@@ -199,23 +206,40 @@ def readFile(inputFileName):
     return binaryCode
 
 
+
+def output_data_file(ram_file_path):
+    with open(ram_file_path, "w") as f:
+            f.write("// instance=/system/MEM/data_ram/my_ram" + '\n')
+            f.write("// format=mti addressradix=d dataradix=b version=1.0 wordsperline=1" + '\n')
+            NUMBER_OF_BITS = ram_size            
+            size = 0
+            while size < 64:
+                f.write(" " * (4 - len(str(size))) + str(size) + ": " + ('0' * NUMBER_OF_BITS ) + '\n')
+                size += 1
+
+
+def output_ram_file(ram_file_path, lines):
+    with open(ram_file_path, "w") as f:
+            f.write("// instance=/system/fetch/inst_ram/my_ram" + '\n')
+            f.write("// format=mti addressradix=d dataradix=b version=1.0 wordsperline=1" + '\n')
+            NUMBER_OF_BITS = 16
+            
+            size = 0
+            for line in lines:
+                f.write(" " * (4 - len(str(size))) + str(size) + ": " + line + '\n')
+                size += 1
+            while size < ram_size:
+                f.write(" " * (4 - len(str(size))) + str(size) + ": " + ('0' * NUMBER_OF_BITS ) + '\n')
+                size += 1
+
 if __name__ == "__main__":
     inputFileName = "program.txt"
-    outputFileName = "code.txt"
+    outputFileName = "instruction_ram.mem"
+    outputDataRam = "data_ram.mem"
     if (len(sys.argv) > 1):
         inputFileName = sys.argv[1]
     if (len(sys.argv) > 2):
         outputFileName = sys.argv[2]
     lines = readFile(inputFileName)
-    writeFile(outputFileName, lines)
-    
-    out_list = []
-    i = 0
-    with open("code.txt","r") as file:
-        lines = file.readlines()
-        for line in lines:
-            line = line.strip()
-            out_list.append("mem load -filltype value -filldata "+ line +" -fillradix binary /system/fetch/inst_ram/my_ram("+ str(i) +")")
-            i += 1
-    
-    writeFile("do file",out_list)
+    output_ram_file(outputFileName, lines)
+    output_data_file(outputDataRam)
