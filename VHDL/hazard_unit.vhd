@@ -72,6 +72,7 @@ signal IF_ID_Rdst2   : std_logic_vector(3 downto 0);
 signal nop_first_in_packet_handle  : std_logic; -- nop is an exception because rsrc and rdst are x"0" which can make hazard if we didn't handle it.
 signal nop_second_in_packet_handle : std_logic; -- nop is an exception because rsrc and rdst are x"0" which can make hazard if we didn't handle it.
 
+
 -- SETC
 signal setc_first_in_packet_handle  : std_logic; -- setc is an exception because rsrc and rdst are x"0" which can make hazard if we didn't handle it.
 signal setc_second_in_packet_handle : std_logic; -- setc is an exception because rsrc and rdst are x"0" which can make hazard if we didn't handle it.
@@ -109,6 +110,9 @@ signal mov_second_in_packet_handle    : std_logic; -- dealing with move is sligh
 -- Load EXCEPTION
 signal load_first_in_packet_handle     : std_logic;
 signal load_second_in_packet_handle    : std_logic;
+
+signal exception_in_first              : std_logic; 
+signal exception_in_second             : std_logic;
 
 
 -- RAW HAZARD
