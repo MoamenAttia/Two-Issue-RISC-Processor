@@ -164,7 +164,8 @@ def assemble(instruction, firstOperand, secondOperand):
         IR[6]  = IR[10]
         IR[7]  = IR[8] = IR[9] = IR[10] = "0"
 
-    if f"{IR[11]}{IR[12]}{IR[13]}" == functionMap["PUSH"] or f"{IR[11]}{IR[12]}{IR[13]}" == functionMap["POP"]:
+    
+    if f"{IR[14]}{IR[15]}" == "10" and (f"{IR[11]}{IR[12]}{IR[13]}" == functionMap['PUSH'] or f"{IR[11]}{IR[12]}{IR[13]}" == functionMap['POP']):
         IR[7]  = registerMap["SP"][0]
         IR[8]  = registerMap["SP"][1]
         IR[9]  = registerMap["SP"][2]
