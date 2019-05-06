@@ -354,7 +354,7 @@ begin
     clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard or SIG_branch_taken1 or jmp_hazard or ID_EXE_late_flush or load_immediate_hazard_clear_second;
     -- RST_IR       <= jmp_hazard or ID_EXE_late_flush;
     PC_selector  <= "010" when SIG_branch_taken1 = '1' or SIG_branch_taken2 = '1' else
-                    "001" when data_inner_hazard = '1' else
+                    "001" when data_inner_hazard = '1' or (jmp_second_in_packet_handle = '1' and first_alu_operation = '1') else
                     "100" when data_outer_hazard = '1' or SIG_structural_hazard = '1' else
                     "000";
     RST_IR <= '0';

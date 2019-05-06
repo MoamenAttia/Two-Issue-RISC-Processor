@@ -5,7 +5,7 @@ ENTITY DECODE IS
 	PORT (
 	clk ,rst :in std_logic;
     --this data is directly from ir buffer 
-    i1_opcode : in std_logic_vector(1 DOWNTO 0);
+  i1_opcode : in std_logic_vector(1 DOWNTO 0);
 	i1_function: in std_logic_vector(2 DOWNTO 0);
 	i1_Rsrc_in : in std_logic_vector(3 DOWNTO 0);
 	i1_Rdst_in : in std_logic_vector(3 DOWNTO 0);
@@ -16,13 +16,13 @@ ENTITY DECODE IS
 	i2_opcode : in std_logic_vector(1 DOWNTO 0);
 	i2_function: in std_logic_vector(2 DOWNTO 0);
 	i2_Rsrc_in : in std_logic_vector(3 DOWNTO 0);
-    i2_Rdst_in : in std_logic_vector(3 DOWNTO 0);
+  i2_Rdst_in : in std_logic_vector(3 DOWNTO 0);
 	i2_WB_data : in std_logic_vector(15 downto 0);
 	i2_WB_Rdst : in std_logic_vector(3 downto 0);
 	i2_WB_signal : in std_logic;	
     --this data is output of entitys below 
     -- connected to the decode execute buffer 
-    i1_Rdst_out: out std_logic_vector(3 DOWNTO 0);
+  i1_Rdst_out: out std_logic_vector(3 DOWNTO 0);
 	i1_Rsrc_out: out std_logic_vector(3 DOWNTO 0);
 	i1_branch_taken : out std_logic;
 	i1_load_use : out std_logic;
@@ -69,7 +69,15 @@ ENTITY DECODE IS
 	branch_taken_1_out : out std_logic;
 	branch_taken_2_out : out std_logic;
 	DEC_EXE_stall_lone_out  : out std_logic;
-	DEC_EXE_stall_long_in   : in std_logic
+	DEC_EXE_stall_long_in   : in std_logic;
+
+	-- MOAMEN
+	i1_WB_Exec_in  : in std_logic;
+  i2_WB_Exec_in  : in std_logic;
+  i1_Rdst_Mem_in : in std_logic_vector(3 downto 0);
+  i2_Rdst_Mem_in : in std_logic_vector(3 downto 0);
+  i1_WB_Mem_in   : in std_logic;
+  i2_WB_Mem_in   : in std_logic
 
     );
 END DECODE;
@@ -195,6 +203,14 @@ hazard : entity work.hazard_unit port map
 	ID_EXE_MemoryRead2 	 => DEC_EXE_Memory_read_2 ,
 	ID_EXE_Rdst1 		 => DEC_EXE_Rdst_1 ,			
 	ID_EXE_Rdst2 		 => DEC_EXE_Rdst_2 ,
+
+	ID_EXE_WB1    => i1_WB_Exec_in  ,
+	ID_EXE_WB2    => i2_WB_Exec_in  ,
+	EXE_MEM_Rdst1 => i1_Rdst_Mem_in ,
+	EXE_MEM_Rdst2 => i2_Rdst_Mem_in ,
+	EXE_MEM_WB1   => i1_WB_Mem_in   ,
+	EXE_MEM_WB2   => i2_WB_Mem_in   ,
+
 	MEM_WB_Rdst1 		 => i1_WB_Rdst,
 	MEM_WB_Rdst2 		 => i2_WB_Rdst,
 	MEM_WB_WB1 		     => i1_WB_signal,

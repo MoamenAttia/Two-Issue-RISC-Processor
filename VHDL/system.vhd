@@ -231,7 +231,7 @@ deocode : entity work.DECODE PORT map  (
 	i2_MR_Exec_in ,	
 	i1_Rdst_Exec_in, 			
 	i2_Rdst_Exec_in ,		   
-	"000" ,	
+	flags ,	
 
 	--------------from hazard 
 	hazard_data_out, 
@@ -240,8 +240,15 @@ deocode : entity work.DECODE PORT map  (
 	branch_taken_1, 
 	branch_taken_2 ,
 	late_stall_long_in,
-	late_stall_long_out
+	late_stall_long_out,
 
+	-- MOAMEN
+	i1_WB_Exec_in,
+    i2_WB_Exec_in,
+    i1_Rdst_Mem_in,
+    i2_Rdst_Mem_in,
+    i1_WB_Mem_in,
+    i2_WB_Mem_in
     );
  ----------------------------------------buffer decode/execute     
 	--immediate logic
@@ -357,6 +364,8 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i2_alu_result_Exec_out,
 	flags
 );
+
+
 ---------------------------------------- Exexcute/Memory Buffer
 -------------------------------------------------------
 exec_mem_BUFFER:entity work.Execute_Memory_Buffer port map ( 
