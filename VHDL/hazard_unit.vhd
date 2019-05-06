@@ -214,9 +214,10 @@ begin
     out_second_in_packet_handle     <= '1' when (IF_ID_opCode2 = "00" and  IF_ID_func2 = "110") else '0';
 
     -- LOAD
-    load_first_in_packet_handle     <= '1' when (IF_ID_opCode1 = "10" and  (IF_ID_func1 = "010" or IF_ID_func1 = "011")) else '0';
-    load_second_in_packet_handle    <= '1' when (IF_ID_opCode2 = "10" and  (IF_ID_func2 = "010" or IF_ID_func2 = "011")) else '0';
-    
+    load_first_in_packet_handle     <= '1' when (IF_ID_opCode1 = "10" and  (IF_ID_func1 = "011" or IF_ID_func1 = "001")) else '0';
+    load_second_in_packet_handle    <= '1' when (IF_ID_opCode2 = "10" and  (IF_ID_func2 = "011" or IF_ID_func2 = "001")) else '0';
+
+
     -- MOV
     mov_first_in_packet_handle  <= '1' when (IF_ID_opCode1 = "01" and  IF_ID_func1 = "000") else '0';
     mov_second_in_packet_handle <= '1' when (IF_ID_opCode2 = "01" and  IF_ID_func2 = "000") else '0';
@@ -269,20 +270,21 @@ begin
     dst2_depend_outer_dst2 <= '1' when IF_ID_Rdst2 = ID_EXE_Rdst2 else '0';
 
     -- EXCEPTION MOV
-    exception_mov_first   <= '1' when mov_first_in_packet_handle = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0' else '0';
-    exception_mov_second  <= '1' when mov_first_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0' else '0';
+    exception_mov_first   <= '1' when mov_first_in_packet_handle = '1' else '0';
+    exception_mov_second  <= '1' when mov_first_in_packet_handle = '1' else '0';
     
     -- EXCEPTION LOAD
-    exception_load_first  <= '1' when load_first_in_packet_handle  = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0' else '0';
-    exception_load_second <= '1' when load_second_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0' else '0';
+    exception_load_first  <= '1' when load_first_in_packet_handle  = '1' else '0';
+    exception_load_second <= '1' when load_second_in_packet_handle = '1' else '0';
     
-    -- EXCEPTION OUT
-    exception_out_first   <= '1' when out_first_in_packet_handle  = '1' and src1_depend_outer_dst1 = '0' and src1_depend_outer_dst2 = '0' else '0';
-    exception_out_second  <= '1' when out_second_in_packet_handle = '1' and src2_depend_outer_dst1 = '0' and src2_depend_outer_dst2 = '0' else '0';
+    -- EXCEPTION IN
+    exception_in_first   <= '1' when in_first_in_packet_handle  = '1' else '0';
+    exception_in_second  <= '1' when in_second_in_packet_handle = '1' else '0';
+
 
     -- EXCEPTION DATA OUTER
-    exception_data_outer_first  <= exception_mov_first  or exception_load_first  or exception_out_first;
-    exception_data_outer_second <= exception_mov_second or exception_load_second or exception_out_second;
+    exception_data_outer_first  <= exception_mov_first  or exception_load_first  or exception_in_first;
+    exception_data_outer_second <= exception_mov_second or exception_load_second or exception_in_second;
 
     first_depend_outer_first   <= src1_depend_outer_dst1 or dst1_depend_outer_dst1;
     second_depend_outer_first  <= src2_depend_outer_dst1 or dst2_depend_outer_dst1;
