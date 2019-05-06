@@ -22,11 +22,19 @@ entity hazard_unit is
         ID_EXE_MemoryRead2   : in std_logic;
         ID_EXE_Rdst1         : in std_logic_vector(3 downto 0);
         ID_EXE_Rdst2         : in std_logic_vector(3 downto 0);
-
-
+        ID_EXE_WB1           : in std_logic;
+        ID_EXE_WB2           : in std_logic;
+        
+        -- Buffer between Exe and Memory
+        EXE_MEM_Rdst1 : in std_logic_vector(3 downto 0);
+        EXE_MEM_Rdst2 : in std_logic_vector(3 downto 0);
+        EXE_MEM_WB1           : in std_logic;
+        EXE_MEM_WB2           : in std_logic;
+        
         -- Buffer between Memory and write back
         MEM_WB_Rdst1 : in std_logic_vector(3 downto 0);
         MEM_WB_Rdst2 : in std_logic_vector(3 downto 0);
+        
         MEM_WB_WB1   : in std_logic;
         MEM_WB_WB2   : in std_logic;
         
@@ -36,6 +44,7 @@ entity hazard_unit is
         -- stall_long
         ID_EXE_late_flush : in std_logic; -- stall_long_output_buffer.
         
+
         -- output
         clear_first        : out std_logic;
         clear_second       : out std_logic;
@@ -132,6 +141,9 @@ signal exception_out_second : std_logic;
 signal exception_load_first  : std_logic;
 signal exception_load_second : std_logic;
 
+-- Jump Stop Hazard
+signal jmp_stop_first : std_logic;
+signal jmp_stop_second : std_logic;
 
 signal exception_data_outer_first : std_logic;
 signal exception_data_outer_second : std_logic;
@@ -241,8 +253,9 @@ begin
     memory_hazard <= '1' when (memory_first_in_packet_handle = '1' and memory_second_in_packet_handle = '1') else '0';
     
     -- JMP INNER HAZARD
-    jmp_inner_hazard <= '1' when (IF_ID_opCode2 = "11" and  (IF_ID_func2 = "000" or IF_ID_func2 = "001" or IF_ID_func2 = "010" or IF_ID_func2 = "011") and (jmp_first_in_packet_handle = '0' and first_alu_operation = '0') ) else '0';
+    jmp_inner_hazard <= '1' when (IF_ID_opCode2 = "11" and  (IF_ID_func2 = "000" or IF_ID_func2 = "001" or IF_ID_func2 = "010" or IF_ID_func2 = "011") and (first_alu_operation = '0')) else '0';
 
+  
     -- IN HAZARD
     in_hazard <= '1'  when (in_first_in_packet_handle = '1' and in_second_in_packet_handle = '1') else '0';
     
@@ -308,6 +321,18 @@ begin
     -- JMP HAZARD
     jmp_hazard <= '1' when ID_EXE_branch_taken1 = '1' or ID_EXE_branch_taken2 = '1' else '0';
     
+    jmp_stop_first <= '1' when SIG_branch_taken1 = '1' and ( 
+        (IF_ID_Rdst1 = ID_EXE_Rdst1 and ID_EXE_WB1 = '1')   or (IF_ID_Rdst1 = ID_EXE_Rdst2 and ID_EXE_WB2 = '1') or 
+        (IF_ID_Rdst1 = EXE_MEM_Rdst1 and EXE_MEM_WB1 = '1') or (IF_ID_Rdst1 = EXE_MEM_Rdst2 and EXE_MEM_WB2 = '1') or 
+        (IF_ID_Rdst1 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1')   or (IF_ID_Rdst1 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1') ) 
+        else '0';
+
+    jmp_stop_second <= '1' when SIG_branch_taken2 = '1' and ( 
+        (IF_ID_Rdst2 = ID_EXE_Rdst1 and ID_EXE_WB1 = '1')   or (IF_ID_Rdst2 = ID_EXE_Rdst2  and ID_EXE_WB2 = '1') or 
+        (IF_ID_Rdst2 = EXE_MEM_Rdst1 and EXE_MEM_WB1 = '1') or (IF_ID_Rdst2 = EXE_MEM_Rdst2 and EXE_MEM_WB2 = '1') or 
+        (IF_ID_Rdst2 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1')   or (IF_ID_Rdst2 = MEM_WB_Rdst2  and MEM_WB_WB2 = '1')) 
+        else '0';
+
     -- LOAD IMMEDIATE HAZARD
     load_immediate_hazard <= '1' when (IF_ID_opCode2 = "01" and (IF_ID_func2 = "101" or IF_ID_func2 = "110")) or (IF_ID_opCode2 = "10" and IF_ID_func2 = "010" ) else '0';
 
@@ -319,8 +344,8 @@ begin
     -- SIG_structural_hazard <= structural_first or structural_second;
     SIG_structural_hazard <= '0';
     -- Branch Calculation
-    SIG_branch_taken1 <= '1' when ( jmp_first_in_packet_handle  = '1' and ( (IF_ID_func1 = "000" and flags(0) = '1') or (IF_ID_func1 = "001" and flags(1) = '1') or (IF_ID_func1 = "010" and flags(2) = '1') or (IF_ID_func1 = "011")) ) else '0';
-	SIG_branch_taken2 <= '1' when ( jmp_second_in_packet_handle = '1' and first_alu_operation = '0' and ( (IF_ID_func2 = "000" and flags(0) = '1') or (IF_ID_func2 = "001" and flags(1) = '1') or (IF_ID_func2 = "010" and flags(2) = '1') or (IF_ID_func2 = "011")) ) else '0';
+    SIG_branch_taken1 <= '1' when ( jmp_first_in_packet_handle  = '1' and jmp_stop_first  = '0' and  ( (IF_ID_func1 = "000" and flags(0) = '1') or (IF_ID_func1 = "001" and flags(1) = '1') or (IF_ID_func1 = "010" and flags(2) = '1') or (IF_ID_func1 = "011")) ) else '0';
+	SIG_branch_taken2 <= '1' when ( jmp_second_in_packet_handle = '1' and jmp_stop_second  = '0' and first_alu_operation = '0' and ( (IF_ID_func2 = "000" and flags(0) = '1') or (IF_ID_func2 = "001" and flags(1) = '1') or (IF_ID_func2 = "010" and flags(2) = '1') or (IF_ID_func2 = "011")) ) else '0';
 	
     --------------------------------------------------------------------
 
@@ -344,8 +369,8 @@ begin
     -- data_outer_hazard need flush signal (necessary).
     -- jmp_hazard need async reset.
 
-    new_address <= ID_EXE_Rdst1 when ID_EXE_branch_taken1 = '1' else
-                   ID_EXE_Rdst2 when ID_EXE_branch_taken2 = '1' else
+    new_address <= IF_ID_Rdst1 when SIG_branch_taken1 = '1' else
+                   IF_ID_Rdst2 when SIG_branch_taken2 = '1' else
                    "0000"; -- an input to entity that takes 4 bits ( register ) and returns its data.
     
 
