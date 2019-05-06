@@ -27,7 +27,7 @@ entity Control_Unit is
 end Control_Unit;
 
 architecture a_Control_Unit of Control_Unit is
-
+    
     begin 
     process ( opcode , func, Rsrc,Rdst,flush)
         begin 
