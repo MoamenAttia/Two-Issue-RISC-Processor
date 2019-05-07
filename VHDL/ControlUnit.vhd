@@ -287,10 +287,19 @@ architecture a_Control_Unit of Control_Unit is
                 dest <= "1001";
                 WB <= '0';
                 MR <= '0';
-                MW <= '0';
+                MW <= '1';
                 regOut1 <= "1000";
                 regOut2 <= "0000"; 
                 immediate <= '0'; 
+            elsif  (func ="101")then -- return
+                AluFunc <= "00111"; 
+                dest <= "1010";
+                WB <= '1';
+                MR <= '1';
+                MW <= '0';
+                regOut1 <= "1000";
+                regOut2 <= "0000"; 
+                immediate <= '0';  
 			else 
 				AluFunc <= "00000"; 
                 dest <= "0000";

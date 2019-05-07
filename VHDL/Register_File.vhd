@@ -33,7 +33,7 @@ PORT(
 	--------
 	PP_signal : in std_logic_vector(1 downto 0);
 	------------
-	pc_data : : in std_logic_vector(31 downto 0)
+	pc_data  : in std_logic_vector(31 downto 0)
 
 );
 

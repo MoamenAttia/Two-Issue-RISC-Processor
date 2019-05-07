@@ -5,7 +5,7 @@ ENTITY DECODE IS
 	PORT (
 	clk ,rst :in std_logic;
     --this data is directly from ir buffer 
-  i1_opcode : in std_logic_vector(1 DOWNTO 0);
+ 	 i1_opcode : in std_logic_vector(1 DOWNTO 0);
 	i1_function: in std_logic_vector(2 DOWNTO 0);
 	i1_Rsrc_in : in std_logic_vector(3 DOWNTO 0);
 	i1_Rdst_in : in std_logic_vector(3 DOWNTO 0);
@@ -16,7 +16,7 @@ ENTITY DECODE IS
 	i2_opcode : in std_logic_vector(1 DOWNTO 0);
 	i2_function: in std_logic_vector(2 DOWNTO 0);
 	i2_Rsrc_in : in std_logic_vector(3 DOWNTO 0);
-  i2_Rdst_in : in std_logic_vector(3 DOWNTO 0);
+  	i2_Rdst_in : in std_logic_vector(3 DOWNTO 0);
 	i2_WB_data : in std_logic_vector(15 downto 0);
 	i2_WB_Rdst : in std_logic_vector(3 downto 0);
 	i2_WB_signal : in std_logic;	
@@ -85,7 +85,11 @@ ENTITY DECODE IS
 	ID_EXE_ret_flush_out  : in std_logic;
 	EXE_MEM_ret_flush_out : in std_logic;
 	MEM_WB_ret_flush_out  : in std_logic;
-	ret_flush             : in std_logic
+	ret_flush             : in std_logic;
+
+	--pc 
+
+	pc_out : in std_logic_vector(31 downto 0)
 );
 END DECODE;
 
@@ -120,6 +124,8 @@ signal SIG_ID_EXE_late_flush : std_logic;
 signal SIG_late_flush_ID_EXE : std_logic;
 ---------------
 signal  PP_signal :std_logic_vector(1 downto 0);
+signal  PP_signal_useless :std_logic_vector(1 downto 0);
+------
 
 BEGIN
 
@@ -168,6 +174,7 @@ flush => clear_second,
 IN_signal => i2_IN_signal,
 OUT_signal => i2_OUT_signal,
 immediate => i2_immediate,
+PP_signal => PP_signal_useless,
 branch_taken => branch_taken_2
 
 );		
@@ -195,7 +202,8 @@ MEM_sel ,
 MEM_data,
 IN_bus,
 OUT_bus,
-pp_signal
+pp_signal,
+pc_out
  );
 -----------------------------hazard detection and its connection 
 hazard : entity work.hazard_unit port map 
