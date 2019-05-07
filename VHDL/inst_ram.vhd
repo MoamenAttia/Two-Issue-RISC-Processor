@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity inst_ram is
-    generic ( n : integer := 16; ram_size : integer := 64; address_size : integer := 32 );
+    generic ( n : integer := 16; ram_size : integer := 2048; address_size : integer := 32 );
     port (
         clk          : in  std_logic;
 	rst	     : in  std_logic;
@@ -25,7 +25,7 @@ begin
             if rising_edge(clk) then
                 if enable_write = '0' then
 			        if(rst = '1') then
-    			        data_out <= (others => '0');
+    			        data_out <= my_ram(0);
     			        data_out_2 <= (others => '0');
             		else
     			        data_out <= my_ram(to_integer(unsigned(address)));

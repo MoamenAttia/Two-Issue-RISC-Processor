@@ -77,9 +77,16 @@ ENTITY DECODE IS
   i1_Rdst_Mem_in : in std_logic_vector(3 downto 0);
   i2_Rdst_Mem_in : in std_logic_vector(3 downto 0);
   i1_WB_Mem_in   : in std_logic;
-  i2_WB_Mem_in   : in std_logic
+  i2_WB_Mem_in   : in std_logic;
 
-    );
+
+	-- RET
+	ID_EXE_ret_flush_in   : out std_logic;
+	ID_EXE_ret_flush_out  : in std_logic;
+	EXE_MEM_ret_flush_out : in std_logic;
+	MEM_WB_ret_flush_out  : in std_logic;
+	ret_flush             : in std_logic
+);
 END DECODE;
 
 ARCHITECTURE a_DECODE OF DECODE IS
@@ -225,7 +232,13 @@ hazard : entity work.hazard_unit port map
 	structural_hazard 	 => structural_hazard,
 	branch_taken1 		 => branch_taken_1,
 	branch_taken2 		 => branch_taken_2,
-	late_flush_ID_EXE    => SIG_late_flush_ID_EXE      -- to be put in the DEC_EXE buffer
+	late_flush_ID_EXE    => SIG_late_flush_ID_EXE,      -- to be put in the DEC_EXE buffer
+
+	ID_EXE_ret_flush_in => ID_EXE_ret_flush_in,
+	ID_EXE_ret_flush_out => ID_EXE_ret_flush_out,
+	EXE_MEM_ret_flush_out => EXE_MEM_ret_flush_out,
+	MEM_WB_ret_flush_out => MEM_WB_ret_flush_out,
+	ret_flush => ret_flush
 );
 
   -- output signals  

@@ -8,7 +8,10 @@ entity pc is
         in_address : in std_logic_vector(31 downto 0);
         out_address : out std_logic_vector(31 downto 0);
         sel : in std_logic_vector(2 downto 0);
-	    reset_address : in std_logic_vector(15 downto 0)
+	    reset_address : in std_logic_vector(15 downto 0);
+
+        pc_rdst : in std_logic_vector(3 downto 0);
+        pc_address_rdst : in std_logic_vector(15 downto 0)
     );
 end pc;
 
@@ -21,7 +24,9 @@ begin
         if(rst = '1') then
             cnt := X"0000" & reset_address;
         elsif(rising_edge(clk)) then
-            if(sel = "001") then
+            if (pc_rdst = "1010") then
+                cnt := pc_address_rdst;
+            elsif(sel = "001") then
                 cnt := std_logic_vector(to_unsigned(to_integer(unsigned(cnt)) - 1 , cnt'length));
             elsif(sel = "010") then
                 cnt := in_address;
@@ -35,3 +40,4 @@ begin
     end process;
     out_address <= temp;
 end my_pc;
+

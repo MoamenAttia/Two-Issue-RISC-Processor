@@ -54,7 +54,15 @@ entity hazard_unit is
         structural_hazard  : out std_logic;
         branch_taken1      : out std_logic;
         branch_taken2      : out std_logic;
-        late_flush_ID_EXE  : out std_logic -- stall_long_input_buffer.
+        late_flush_ID_EXE  : out std_logic; -- stall_long_input_buffer.
+
+
+        -- MOAMEN -- RETI
+	    ID_EXE_ret_flush_in   : out std_logic;
+	    ID_EXE_ret_flush_out  : in std_logic;
+	    EXE_MEM_ret_flush_out : in std_logic;
+	    MEM_WB_ret_flush_out  : in std_logic;
+	    ret_flush             : in std_logic
     );
 end hazard_unit;
 
@@ -188,10 +196,15 @@ signal structural_second       : std_logic;
 signal SIG_branch_taken1 : std_logic;
 signal SIG_branch_taken2 : std_logic;
 
+signal exception_jmp : std_logic;
 
 -- ALU Operation
 signal first_alu_operation : std_logic;
 
+signal return_flush : std_logic;
+
+signal ret_first_in_packet : std_logic;
+signal ret_second_in_packet : std_logic;
 begin
 
 
@@ -232,6 +245,11 @@ begin
     -- LOAD
     load_first_in_packet_handle     <= '1' when (IF_ID_opCode1 = "10" and  (IF_ID_func1 = "011" or IF_ID_func1 = "001")) else '0';
     load_second_in_packet_handle    <= '1' when (IF_ID_opCode2 = "10" and  (IF_ID_func2 = "011" or IF_ID_func2 = "001")) else '0';
+
+    -- return  from interrupt/subroutine
+    ret_first_in_packet             <= '1' when (IF_ID_opCode1 = "11" and  (IF_ID_func1 = "101" or IF_ID_func1 = "110")) else '0';
+    ret_second_in_packet            <= '1' when (IF_ID_opCode2 = "11" and  (IF_ID_func2 = "101" or IF_ID_func2 = "110")) else '0';
+    
 
 
     -- MOV
@@ -317,7 +335,9 @@ begin
     data_outer_hazard <= data_outer_hazard_one or data_outer_hazard_two or data_outer_hazard_three or data_outer_hazard_four;
 
     -- CONTROL HAZARD
-    
+
+    return_flush <= '1' when ID_EXE_ret_flush_out = '1' or EXE_MEM_ret_flush_out = '1' or MEM_WB_ret_flush_out = '1' or ret_flush = '1' else '0';
+    ID_EXE_ret_flush_in <= ret_first_in_packet;
     -- JMP HAZARD
     jmp_hazard <= '1' when ID_EXE_branch_taken1 = '1' or ID_EXE_branch_taken2 = '1' else '0';
     
@@ -338,22 +358,26 @@ begin
 
     control_hazard <= jmp_hazard or load_immediate_hazard;
     
+    -- exception for jump
+    exception_jmp <= '1' when jmp_second_in_packet_handle = '1' and first_alu_operation = '1' else '0';
+
     -- Structural Hazard
     -- structural_first  <= '1' when (IF_ID_Rdst1 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst1 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1') else '0';
     -- structural_second <= '1' when (IF_ID_Rdst2 = MEM_WB_Rdst1 and MEM_WB_WB1 = '1') or (IF_ID_Rdst2 = MEM_WB_Rdst2 and MEM_WB_WB2 = '1') else '0'; 
     -- SIG_structural_hazard <= structural_first or structural_second;
     SIG_structural_hazard <= '0';
     -- Branch Calculation
-    SIG_branch_taken1 <= '1' when ( jmp_first_in_packet_handle  = '1' and jmp_stop_first  = '0' and  ( (IF_ID_func1 = "000" and flags(0) = '1') or (IF_ID_func1 = "001" and flags(1) = '1') or (IF_ID_func1 = "010" and flags(2) = '1') or (IF_ID_func1 = "011")) ) else '0';
-	SIG_branch_taken2 <= '1' when ( jmp_second_in_packet_handle = '1' and jmp_stop_second  = '0' and first_alu_operation = '0' and ( (IF_ID_func2 = "000" and flags(0) = '1') or (IF_ID_func2 = "001" and flags(1) = '1') or (IF_ID_func2 = "010" and flags(2) = '1') or (IF_ID_func2 = "011")) ) else '0';
+    SIG_branch_taken1 <= '1' when ( jmp_first_in_packet_handle  = '1' and jmp_stop_first  = '0' and  ( (IF_ID_func1 = "000" and flags(0) = '1') or (IF_ID_func1 = "001" and flags(1) = '1') or (IF_ID_func1 = "010" and flags(2) = '1') or (IF_ID_func1 = "011") or ( IF_ID_func1 = "100" )) ) else '0';
+	SIG_branch_taken2 <= '1' when ( jmp_second_in_packet_handle = '1' and jmp_stop_second  = '0' and first_alu_operation = '0' and ( (IF_ID_func2 = "000" and flags(0) = '1') or (IF_ID_func2 = "001" and flags(1) = '1') or (IF_ID_func2 = "010" and flags(2) = '1') or (IF_ID_func2 = "011")  or ( IF_ID_func2 = "100" ) ) ) else '0';
 	
     --------------------------------------------------------------------
 
     -- OUTPUTS
-    clear_first  <= data_outer_hazard or jmp_hazard or ID_EXE_late_flush;
-    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard or SIG_branch_taken1 or jmp_hazard or ID_EXE_late_flush or load_immediate_hazard_clear_second;
+    clear_first  <= data_outer_hazard or jmp_hazard or ID_EXE_late_flush or return_flush;
+    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard or SIG_branch_taken1 or jmp_hazard or ID_EXE_late_flush or load_immediate_hazard_clear_second or ret_first_in_packet or return_flush;
     -- RST_IR       <= jmp_hazard or ID_EXE_late_flush;
-    PC_selector  <= "010" when SIG_branch_taken1 = '1' or SIG_branch_taken2 = '1' else
+    PC_selector  <= "001" when exception_jmp = '1' else
+                    "010" when SIG_branch_taken1 = '1' or SIG_branch_taken2 = '1' else
                     "001" when data_inner_hazard = '1' or (jmp_second_in_packet_handle = '1' and first_alu_operation = '1') else
                     "100" when data_outer_hazard = '1' or SIG_structural_hazard = '1' else
                     "000";
@@ -363,7 +387,7 @@ begin
     branch_taken2 <= SIG_branch_taken2;
 
     late_flush_ID_EXE <= temp;
-    temp <= data_inner_hazard  or SIG_structural_hazard or data_outer_hazard;
+    temp <= data_inner_hazard  or SIG_structural_hazard or data_outer_hazard or exception_jmp;
     -- comments
     -- data_inner_hazard, load_immediate_hazard does not need to flush anything. just clear_second.
     -- data_outer_hazard need flush signal (necessary).

@@ -2,7 +2,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 
 ENTITY Decode_Execute_Buffer IS
-GENERIC ( n : integer := 103);
+GENERIC ( n : integer := 104);
 PORT( Clk,Rst : IN std_logic;
 
 	-- MOAMEN MAGIC BIT
@@ -60,7 +60,12 @@ PORT( Clk,Rst : IN std_logic;
 	i2_alu_op :out std_logic_vector (4 downto 0);
 
 	------------------------------------------------
-	En:in std_logic);
+	En:in std_logic;
+	
+	-- MOAMEN
+	ret_flush_in : in std_logic;
+	ret_flush_out : out std_logic
+	);
 END Decode_Execute_Buffer;
 
 ARCHITECTURE my_Decode_Execute_Buffer OF Decode_Execute_Buffer IS
@@ -70,16 +75,16 @@ BEGIN
 -- 51 bit i1 -- 51 bit i2
 -- 0~3 : Rdst -- 4~7 : Rsrc -- 8 : Branch_taked -- 9 : load_use -- 10~25 : Rsrc_data -- 26~41 : Rdst_Data -- 42 : stall_long_to be changed 
 -- 43 : WB -- 44 : MR --45 : MW -- 46~50 : alu_op 
-n_dff:entity work.my_nDFF  generic map (103) port map (clk,  rst , d ,q ,EN);
+n_dff:entity work.my_nDFF  generic map (104) port map (clk,  rst , d ,q ,EN);
 -------------------------------------------------------
-d <= late_stall_long_in & i1_alu_op_in & i1_MW_in & i1_MR_in & i1_WB_in & i1_stall_long_in &
+d <= ret_flush_in & late_stall_long_in & i1_alu_op_in & i1_MW_in & i1_MR_in & i1_WB_in & i1_stall_long_in &
 i1_Rdst_data_in & i1_Rsrc_data_in & i1_load_use_in & i1_branch_taken_in & i1_Rsrc_in & i1_Rdst_in &
 i2_alu_op_in & i2_MW_in & i2_MR_in & i2_WB_in & i2_stall_long_in & 
 i2_Rdst_data_in & i2_Rsrc_data_in & i2_load_use_in & i2_branch_taken_in & i2_Rsrc_in & i2_Rdst_in;
 
 
 	late_stall_long_out <= q(102);
-
+	ret_flush_out <= q(103);
 
 -------------------------------------------------------
 	i1_Rdst <= q(54 downto 51);

@@ -150,13 +150,22 @@ signal branch_taken_2 :std_logic;
 -----
 signal hard_address :std_logic_vector(31 downto 0) ;
 --------------------------------------------------
+
+-- MOAMEN to be added to hazard unit
+
+signal ID_EXE_ret_flush_in  : std_logic;
+signal ID_EXE_ret_flush_out : std_logic;
+signal EXE_MEM_ret_flush_out : std_logic;
+signal MEM_WB_ret_flush_out : std_logic;
+signal ret_flush : std_logic;
+
 BEGIN
 ----------------------------------------------------fetch ---------  fetch & pc & ir
 fetch:entity work.FETCH  port map (clk, rst , pc_out ,i1 ,i2);
 ir_input <= i1&i2;
 -------------------------------------------------------------------IR 
 IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (
-	clk_inv,  RST_IR_out , 
+	clk_inv,  rst , 
 	ir_input,
 	i1_opcode ,
 	i1_function ,
@@ -172,7 +181,7 @@ IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (
 -----------------------------------------------------------------PC
 -- HAZARD 
 hard_address <= x"0000" & hazard_data_out;
-pc:entity work.PC port map (clk_inv,  rst ,hard_address ,pc_out ,PC_select_out , i1);
+pc:entity work.PC port map (clk_inv,  rst ,hard_address ,pc_out ,PC_select_out , i1, X"0", X"0000");
 ---------------------------------------------------decode --------decode 
 out_bus_data <= out_bus ;
 deocode : entity work.DECODE PORT map  (
@@ -248,7 +257,15 @@ deocode : entity work.DECODE PORT map  (
     i1_Rdst_Mem_in,
     i2_Rdst_Mem_in,
     i1_WB_Mem_in,
-    i2_WB_Mem_in
+    i2_WB_Mem_in,
+
+	-- RETI
+	ID_EXE_ret_flush_in, 
+	ID_EXE_ret_flush_out,
+	EXE_MEM_ret_flush_out,
+	MEM_WB_ret_flush_out,
+	ret_flush
+
     );
  ----------------------------------------buffer decode/execute     
 	--immediate logic
@@ -305,8 +322,13 @@ dec_exec_BUFFER:entity work.Decode_Execute_Buffer port map (
 	i2_MR_Exec_in ,
 	i2_MW_Exec_in ,
 	i2_alu_op_Exec_in,
-	En
+	En,
+
+	-- MOAMEN
+	ID_EXE_ret_flush_in,
+	ID_EXE_ret_flush_out
  );
+
  ------------------------------------------Execute
  -----------------------------------------
  Execute :entity work.EXECUTE port map (
@@ -397,7 +419,10 @@ exec_mem_BUFFER:entity work.Execute_Memory_Buffer port map (
 	i2_MR_Mem_in,
 	i2_MW_Mem_in,
 	i2_alu_result_Mem_in ,
-	En
+	En,
+	-- MOAMEN
+	ID_EXE_ret_flush_out,
+	EXE_MEM_ret_flush_out
  );
  --------------------------- MEMORY
 clk_inv <= not(clk);
@@ -427,7 +452,8 @@ clk_inv <= not(clk);
 	i2_WB_MEM_out ,
 	i2_MR_MEM_out,
 	i2_stall_long_MEM_out ,
-	i2_result_MEM_out 	
+	i2_result_MEM_out
+
  );
 --------------------------------- MEMORY WRITE BACK BUFFER
 mem_writeback :entity work.Memory_write_back_Buffer port map ( 
@@ -456,9 +482,18 @@ mem_writeback :entity work.Memory_write_back_Buffer port map (
  	i2_MR_WB_out ,
  	i2_stall_long_WB_out ,
  	i2_result_WB_out ,
-	En
+	En,
+	EXE_MEM_ret_flush_out,
+	MEM_WB_ret_flush_out
  );
+
+ -- MOAMEN
+ret_bit_flush : entity work.D_ff port map (
+	 d   => MEM_WB_ret_flush_out,
+	 clk => clk_inv,
+	 rst => rst,
+	 en  => '1',
+	 q   => ret_flush
+ );
+
 END my_system;
-
-
-
