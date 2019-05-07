@@ -34,6 +34,10 @@ begin
                 cnt := std_logic_vector(to_unsigned(to_integer(unsigned(cnt)) - 2 , cnt'length));
 	        elsif(sel = "000") then
 		        cnt := std_logic_vector(to_unsigned(to_integer(unsigned(cnt)) + 2 , cnt'length));
+            elsif sel = "111" then
+                cnt := std_logic_vector(to_unsigned(to_integer(unsigned(cnt)) , cnt'length));
+            elsif sel = "110" then
+                cnt := std_logic_vector(to_unsigned(to_integer(unsigned(in_address)) - 2 , cnt'length));
             end if;
         end if;
     temp <= cnt;
