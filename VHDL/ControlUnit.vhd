@@ -24,7 +24,9 @@ entity Control_Unit is
         ----------------------
         PP_signal :out std_logic_vector(1 downto 0);
 		--------------------branch
-		branch_taken:in std_logic
+        branch_taken:in std_logic;
+        
+        push_pc : out std_logic
     );
 end Control_Unit;
 
@@ -38,6 +40,7 @@ architecture a_Control_Unit of Control_Unit is
                     PP_signal <= "00";
                     MR <= '0';
                     MW <= '0';
+                    push_pc<='0';
 
                 if (func = "000")  then  -- no op 
                     AluFunc <= "00000";
@@ -129,6 +132,7 @@ architecture a_Control_Unit of Control_Unit is
                     PP_signal <= "00";
                     MR <= '0';
                     MW <= '0';
+                    push_pc<='0';
                 if (func = "000") then   -- mov 
                     AluFunc <= "00111";  --pass rsc
                     dest <= Rdst;
@@ -190,6 +194,7 @@ architecture a_Control_Unit of Control_Unit is
         
                 IN_signal <= '0';
                 OUT_signal <='0';
+                push_pc<='0';
 
             if (func ="000")    then   -- push ()
                 AluFunc <= "00111";  
@@ -263,6 +268,7 @@ architecture a_Control_Unit of Control_Unit is
                 regOut2 <= "0000"; 
                 immediate <= '0'; 
                 PP_signal <= "00";
+                push_pc<='0';
             
 			elsif (func ="001"and branch_taken='1')then
 				AluFunc <= "11001"; 
@@ -274,6 +280,7 @@ architecture a_Control_Unit of Control_Unit is
                 regOut2 <= "0000"; 
                 immediate <= '0';
                 PP_signal <= "00"; 
+                push_pc<='0';
 			elsif (func ="010"and branch_taken='1')then
 				AluFunc <= "11010"; 
                 dest <= "0000";
@@ -284,6 +291,7 @@ architecture a_Control_Unit of Control_Unit is
                 regOut2 <= "0000"; 
                 immediate <= '0';
                 PP_signal <= "00"; 
+                push_pc<='0';
                 
 			elsif (func ="100")then -- call
 				AluFunc <= "00111"; 
@@ -295,6 +303,7 @@ architecture a_Control_Unit of Control_Unit is
                 regOut2 <= "0000"; 
                 immediate <= '0';
                 PP_signal <= "01"; 
+                push_pc<='1';
 
             elsif  (func ="101")then -- return
                 AluFunc <= "00111"; 
@@ -305,7 +314,8 @@ architecture a_Control_Unit of Control_Unit is
                 regOut1 <= "1000";
                 regOut2 <= "0000"; 
                 immediate <= '0';
-                PP_signal <= "10";  
+                PP_signal <= "10"; 
+                push_pc<='0'; 
 			else 
 				AluFunc <= "00000"; 
                 dest <= "0000";

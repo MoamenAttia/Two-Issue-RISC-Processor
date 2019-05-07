@@ -85,7 +85,9 @@ ENTITY DECODE IS
 	ID_EXE_ret_flush_out  : in std_logic;
 	EXE_MEM_ret_flush_out : in std_logic;
 	MEM_WB_ret_flush_out  : in std_logic;
-	ret_flush             : in std_logic
+	ret_flush             : in std_logic;
+
+	pc : in std_logic_vector(31 downto 0)
 );
 END DECODE;
 
@@ -120,6 +122,9 @@ signal SIG_ID_EXE_late_flush : std_logic;
 signal SIG_late_flush_ID_EXE : std_logic;
 ---------------
 signal  PP_signal :std_logic_vector(1 downto 0);
+--
+signal p_pc1 : std_logic;
+signal p_pc2 : std_logic;
 
 BEGIN
 
@@ -148,7 +153,8 @@ IN_signal => i1_IN_signal,
 OUT_signal => i1_OUT_signal,
 immediate => i1_immediate,
 PP_signal => PP_signal,
-branch_taken => branch_taken_1
+branch_taken => branch_taken_1,
+push_pc=> p_pc1 
 );
 ---------------------- control unit instr 2		
 controli2_unit:entity work.Control_Unit  port map (
@@ -168,7 +174,8 @@ flush => clear_second,
 IN_signal => i2_IN_signal,
 OUT_signal => i2_OUT_signal,
 immediate => i2_immediate,
-branch_taken => branch_taken_2
+branch_taken => branch_taken_2,
+push_pc =>p_pc2
 
 );		
 -------------------------- Register file  
@@ -196,7 +203,9 @@ MEM_data,
 IN_bus,
 OUT_bus,
 pp_signal,
-x"00000000"
+p_pc1,
+p_pc2,
+pc
  );
 -----------------------------hazard detection and its connection 
 hazard : entity work.hazard_unit port map 

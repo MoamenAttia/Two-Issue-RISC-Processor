@@ -33,6 +33,8 @@ PORT(
 	--------
 	PP_signal : in std_logic_vector(1 downto 0);
 	------------
+
+	ppc1 , ppc2  :in std_logic;
 	pc_data : in std_logic_vector(31 downto 0)
 
 );
@@ -83,11 +85,11 @@ signal bus_out :std_logic_vector (15 downto 0);
 signal sp:std_logic_vector (15 downto 0);
 
 
-signal ppc : std_logic_vector(15 downto 0);
+signal actual_pc : std_logic_vector(31 downto 0);
 
 
 BEGIN
-
+actual_pc <= pc_data when  ppc1 = '1' or ppc2 = '1';
 
 
 i1_Rsrc_data_out_1 <= sp when i1_Rsrc = "1000" else i1_Rsrc_data_out;
@@ -342,7 +344,7 @@ begin
 	elsif (MEM_sel = "1000") then
 		MEM_data <= R7_data_out;
 	elsif (MEM_sel = "1001") then
-			MEM_data <= pc_data(15 downto 0);
+			MEM_data <= actual_pc(15 downto 0);
 	elsif (MEM_sel = "0000") then
 		MEM_data <= "ZZZZZZZZZZZZZZZZ";
 

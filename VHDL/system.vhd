@@ -272,7 +272,8 @@ deocode : entity work.DECODE PORT map  (
 	ID_EXE_ret_flush_out,
 	EXE_MEM_ret_flush_out,
 	MEM_WB_ret_flush_out,
-	ret_flush
+	ret_flush,
+	pc_out
 
     );
  ----------------------------------------buffer decode/execute     
