@@ -172,7 +172,7 @@ IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (
 -----------------------------------------------------------------PC
 -- HAZARD 
 hard_address <= x"0000" & hazard_data_out;
-pc:entity work.PC port map (clk_inv,  rst ,hard_address ,pc_out ,PC_select_out);
+pc:entity work.PC port map (clk_inv,  rst ,hard_address ,pc_out ,PC_select_out , i1);
 ---------------------------------------------------decode --------decode 
 out_bus_data <= out_bus ;
 deocode : entity work.DECODE PORT map  (

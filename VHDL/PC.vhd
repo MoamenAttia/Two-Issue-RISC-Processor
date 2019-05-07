@@ -7,19 +7,19 @@ entity pc is
         rst : in std_logic;
         in_address : in std_logic_vector(31 downto 0);
         out_address : out std_logic_vector(31 downto 0);
-        sel : in std_logic_vector(2 downto 0)
+        sel : in std_logic_vector(2 downto 0);
+	    reset_address : in std_logic_vector(15 downto 0)
     );
 end pc;
 
 architecture my_pc of pc is
 signal temp : std_logic_vector(31 downto 0);
 begin
-
     process (clk , rst , sel)
     variable cnt : std_logic_vector(31 downto 0) := (others => '0');
     begin
         if(rst = '1') then
-            cnt := (others => '0');
+            cnt := X"0000" & reset_address;
         elsif(rising_edge(clk)) then
             if(sel = "001") then
                 cnt := std_logic_vector(to_unsigned(to_integer(unsigned(cnt)) - 1 , cnt'length));
