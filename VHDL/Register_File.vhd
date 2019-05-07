@@ -1,6 +1,7 @@
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 ENTITY Register_File IS
 GENERIC ( n : integer := 16);
@@ -86,11 +87,17 @@ signal sp:std_logic_vector (15 downto 0);
 
 
 signal actual_pc : std_logic_vector(31 downto 0);
+signal act :std_logic_vector(15 downto 0);
 
 
 BEGIN
-actual_pc <= pc_data when  ppc1 = '1' or ppc2 = '1';
 
+process (ppc1 ,ppc2)
+begin 
+if (ppc1 = '1' or ppc2 = '1') then 
+	actual_pc <= pc_data;
+end if;	
+end process;
 
 i1_Rsrc_data_out_1 <= sp when i1_Rsrc = "1000" else i1_Rsrc_data_out;
 i1_Rdst_data_out_1 <= sp when i1_Rdst = "1000" else i1_Rdst_data_out;
@@ -325,6 +332,7 @@ begin
 
 end process;
 -----------------------------------------------------memory sel data out process
+act <= actual_pc(15 downto 0);
 process(clk ,rst,MEM_sel,R0_data_out,R1_data_out,R2_data_out,R3_data_out,R4_data_out,R5_data_out,pc_data,R6_data_out,R7_data_out)
 begin
 	if (MEM_sel = "0001") then
@@ -344,7 +352,7 @@ begin
 	elsif (MEM_sel = "1000") then
 		MEM_data <= R7_data_out;
 	elsif (MEM_sel = "1001") then
-			MEM_data <= actual_pc(15 downto 0);
+		MEM_data <= std_logic_vector(to_unsigned(to_integer(unsigned(act)) - 1 , act'length));
 	elsif (MEM_sel = "0000") then
 		MEM_data <= "ZZZZZZZZZZZZZZZZ";
 
