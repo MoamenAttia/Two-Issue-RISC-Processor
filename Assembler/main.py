@@ -1,7 +1,7 @@
 import sys , os , pathlib
 import math
 
-ram_size = 1024
+ram_size = 2048
 size_represent = len(str(ram_size))
 
 '''
@@ -141,13 +141,13 @@ def assemble(instruction, firstOperand, secondOperand):
     immediateVal = None
 
     try:
-        val = int(instruction)
+        val = int(instruction,16)
         return [format(int(val), '016b')]
     except:
         pass
 
     if instruction.upper() == ".ORG":
-        idx = int(firstOperand) - 1
+        idx = int(firstOperand, 16) - 1
         return ["0" * 16]
 
     IR[14] = instructionMap[instruction][0]
@@ -168,7 +168,7 @@ def assemble(instruction, firstOperand, secondOperand):
         IR[5] = registerMap[secondOperand][2]
         IR[6] = registerMap[secondOperand][3]
     elif secondOperand != None and not(secondOperand in registerMap.keys()):
-        immediateVal = format(int(secondOperand), '016b')
+        immediateVal = format(int(secondOperand, 16), '016b')
         secondOperand = None
     
     if secondOperand == None:
@@ -223,7 +223,8 @@ def readFile(inputFileName):
             if len(operands) > 1:
                 secondOperand = operands[1]
         IR = assemble(instruction, firstOperand, secondOperand)
-        binaryCode[idx]=IR[0]
+        if idx != -1:
+            binaryCode[idx]=IR[0]
         idx += 1
         if len(IR) > 1:
             binaryCode[idx] = IR[1]
@@ -245,7 +246,7 @@ def output_ram_file(ram_file_path, lines):
                 size += 1
 
 if __name__ == "__main__":
-    inputFileName = "program.txt"
+    inputFileName = "Branch.asm"
     outputFileName = "instruction_ram.mem"
     outputDataRam = "data_ram.mem"
     if (len(sys.argv) > 1):
