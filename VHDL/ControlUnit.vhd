@@ -252,8 +252,7 @@ architecture a_Control_Unit of Control_Unit is
             IN_signal <= '0';
             OUT_signal <='0';
             src<=Rsrc;
-            PP_signal <= "00";
-    
+            
             if (func ="000" and branch_taken='1')then --or  or func ="010" or func ="001")    then  
                 AluFunc <= "11000"; 
                 dest <= "0000";
@@ -263,6 +262,7 @@ architecture a_Control_Unit of Control_Unit is
                 regOut1 <= "0000";
                 regOut2 <= "0000"; 
                 immediate <= '0'; 
+                PP_signal <= "00";
             
 			elsif (func ="001"and branch_taken='1')then
 				AluFunc <= "11001"; 
@@ -272,7 +272,8 @@ architecture a_Control_Unit of Control_Unit is
                 MW <= '0';
                 regOut1 <= "0000";
                 regOut2 <= "0000"; 
-                immediate <= '0'; 
+                immediate <= '0';
+                PP_signal <= "00"; 
 			elsif (func ="010"and branch_taken='1')then
 				AluFunc <= "11010"; 
                 dest <= "0000";
@@ -281,7 +282,9 @@ architecture a_Control_Unit of Control_Unit is
                 MW <= '0';
                 regOut1 <= "0000";
                 regOut2 <= "0000"; 
-                immediate <= '0'; 
+                immediate <= '0';
+                PP_signal <= "00"; 
+                
 			elsif (func ="100")then -- call
 				AluFunc <= "00111"; 
                 dest <= "1001";
@@ -290,7 +293,9 @@ architecture a_Control_Unit of Control_Unit is
                 MW <= '1';
                 regOut1 <= "1000";
                 regOut2 <= "0000"; 
-                immediate <= '0'; 
+                immediate <= '0';
+                PP_signal <= "01"; 
+
             elsif  (func ="101")then -- return
                 AluFunc <= "00111"; 
                 dest <= "1010";
@@ -299,7 +304,8 @@ architecture a_Control_Unit of Control_Unit is
                 MW <= '0';
                 regOut1 <= "1000";
                 regOut2 <= "0000"; 
-                immediate <= '0';  
+                immediate <= '0';
+                PP_signal <= "10";  
 			else 
 				AluFunc <= "00000"; 
                 dest <= "0000";
