@@ -334,4 +334,3 @@ architecture a_Control_Unit of Control_Unit is
 	end process; 
    
 end architecture;
-

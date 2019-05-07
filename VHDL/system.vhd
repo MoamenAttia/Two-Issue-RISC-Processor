@@ -159,7 +159,14 @@ signal EXE_MEM_ret_flush_out : std_logic;
 signal MEM_WB_ret_flush_out : std_logic;
 signal ret_flush : std_logic;
 
+
+-- PC
+signal pc_wb : std_logic;
+signal pc_rdst_wb : std_logic_vector(3 downto 0);
+signal pc_rdst_data : std_logic_vector(15 downto 0);
+
 BEGIN
+
 ----------------------------------------------------fetch ---------  fetch & pc & ir
 fetch:entity work.FETCH  port map (clk, rst , pc_out ,i1 ,i2);
 ir_input <= i1&i2;
@@ -179,14 +186,15 @@ IR_BUFFER:entity work.IR_Buffer  generic map (32) port map (
 	immediate_op
 	); 
 -----------------------------------------------------------------PC
+
 -- HAZARD 
 hard_address <= x"0000" & hazard_data_out;
-pc:entity work.PC port map (clk_inv,  rst ,hard_address ,pc_out ,PC_select_out , i1, X"0", X"0000");
+pc:entity work.PC port map (clk_inv,  rst ,hard_address ,pc_out ,PC_select_out , i1, i1_WB_WB_out, i1_Rdst_WB_out, i1_result_WB_out, i2_WB_WB_out, i2_Rdst_WB_out, i2_result_WB_out);
 ---------------------------------------------------decode --------decode 
 out_bus_data <= out_bus ;
 deocode : entity work.DECODE PORT map  (
 	clk ,rst,
-        i1_opcode ,
+    i1_opcode ,
 	i1_function,
 	i1_Rsrc ,
 	i1_Rdst ,
@@ -264,8 +272,8 @@ deocode : entity work.DECODE PORT map  (
 	ID_EXE_ret_flush_out,
 	EXE_MEM_ret_flush_out,
 	MEM_WB_ret_flush_out,
-	ret_flush,
-	pc_out
+	ret_flush
+
     );
  ----------------------------------------buffer decode/execute     
 	--immediate logic

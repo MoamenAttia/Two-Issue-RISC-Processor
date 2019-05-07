@@ -33,7 +33,7 @@ PORT(
 	--------
 	PP_signal : in std_logic_vector(1 downto 0);
 	------------
-	pc_data  : in std_logic_vector(31 downto 0)
+	pc_data : in std_logic_vector(31 downto 0);
 
 );
 
@@ -82,7 +82,13 @@ signal bus_out :std_logic_vector (15 downto 0);
 --------------------------------------------------SP
 signal sp:std_logic_vector (15 downto 0);
 
+
+signal ppc : std_logic_vector(15 downto 0);
+
+
 BEGIN
+
+ppc <= pc_data when 
 
 i1_Rsrc_data_out_1 <= sp when i1_Rsrc = "1000" else i1_Rsrc_data_out;
 i1_Rdst_data_out_1 <= sp when i1_Rdst = "1000" else i1_Rdst_data_out;
