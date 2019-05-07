@@ -120,6 +120,7 @@ signal SIG_ID_EXE_late_flush : std_logic;
 signal SIG_late_flush_ID_EXE : std_logic;
 ---------------
 signal  PP_signal :std_logic_vector(1 downto 0);
+
 BEGIN
 
 i1_stall_long <= clear_first;
@@ -146,7 +147,8 @@ flush => clear_first,
 IN_signal => i1_IN_signal,
 OUT_signal => i1_OUT_signal,
 immediate => i1_immediate,
-PP_signal => PP_signal
+PP_signal => PP_signal,
+branch_taken => branch_taken_1
 );
 ---------------------- control unit instr 2		
 controli2_unit:entity work.Control_Unit  port map (
@@ -165,7 +167,9 @@ regOut2 => i2_Rdst_in_regFile,
 flush => clear_second,
 IN_signal => i2_IN_signal,
 OUT_signal => i2_OUT_signal,
-immediate => i2_immediate
+immediate => i2_immediate,
+branch_taken => branch_taken_2
+
 );		
 -------------------------- Register file  
 

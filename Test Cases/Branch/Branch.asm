@@ -25,15 +25,23 @@ AND R1,R5   #R5=0 , Z = 1
 JZ  R2      #Jump taken, Z = 0
 SETC        # this statement shouldn't be executed, C-->1
 
+
+
+
 #check on flag updated on jump
 .ORG 50
-JZ R1      #shouldn't be taken
-JC R3      #Jump Not taken
 
+JZ R1      #shouldn't be taken
+
+JC R3      #Jump Not taken
 #check destination forwarding
 NOT R5     #R5=FFFF, Z= 0, C--> not change, N=1
+
 in  R6     #R6=200, flag no change
 JN  R6     #jump taken, N = 0
+
+
+
 INC R1
 
 .ORG 100
@@ -44,10 +52,8 @@ rti
 
 #check on load use
 .ORG 200
-SET C      #C-->1
-POP R6     #R6=300, SP=FFFFFFFF
-Call R6    #SP=FFFFFFFD, M[FFFFFFFF]=half next PC,M[FFFFFFFE]=other half next PC
-          #try interrup here
+SETC      #C-->1
+POP R6    #R6=300, SP=FFFFFFFF
 INC R6	  #R6=401, this statement shouldn't be executed till call returns, C--> 0, N-->0,Z-->0
 NOP
 NOP

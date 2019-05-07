@@ -75,6 +75,8 @@ signal opb_2	: std_logic_vector(15 downto 0);
 ------------------------Flgas
 signal alu_1_flags : std_logic_vector(2 downto 0);
 signal alu_2_flags : std_logic_vector(2 downto 0);
+signal flags_1 : std_logic_vector(2 downto 0) := (others => '0');
+signal flags_2 : std_logic_vector(2 downto 0) := (others => '0');
 --------------------------------------
 ----------testing 
 signal temp1,temp2 :std_logic_vector(15 downto 0);
@@ -131,12 +133,25 @@ BEGIN
 		i2_MR_Exec_out <= i2_MR;
 		i2_MW_Exec_out <= i2_MW;
 -----------------------------------------------------------Flags Logic !!!!!!!!!!!!!!!!!!!! hal lw 3mlt inc w dec ll sp l flags tt8yr ??!!!
-flags <= alu_2_flags when i2_alu_op = "00001" or i2_alu_op = "00010" or i2_alu_op = "00011" or i2_alu_op = "00100" or i2_alu_op = "00101"
+flags_1 <= alu_2_flags when i2_alu_op = "00001" or i2_alu_op = "00010" or i2_alu_op = "00011" or i2_alu_op = "00100" or i2_alu_op = "00101"
 	or i2_alu_op = "01000"or i2_alu_op = "01001"or i2_alu_op = "01010"or i2_alu_op = "01011"or i2_alu_op = "01100"or i2_alu_op = "01101"
 	or i2_alu_op = "10000"or i2_alu_op = "10001"
 
 else alu_1_flags when i1_alu_op = "00001" or i1_alu_op = "00010" or i1_alu_op = "00011" or i1_alu_op = "00100" or i1_alu_op = "00101"
 	or i1_alu_op = "01000"or i1_alu_op = "01001"or i1_alu_op = "01010"or i1_alu_op = "01011"or i1_alu_op = "01100"or i1_alu_op = "01101"
-	or i1_alu_op = "10000"or i1_alu_op = "10001";
+	or i1_alu_op = "10000"or i1_alu_op = "10001"
+else "000" when i1_alu_op = "11000" or i1_alu_op = "11001" or i1_alu_op = "11010" or i2_alu_op = "11000" or i2_alu_op = "11001" or i2_alu_op = "11010";
+------------------------------------------------------------	
+flags_2 <= flags_1(2)&flags_1(1)&'0' when i2_alu_op = "11000"
+else flags_1(1)&'0'&flags_1(0) when i2_alu_op ="11001"
+else '0' & flags_1(1)&flags_1(0)when i2_alu_op ="11010"
+-----------------------------
+else flags_1(2)&flags_1(1)&'0' when i1_alu_op = "11000"
+else flags_1(1)&'0'&flags_1(0) when i1_alu_op ="11001"
+else '0' & flags_1(1)&flags_1(0)when i1_alu_op ="11010";
+----------------------------------------------------------------------
+flags <= flags_2 when i1_alu_op = "11000" or i1_alu_op = "11001" or i1_alu_op = "11010" or 
+					  i2_alu_op = "11000" or i2_alu_op = "11001" or i2_alu_op = "11010"
+else flags_1;
 
 END a_EXECUTE;

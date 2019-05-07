@@ -136,22 +136,27 @@ registerMap = {
 binaryCode = [ "0" * 16 ] * ram_size
 idx = 0
 nxt = False
+
+cnt = 0
+
 def assemble(instruction, firstOperand, secondOperand):
-    global idx, nxt
+    global idx, nxt, cnt
     IR = ["0"] * 16
     immediateVal = None
 
     try:
         if nxt:
-            val = int(instruction,16)
-            nxt = False
-            return [format(int(val), '016b')]
+            if cnt <= 2:
+                val = int(instruction,16)
+                nxt = False
+                return [format(int(val), '016b')]
     except:
         pass
 
     if instruction.upper() == ".ORG":
         idx = int(firstOperand, 16) - 1
         nxt = True
+        cnt += 1
         return ["0" * 16]
 
     IR[14] = instructionMap[instruction][0]

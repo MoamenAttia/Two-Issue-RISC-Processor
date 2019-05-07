@@ -22,14 +22,16 @@ entity Control_Unit is
         OUT_signal:out std_logic;
         immediate : out std_logic;
         ----------------------
-        PP_signal :out std_logic_vector(1 downto 0)
+        PP_signal :out std_logic_vector(1 downto 0);
+		--------------------branch
+		branch_taken:in std_logic
     );
 end Control_Unit;
 
 architecture a_Control_Unit of Control_Unit is
     
     begin 
-    process ( opcode , func, Rsrc,Rdst,flush)
+    process ( opcode , func, Rsrc,Rdst,flush,branch_taken)
         begin 
             if (opcode = "00" and flush = '0' )   then  
                     immediate <= '0';   -- one operand 
@@ -252,8 +254,8 @@ architecture a_Control_Unit of Control_Unit is
             src<=Rsrc;
             PP_signal <= "00";
     
-            if (func ="000" or func ="001" or func ="010" or func ="001")    then  
-                AluFunc <= "00000"; 
+            if (func ="000" and branch_taken='1')then --or  or func ="010" or func ="001")    then  
+                AluFunc <= "11000"; 
                 dest <= "0000";
                 WB <= '0';
                 MR <= '0';
@@ -261,8 +263,44 @@ architecture a_Control_Unit of Control_Unit is
                 regOut1 <= "0000";
                 regOut2 <= "0000"; 
                 immediate <= '0'; 
-            end if;
-
+            
+			elsif (func ="001"and branch_taken='1')then
+				AluFunc <= "11001"; 
+                dest <= "0000";
+                WB <= '0';
+                MR <= '0';
+                MW <= '0';
+                regOut1 <= "0000";
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+			elsif (func ="010"and branch_taken='1')then
+				AluFunc <= "11010"; 
+                dest <= "0000";
+                WB <= '0';
+                MR <= '0';
+                MW <= '0';
+                regOut1 <= "0000";
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+			elsif (func ="100")then -- call
+				AluFunc <= "00111"; 
+                dest <= "1001";
+                WB <= '0';
+                MR <= '0';
+                MW <= '0';
+                regOut1 <= "1000";
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+			else 
+				AluFunc <= "00000"; 
+                dest <= "0000";
+                WB <= '0';
+                MR <= '0';
+                MW <= '0';
+                regOut1 <= "0000";
+                regOut2 <= "0000"; 
+                immediate <= '0'; 
+			end if;
     else     
         AluFunc <= "00000";
         dest <= "0000";
@@ -281,3 +319,4 @@ architecture a_Control_Unit of Control_Unit is
 	end process; 
    
 end architecture;
+
