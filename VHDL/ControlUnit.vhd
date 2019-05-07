@@ -303,7 +303,7 @@ architecture a_Control_Unit of Control_Unit is
                 regOut2 <= "0000"; 
                 immediate <= '0';
                 PP_signal <= "01"; 
-                push_pc<='1';
+                push_pc <= '1';
 
             elsif  (func ="101")then -- return
                 AluFunc <= "00111"; 
@@ -324,7 +324,9 @@ architecture a_Control_Unit of Control_Unit is
                 MW <= '0';
                 regOut1 <= "0000";
                 regOut2 <= "0000"; 
-                immediate <= '0'; 
+                immediate <= '0';
+		push_pc <= '0';
+                PP_signal <= "00";
 			end if;
     else     
         AluFunc <= "00000";
@@ -339,7 +341,7 @@ architecture a_Control_Unit of Control_Unit is
         OUT_signal <='0';
         PP_signal <= "00";
         src <= "0000";
-       
+        push_pc <= '0';
     end if;  
 	end process; 
    

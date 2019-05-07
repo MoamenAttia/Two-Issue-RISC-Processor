@@ -273,7 +273,7 @@ begin
     memory_hazard <= '1' when (memory_first_in_packet_handle = '1' and memory_second_in_packet_handle = '1') else '0';
     
     -- JMP INNER HAZARD
-    jmp_inner_hazard <= '1' when (IF_ID_opCode2 = "11" and  (IF_ID_func2 = "000" or IF_ID_func2 = "001" or IF_ID_func2 = "010" or IF_ID_func2 = "011") and (first_alu_operation = '0')) else '0';
+    jmp_inner_hazard <= '1' when (IF_ID_opCode2 = "11" and  (IF_ID_func2 = "000" or IF_ID_func2 = "001" or IF_ID_func2 = "010" or IF_ID_func2 = "011") and (first_alu_operation = '1')) else '0';
 
   
     -- IN HAZARD
@@ -381,7 +381,7 @@ begin
 
     -- OUTPUTS
     clear_first  <= data_outer_hazard or jmp_hazard or ID_EXE_late_flush or return_flush or jmp_stop_first;
-    clear_second <= data_inner_hazard or data_outer_hazard or load_immediate_hazard or (SIG_branch_taken1 and not(jmp_stop_first)) or jmp_hazard or ID_EXE_late_flush or load_immediate_hazard_clear_second or ret_first_in_packet or return_flush or jmp_stop_first;
+    clear_second <= data_inner_hazard or ret_first_in_packet or data_outer_hazard or load_immediate_hazard or (SIG_branch_taken1 and not(jmp_stop_first)) or jmp_hazard or ID_EXE_late_flush or load_immediate_hazard_clear_second or ret_first_in_packet or return_flush or jmp_stop_first;
     -- RST_IR       <= jmp_hazard or ID_EXE_late_flush;
     PC_selector  <= "001" when exception_jmp = '1' or (SIG_branch_taken2 = '1' and jmp_stop_second = '1' ) or jmp_second_depend_inner = '1' else
                     "111" when jmp_stop_first = '1' or  ID_EXE_ret_flush_out = '1' or EXE_MEM_ret_flush_out = '1' else
