@@ -31,7 +31,9 @@ PORT(
 	IN_bus : in std_logic_vector (15 downto 0);
 	OUT_bus : out std_logic_vector (15 downto 0);
 	--------
-	PP_signal : in std_logic_vector(1 downto 0)
+	PP_signal : in std_logic_vector(1 downto 0);
+	------------
+	pc_data : : in std_logic_vector(31 downto 0)
 
 );
 
@@ -315,7 +317,7 @@ begin
 
 end process;
 -----------------------------------------------------memory sel data out process
-process(clk ,rst,MEM_sel,R0_data_out,R1_data_out,R2_data_out,R3_data_out,R4_data_out,R5_data_out,R6_data_out,R7_data_out)
+process(clk ,rst,MEM_sel,R0_data_out,R1_data_out,R2_data_out,R3_data_out,R4_data_out,R5_data_out,pc_data,R6_data_out,R7_data_out)
 begin
 	if (MEM_sel = "0001") then
 		MEM_data <= R0_data_out;
@@ -333,6 +335,8 @@ begin
 		MEM_data <= R6_data_out;
 	elsif (MEM_sel = "1000") then
 		MEM_data <= R7_data_out;
+	elsif (MEM_sel = "1001") then
+			MEM_data <= pc_data(15 downto 0);
 	elsif (MEM_sel = "0000") then
 		MEM_data <= "ZZZZZZZZZZZZZZZZ";
 
