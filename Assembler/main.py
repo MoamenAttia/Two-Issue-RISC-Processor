@@ -1,6 +1,8 @@
 import sys , os , pathlib
+import math
 
-ram_size = 64
+ram_size = 1024
+size_represent = len(str(ram_size))
 
 '''
 IR (16 bits)
@@ -131,10 +133,22 @@ registerMap = {
     "flag"  : "1011"
 }
 
-
+binaryCode = [ "0" * 16 ] * ram_size
+idx = 0
 def assemble(instruction, firstOperand, secondOperand):
+    global idx
     IR = ["0"] * 16
     immediateVal = None
+
+    try:
+        val = int(instruction)
+        return [format(int(val), '016b')]
+    except:
+        pass
+
+    if instruction.upper() == ".ORG":
+        idx = int(firstOperand) - 1
+        return ["0" * 16]
 
     IR[14] = instructionMap[instruction][0]
     IR[15] = instructionMap[instruction][1]
@@ -143,7 +157,7 @@ def assemble(instruction, firstOperand, secondOperand):
     IR[12] = functionMap[instruction][1]
     IR[13] = functionMap[instruction][2]
 
-    if firstOperand != None:
+    if firstOperand != None: 
         IR[7]  = registerMap[firstOperand][0]
         IR[8]  = registerMap[firstOperand][1]
         IR[9]  = registerMap[firstOperand][2]
@@ -183,13 +197,21 @@ def writeFile(outputFileName, lines):
 
 
 def readFile(inputFileName):
+    global binaryCode, idx
     file = open(inputFileName, 'r')
     lines = file.readlines()
-    binaryCode = []
     for line in lines:
+        enter = False
+        line = list(line)
+        for i in range(len(line)):
+            if line[i] == "#" or enter:
+                line[i] = "#"
+                enter = True
+        line = ''.join([x for x in line if x != '#'])
         line = line.strip()
         if len(line) == 0:
             continue
+        
         line = line.upper().split(" ")
         instruction = line[0]
         firstOperand = None
@@ -201,22 +223,12 @@ def readFile(inputFileName):
             if len(operands) > 1:
                 secondOperand = operands[1]
         IR = assemble(instruction, firstOperand, secondOperand)
-        binaryCode.append(IR[0])
+        binaryCode[idx]=IR[0]
+        idx += 1
         if len(IR) > 1:
-            binaryCode.append(IR[1])
+            binaryCode[idx] = IR[1]
+            idx += 1
     return binaryCode
-
-
-
-def output_data_file(ram_file_path):
-    with open(ram_file_path, "w") as f:
-            f.write("// instance=/system/MEM/data_ram/my_ram" + '\n')
-            f.write("// format=mti addressradix=d dataradix=b version=1.0 wordsperline=1" + '\n')
-            NUMBER_OF_BITS = 16            
-            size = 0
-            while size < 64:
-                f.write(" " * (4 - len(str(size))) + str(size) + ": " + ('0' * NUMBER_OF_BITS ) + '\n')
-                size += 1
 
 
 def output_ram_file(ram_file_path, lines):
@@ -224,13 +236,12 @@ def output_ram_file(ram_file_path, lines):
             f.write("// instance=/system/fetch/inst_ram/my_ram" + '\n')
             f.write("// format=mti addressradix=d dataradix=b version=1.0 wordsperline=1" + '\n')
             NUMBER_OF_BITS = 16
-            
             size = 0
             for line in lines:
-                f.write(" " * (4 - len(str(size))) + str(size) + ": " + line + '\n')
+                f.write(" " * (size_represent - len(str(size))) + str(size) + ": " + line + '\n')
                 size += 1
             while size < ram_size:
-                f.write(" " * (4 - len(str(size))) + str(size) + ": " + ('0' * NUMBER_OF_BITS ) + '\n')
+                f.write(" " * (size_represent - len(str(size))) + str(size) + ": " + ('0' * NUMBER_OF_BITS ) + '\n')
                 size += 1
 
 if __name__ == "__main__":
@@ -243,4 +254,3 @@ if __name__ == "__main__":
         outputFileName = sys.argv[2]
     lines = readFile(inputFileName)
     output_ram_file(outputFileName, lines)
-    output_data_file(outputDataRam)
