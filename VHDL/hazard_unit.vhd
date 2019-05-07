@@ -263,8 +263,8 @@ begin
     memory_second_in_packet_handle  <= '1' when (IF_ID_opCode2 = "10") else '0';
     
     -- Jmp
-    jmp_first_in_packet_handle  <= '1' when (IF_ID_opCode1 = "11" and (IF_ID_func1 = "000" or IF_ID_func1 = "001" or IF_ID_func1 = "010" or IF_ID_func1 = "011")) else '0';
-    jmp_second_in_packet_handle <= '1' when (IF_ID_opCode2 = "11" and (IF_ID_func2 = "000" or IF_ID_func2 = "001" or IF_ID_func2 = "010" or IF_ID_func2 = "011")) else '0';
+    jmp_first_in_packet_handle  <= '1' when (IF_ID_opCode1 = "11" and (IF_ID_func1 = "000" or IF_ID_func1 = "001" or IF_ID_func1 = "010" or IF_ID_func1 = "011" or IF_ID_func1 = "100" )) else '0';
+    jmp_second_in_packet_handle <= '1' when (IF_ID_opCode2 = "11" and (IF_ID_func2 = "000" or IF_ID_func2 = "001" or IF_ID_func2 = "010" or IF_ID_func2 = "011" or IF_ID_func2 = "100" )) else '0';
     
     -- ALU Operation
 	first_alu_operation <= '1' when ( IF_ID_opCode1 = "00" and ( IF_ID_func1 = "001" or IF_ID_func1 = "010" or IF_ID_func1 = "011" or IF_ID_func1 = "100" or IF_ID_func1 = "101" ) ) or ( IF_ID_opCode1 = "01" and ( IF_ID_func1 = "001" or IF_ID_func1 = "010" or IF_ID_func1 = "011" or IF_ID_func1 = "100") ) else '0';
@@ -375,7 +375,7 @@ begin
     SIG_structural_hazard <= '0';
     -- Branch Calculation
     SIG_branch_taken1 <= '1' when ( jmp_first_in_packet_handle  = '1' and ( (IF_ID_func1 = "000" and flags(0) = '1') or (IF_ID_func1 = "001" and flags(1) = '1') or (IF_ID_func1 = "010" and flags(2) = '1') or (IF_ID_func1 = "011") or ( IF_ID_func1 = "100" )) ) else '0';
-	SIG_branch_taken2 <= '1' when ( jmp_second_in_packet_handle = '1' and ( (IF_ID_func2 = "000" and flags(0) = '1') or (IF_ID_func2 = "001" and flags(1) = '1') or (IF_ID_func2 = "010" and flags(2) = '1') or (IF_ID_func2 = "011")  or ( IF_ID_func2 = "100" ) ) ) else '0';
+    SIG_branch_taken2 <= '1' when ( jmp_second_in_packet_handle = '1' and ( (IF_ID_func2 = "000" and flags(0) = '1') or (IF_ID_func2 = "001" and flags(1) = '1') or (IF_ID_func2 = "010" and flags(2) = '1') or (IF_ID_func2 = "011")  or ( IF_ID_func2 = "100" ) ) ) else '0';
 	
     --------------------------------------------------------------------
 
