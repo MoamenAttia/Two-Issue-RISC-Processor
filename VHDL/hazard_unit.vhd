@@ -206,7 +206,7 @@ signal return_flush : std_logic;
 
 signal ret_first_in_packet : std_logic;
 signal ret_second_in_packet : std_logic;
-
+signal temp_two :std_logic;
 begin
 
 
@@ -394,9 +394,9 @@ begin
     structural_hazard <= SIG_structural_hazard;
     branch_taken1 <= SIG_branch_taken1 and not(jmp_stop_first);
     branch_taken2 <= SIG_branch_taken2;
-
+    temp_two <= '1' when SIG_branch_taken1 = '1' or (SIG_branch_taken2 = '1' and data_inner_hazard = '0') else '0';
     late_flush_ID_EXE <= temp;
-    temp <= data_inner_hazard  or SIG_structural_hazard or data_outer_hazard or exception_jmp;
+    temp <= data_inner_hazard  or SIG_structural_hazard or data_outer_hazard or exception_jmp or temp_two;
     -- comments
     -- data_inner_hazard, load_immediate_hazard does not need to flush anything. just clear_second.
     -- data_outer_hazard need flush signal (necessary).
