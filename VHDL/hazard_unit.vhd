@@ -133,7 +133,6 @@ signal load_second_in_packet_handle    : std_logic;
 signal exception_in_first              : std_logic; 
 signal exception_in_second             : std_logic;
 
-
 -- RAW HAZARD
 signal raw_hazard                     : std_logic; -- read after write.
 signal waw_hazard                     : std_logic; -- write after write.
@@ -207,6 +206,7 @@ signal return_flush : std_logic;
 
 signal ret_first_in_packet : std_logic;
 signal ret_second_in_packet : std_logic;
+
 begin
 
 
@@ -342,7 +342,7 @@ begin
     return_flush <= '1' when ID_EXE_ret_flush_out = '1' or EXE_MEM_ret_flush_out = '1' or MEM_WB_ret_flush_out = '1' or ret_flush = '1' else '0';
 
 
-    ID_EXE_ret_flush_in <= ret_first_in_packet or jmp_stop_first;
+    ID_EXE_ret_flush_in <= ret_first_in_packet or jmp_stop_first or ret_second_in_packet;
     -- JMP HAZARD
     jmp_hazard <= '1' when ID_EXE_branch_taken1 = '1' or ID_EXE_branch_taken2 = '1' else '0';
     
